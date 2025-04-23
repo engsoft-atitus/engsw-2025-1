@@ -1,0 +1,81 @@
+name: Herdar Sprint e Time da issue mãe
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  herdar-campos:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - name: Herdar campos via GraphQL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const body = issue.body || "";
+
+            const parentMatch = body.match(/Parent Issue:\s*#(\d+)/i);
+            if (!parentMatch) {
+              console.log("Sub-issue sem referência à issue mãe.");
+              return;
+            }
+
+            const parentNumber = parseInt(parentMatch[1]);
+
+            const projectId = "PVT_kwHODFUpIM4A2Vlg";
+            const sprintFieldId = "PVTSSF_lAHODFUpIM4A2VlgzgrqSTA";
+            const timeFieldId = "PVTSSF_lAHODFUpIM4A2VlgzgsJL0Q";
+
+            const { owner, repo } = context.repo;
+
+            // Buscar valores dos campos da issue mãe
+            const query = `
+              query($owner: String!, $repo: String!, $issueNumber: Int!) {
+                repository(owner: $owner, name: $repo) {
+                  issue(number: $issueNumber) {
+                    projectItems(first: 10) {
+                      nodes {
+                        id
+                        fieldValues(first: 20) {
+                          nodes {
+                            ... on ProjectV2ItemFieldSingleSelectValue {
+                              field {
+                                id
+                                name
+                              }
+                              optionId
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }`;
+
+            const variables = { owner, repo, issueNumber: parentNumber };
+
+            const result = await github.graphql(query, variables);
+            const parentItem = result.repository.issue.projectItems.nodes.find(
+              item => item.fieldValues?.nodes?.length > 0
+            );
+
+            if (!parentItem) {
+              console.log("Nenhum item de projeto encontrado na issue mãe.");
+              return;
+            }
+
+            const sprint = parentItem.fieldValues.nodes.find(f => f.field.id === sprintFieldId);
+            const time = parentItem.fieldValues.nodes.find(f => f.field.id === timeFieldId);
+
+            if (!sprint || !time) {
+              console.log("Sprint ou Time não definidos na issue mãe.");
+              return;
+            }
+
+            // Obter item de
