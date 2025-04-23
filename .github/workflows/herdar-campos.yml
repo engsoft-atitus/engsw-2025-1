@@ -5,6 +5,16 @@ on:
     types: [opened]
 
 jobs:
+  update-fields:
+    runs-on: ubuntu-latest
+    steps:
+      # Passo de debug para exibir os dados
+      - name: Debug Issue Information
+        run: |
+          echo "Issue ID: ${{ github.event.issue.id }}"
+          echo "Sprint: ${{ github.event.issue.fields.sprint }}"
+          echo "Time: ${{ github.event.issue.fields.time }}"
+
   herdar-campos:
     runs-on: ubuntu-latest
     permissions:
