@@ -5,16 +5,6 @@ on:
     types: [opened]
 
 jobs:
-  update-fields:
-    runs-on: ubuntu-latest
-    steps:
-      # Passo de debug para exibir os dados
-      - name: Debug Issue Information
-        run: |
-          echo "Issue ID: ${{ github.event.issue.id }}"
-          echo "Sprint: ${{ github.event.issue.fields.sprint }}"
-          echo "Time: ${{ github.event.issue.fields.time }}"
-
   herdar-campos:
     runs-on: ubuntu-latest
     permissions:
@@ -44,7 +34,7 @@ jobs:
             const { owner, repo } = context.repo;
 
             // Buscar valores dos campos da issue mãe
-            const query = `
+            const queryParent = `
               query($owner: String!, $repo: String!, $issueNumber: Int!) {
                 repository(owner: $owner, name: $repo) {
                   issue(number: $issueNumber) {
@@ -68,10 +58,8 @@ jobs:
                 }
               }`;
 
-            const variables = { owner, repo, issueNumber: parentNumber };
-
-            const result = await github.graphql(query, variables);
-            const parentItem = result.repository.issue.projectItems.nodes.find(
+            const parentData = await github.graphql(queryParent, { owner, repo, issueNumber: parentNumber });
+            const parentItem = parentData.repository.issue.projectItems.nodes.find(
               item => item.fieldValues?.nodes?.length > 0
             );
 
@@ -88,4 +76,59 @@ jobs:
               return;
             }
 
-            // Obter item de
+            // Buscar item de projeto da issue filha
+            const queryChild = `
+              query($owner: String!, $repo: String!, $issueNumber: Int!) {
+                repository(owner: $owner, name: $repo) {
+                  issue(number: $issueNumber) {
+                    projectItems(first: 10) {
+                      nodes {
+                        id
+                      }
+                    }
+                  }
+                }
+              }`;
+
+            const childNumber = issue.number;
+            const childData = await github.graphql(queryChild, { owner, repo, issueNumber: childNumber });
+            const childItemId = childData.repository.issue.projectItems.nodes[0]?.id;
+
+            if (!childItemId) {
+              console.log("Não foi possível encontrar o item de projeto da issue filha.");
+              return;
+            }
+
+            // Mutation para atualizar os campos
+            const mutation = `
+              mutation UpdateField($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+                updateProjectV2ItemFieldValue(input: {
+                  projectId: $projectId,
+                  itemId: $itemId,
+                  fieldId: $fieldId,
+                  value: { singleSelectOptionId: $optionId }
+                }) {
+                  projectV2Item {
+                    id
+                  }
+                }
+              }
+            `;
+
+            // Atualizar campo Sprint
+            await github.graphql(mutation, {
+              projectId,
+              itemId: childItemId,
+              fieldId: sprintFieldId,
+              optionId: sprint.optionId,
+            });
+
+            // Atualizar campo Time
+            await github.graphql(mutation, {
+              projectId,
+              itemId: childItemId,
+              fieldId: timeFieldId,
+              optionId: time.optionId,
+            });
+
+            console.log("Campos herdados com sucesso da issue mãe.");
