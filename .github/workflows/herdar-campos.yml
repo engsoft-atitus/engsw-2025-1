@@ -9,38 +9,57 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
+      pull-requests: write
       contents: read
 
     steps:
-      - name: Herdar campos via GraphQL
+      - name: Identificar issue pai e herdar campos
         uses: actions/github-script@v7
         with:
           script: |
             const issue = context.payload.issue;
-            const body = issue.body || "";
+            const { owner, repo } = context.repo;
 
-            // Expressão para detectar 'Parent Issue: #123'
-            const parentMatch = body.match(/Parent Issue:\s*#(\d+)/i);
-            if (!parentMatch) {
-              console.log("Sub-issue sem referência à issue mãe.");
+            // 1. Tentar encontrar a issue pai via body (se houver referência como "#123")
+            const parentMatch = issue.body?.match(/#(\d+)/);
+            let parentNumber = parentMatch ? parseInt(parentMatch[1]) : null;
+
+            // 2. Se não encontrou no body, verificar se a issue foi criada a partir de um comentário
+            if (!parentNumber) {
+              console.log("Buscando issue pai via eventos de timeline...");
+              const timeline = await github.rest.issues.listEventsForTimeline({
+                owner,
+                repo,
+                issue_number: issue.number,
+              });
+
+              // Verificar se há um evento 'cross-referenced' (referência de outra issue)
+              const crossRefEvent = timeline.data.find(
+                (event) => event.event === "cross-referenced"
+              );
+
+              if (crossRefEvent?.source?.issue) {
+                parentNumber = crossRefEvent.source.issue.number;
+                console.log(`Issue pai encontrada via cross-reference: #${parentNumber}`);
+              }
+            }
+
+            if (!parentNumber) {
+              console.log("Nenhuma issue pai detectada. Encerrando.");
               return;
             }
 
-            const parentNumber = parseInt(parentMatch[1]);
-            const { owner, repo } = context.repo;
+            // 3. Buscar campos da issue pai no projeto
+            const projectId = "PVT_kwHODFUpIM4A2Vlg"; // Substitua pelo seu Project ID
+            const sprintFieldId = "PVTSSF_lAHODFUpIM4A2VlgzgrqSTA"; // ID do campo Sprint
+            const timeFieldId = "PVTSSF_lAHODFUpIM4A2VlgzgsJL0Q"; // ID do campo Time
 
-            const projectId = "PVT_kwHODFUpIM4A2Vlg"; // engsw-2025-1
-            const sprintFieldId = "PVTSSF_lAHODFUpIM4A2VlgzgrqSTA";
-            const timeFieldId = "PVTSSF_lAHODFUpIM4A2VlgzgsJL0Q";
-
-            // Buscar os valores dos campos na issue mãe
             const query = `
-              query($owner: String!, $repo: String!, $issueNumber: Int!) {
+              query GetParentIssueFields($owner: String!, $repo: String!, $issueNumber: Int!) {
                 repository(owner: $owner, name: $repo) {
                   issue(number: $issueNumber) {
                     projectItems(first: 10) {
                       nodes {
-                        id
                         fieldValues(first: 20) {
                           nodes {
                             ... on ProjectV2ItemFieldSingleSelectValue {
@@ -57,24 +76,25 @@ jobs:
                 }
               }`;
 
-            const result = await github.graphql(query, { owner, repo, issueNumber: parentNumber });
-            const parentItem = result.repository.issue.projectItems.nodes.find(item => item.fieldValues?.nodes?.length > 0);
-            if (!parentItem) {
-              console.log("Nenhum item de projeto encontrado na issue mãe.");
+            const parentData = await github.graphql(query, { owner, repo, issueNumber: parentNumber });
+            const parentItem = parentData.repository.issue.projectItems.nodes[0];
+
+            if (!parentItem?.fieldValues?.nodes?.length) {
+              console.log("Issue pai não está no projeto ou não tem campos definidos.");
               return;
             }
 
-            const sprintValue = parentItem.fieldValues.nodes.find(f => f.field.id === sprintFieldId);
-            const timeValue = parentItem.fieldValues.nodes.find(f => f.field.id === timeFieldId);
+            const sprintValue = parentItem.fieldValues.nodes.find(f => f.field?.id === sprintFieldId);
+            const timeValue = parentItem.fieldValues.nodes.find(f => f.field?.id === timeFieldId);
 
             if (!sprintValue || !timeValue) {
-              console.log("Sprint ou Time não definidos na issue mãe.");
+              console.log("Campos Sprint ou Time não definidos na issue pai.");
               return;
             }
 
-            // Agora buscar o item da nova issue (sub-issue)
+            // 4. Atualizar a sub-issue com os campos da issue pai
             const subIssueQuery = `
-              query($owner: String!, $repo: String!, $issueNumber: Int!) {
+              query GetSubIssueProjectItem($owner: String!, $repo: String!, $issueNumber: Int!) {
                 repository(owner: $owner, name: $repo) {
                   issue(number: $issueNumber) {
                     projectItems(first: 10) {
@@ -90,34 +110,33 @@ jobs:
             const subIssueItemId = subIssueData.repository.issue.projectItems.nodes[0]?.id;
 
             if (!subIssueItemId) {
-              console.log("Sub-issue ainda não está no projeto.");
+              console.log("Sub-issue ainda não está no projeto. Adicione-a manualmente.");
               return;
             }
 
-            // Mutação para atualizar os campos
             const mutation = `
-              mutation UpdateFields($itemId: ID!, $sprintOptionId: String!, $timeOptionId: String!) {
-                updateProjectV2ItemFieldValue(input: {
-                  projectId: "${projectId}",
-                  itemId: $itemId,
-                  fieldId: "${sprintFieldId}",
-                  value: { singleSelectOptionId: $sprintOptionId }
-                }) {
-                  projectV2Item {
-                    id
+              mutation UpdateSubIssueFields(
+                $itemId: ID!,
+                $sprintOptionId: String!,
+                $timeOptionId: String!
+              ) {
+                updateSprint: updateProjectV2ItemFieldValue(
+                  input: {
+                    projectId: "${projectId}",
+                    itemId: $itemId,
+                    fieldId: "${sprintFieldId}",
+                    value: { singleSelectOptionId: $sprintOptionId }
                   }
-                }
+                ) { projectV2Item { id } }
 
-                updateProjectV2ItemFieldValue(input: {
-                  projectId: "${projectId}",
-                  itemId: $itemId,
-                  fieldId: "${timeFieldId}",
-                  value: { singleSelectOptionId: $timeOptionId }
-                }) {
-                  projectV2Item {
-                    id
+                updateTime: updateProjectV2ItemFieldValue(
+                  input: {
+                    projectId: "${projectId}",
+                    itemId: $itemId,
+                    fieldId: "${timeFieldId}",
+                    value: { singleSelectOptionId: $timeOptionId }
                   }
-                }
+                ) { projectV2Item { id } }
               }`;
 
             await github.graphql(mutation, {
@@ -126,4 +145,4 @@ jobs:
               timeOptionId: timeValue.optionId,
             });
 
-            console.log("Campos herdados com sucesso!");
+            console.log("✅ Campos herdados com sucesso!");
