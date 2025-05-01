@@ -1,0 +1,107 @@
+.main{
+    display: flex;
+    flex-flow: column;
+    gap: 16px;
+    align-items: center;
+}
+
+.tag{
+    color: rgb(92, 89, 89);
+}
+
+.cards{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 32px; 
+}
+
+.nome{
+    font-size: xx-large;
+    font-weight: 600;
+    margin-bottom: 0px;
+}
+
+.card{
+    display: flex;
+    flex-flow: column;
+    gap: 4px;
+    align-items: center;
+    border-style: solid ;
+    background-color: whitesmoke;
+    border-radius: 16px;
+    border-color: black;
+    padding: 54px;
+    padding-top: 0;
+    padding-bottom: 16px;
+}
+
+/* https://getcssscan.com/css-buttons-examples */
+button {
+  appearance: button;
+  background-color: #000;
+  background-image: none;
+  border: 1px solid #000;
+  border-radius: 4px;
+  box-shadow: #fff 4px 4px 0 0,#000 4px 4px 0 1px;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: ITCAvantGardeStd-Bk,Arial,sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  margin: 0 5px 10px 0;
+  overflow: visible;
+  padding: 12px 40px;
+  text-align: center;
+  text-transform: none;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.button:focus {
+  text-decoration: none;
+}
+
+.button:hover {
+  text-decoration: none;
+}
+
+.button:active {
+  box-shadow: rgba(0, 0, 0, .125) 0 3px 5px inset;
+  outline: 0;
+}
+
+.button:not([disabled]):active {
+  box-shadow: #fff 2px 2px 0 0, #000 2px 2px 0 1px;
+  transform: translate(2px, 2px);
+}
+
+@media (min-width: 768px) {
+  .button {
+    padding: 12px 50px;
+  }
+}
+a{
+    color: white;
+}
+
+.formulario {
+  margin: 0 auto;
+}
+
+.formulario input,
+.formulario textarea,
+.formulario select {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+
