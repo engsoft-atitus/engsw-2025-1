@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <p>
+        <label for="pesquisa">
+          <span>Nome da música</span>
+          <strong><abbr title="required">*</abbr></strong>
+        </label>
+        <form action="{% url 'player' %}" method="GET"> {% csrf_token %} <!-- esse csrf token é um bgl de segurança de dados-->
+            <input type="text" id="pesquisa" name="Nome do Artista" />
+            <br>
+            <input type="submit" value="Pesquisar" />
+        </form>
+      </p>
+</html>

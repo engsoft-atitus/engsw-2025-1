@@ -1,0 +1,58 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    background-color: grey;
+}
+
+button{
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+audio {
+    display: none;
+}
+
+#pause {
+    display: none;
+}
+
+#play img {
+    width: 50px;
+}
+
+#pause img {
+    width: 50px;
+}
+
+.album-img {
+    border-radius: 15px;
+    padding: 2px;
+}
+
+.album-img img {
+    object-fit: contain;
+    border-radius: 20px;
+
+}
+
+.player-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+}
+
+.player-card {
+    padding: 10px;
+    background-color: cornflowerblue;
+    border-radius: 15px;
+}
