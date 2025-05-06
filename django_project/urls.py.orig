@@ -16,14 +16,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+<<<<<<< HEAD
 from django.conf import settings
 from musica import views
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('usuario/', include('usuario.urls')), #TODO antes era '' vazio, CORRIGIR
     path('', views.buscar_musicas, name='buscar_musicas'),
     path('player/', views.player, name='player'),
     path("comunidade/",include("comunidade.urls"))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+=======
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('usuario.urls'))
+]
+
+>>>>>>> origin/cadastro-do-usuario
