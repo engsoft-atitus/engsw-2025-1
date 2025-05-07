@@ -1,14 +1,12 @@
 from django.shortcuts import render, redirect
-from .forms import ProfileCreationForm,UsuarioForm
+from .forms import ProfileCreationForm,UsuarioForm,LoginForm
 from usuario.models import Usuario,Profile
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate,login
 
 def cadastro_view(request):
     user_form = UsuarioForm(request.POST or None)
     profile_form = ProfileCreationForm(request.POST or None) 
-    print(profile_form.is_valid(),user_form.is_valid())
-    print(profile_form.errors)
-    print(user_form.errors)
     if request.method == 'POST' and user_form.is_valid() \
         and profile_form.is_valid():
         username = user_form.cleaned_data.get("username")
@@ -21,9 +19,10 @@ def cadastro_view(request):
         usuario.set_password(password)
         usuario.save()
 
-        profile = get_object_or_404(Profile, user_id=usuario.id)
+        profile = Profile.objects.filter(user_id=usuario.id).get()
         profile.nascimento = nascimento
         profile.save()
+        return redirect(login_view)
 
     context = {"user_form":user_form,"profile_form":profile_form}
     return render(request,'usuarios/cadastro.html',context=context)
@@ -38,3 +37,20 @@ def cadastro_view(request):
         form = CadastroForm()
 
     return render(request, 'usuarios/cadastro.html', {'form': form})"""
+
+def login_view(request):
+    form = LoginForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        email = form.cleaned_data.get('email')
+        password = form.cleaned_data.get('password')
+
+        user = authenticate(request,email=email,password=password)
+        if user:
+            login(request,user)
+            return redirect(xina)
+        
+    context = {'form':form}
+    return render(request,'usuarios/login.html',context=context)
+
+def xina(request):
+    return render(request,'usuarios/xina.html')
