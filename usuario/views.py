@@ -20,7 +20,7 @@ def cadastro_view(request):
         usuario = Usuario(username=username,email=email)
         usuario.set_password(password)
         usuario.save()
-        print(usuario.id)
+
         profile = get_object_or_404(Profile, user_id=usuario.id)
         profile.nascimento = nascimento
         profile.save()

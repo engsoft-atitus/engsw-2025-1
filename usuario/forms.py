@@ -61,6 +61,7 @@ class UsuarioForm(ModelForm):
             raise ValidationError("A senha deve ter maiúsculas, minúsculas e números.")
         elif senha and len(senha) <= 5:
             raise ValidationError("A senha deve ter mais de 5 caracteres")
+        return senha
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
