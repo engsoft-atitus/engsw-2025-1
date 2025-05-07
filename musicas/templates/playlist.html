@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Minha Playlist</title>
+    <style>
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            background-color: #f0f0f0;
+        }
+
+        .card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info span {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Playlist</h1>
+
+    {% for musica in musicas %}
+        <div class="card" onclick="abrirPlayer('{{ musica.linkmusica }}', '{{ musica.nome }}', '{{ musica.nomeartista }}')">
+            <img src="{{ musica.imagem }}" alt="Capa do Álbum">
+            <div class="info">
+                <span><strong>{{ musica.nome }}</strong></span>
+                <span>{{ musica.nomeartista }}</span>
+            </div>
+        </div>
+    {% empty %}
+        <p>Nenhuma música salva na playlist.</p>
+    {% endfor %}
+
+    <script>
+        function abrirPlayer(link, nome, artista) {
+            // Aqui você pode usar seu próprio sistema de abrir o player
+            alert(`Tocar: ${nome} - ${artista}\nLink: ${link}`);
+            // Ou chamar uma função que abre o player da sua aplicação
+        }
+    </script>
+</body>
+</html>

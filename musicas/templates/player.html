@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+        * {
+    margin: 0;
+    padding: 0;
+    font-family: 'Oswald', 'Sans-serif';
+}
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    background-color: rgb(23, 23, 23);
+}
+
+button{
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+audio {
+    display: none;
+}
+
+#pause {
+    display: none;
+}
+
+#play img {
+    width: 50px;
+}
+
+#pause img {
+    width: 50px;
+}
+
+.album-img {
+    border-radius: 15px;
+    padding: 2px;
+}
+
+.album-img img {
+    object-fit: contain;
+    border-radius: 20px;
+
+}
+
+.player-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+}
+
+.player-card {
+    padding: 10px;
+    background-color: cornflowerblue;
+    border-radius: 15px;
+}
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <div class="player-card">
+        <div class="album-img">
+            <img src='{{ musica.imagem }}' alt="Capa">
+        </div>
+
+        <h2>{{musica.titulo}}</h2>
+        <h3>{{musica.artista}}</h3>
+
+        <div class="player-control">
+            <button id="play" onclick="playAudio()"><img src="https://media.discordapp.net/attachments/1361902019777921094/1364753581168660480/play-button_1.png?ex=6810c011&is=680f6e91&hm=dcf699af02fa651a7e45490ad9237a88a6b3de79bd95fd611f88dadc0380bd8d&=&format=webp&quality=lossless&width=640&height=640" alt=""></button>
+            <button id="pause" onclick="pauseAudio()"><img src="https://media.discordapp.net/attachments/1361902019777921094/1364753581412057158/pause.png?ex=6810c011&is=680f6e91&hm=789d674d436ee3a093525cf991a53ca76faff21afa189256a2297f736e430422&=&format=webp&quality=lossless&width=640&height=640" alt=""></button>
+        </div>
+
+        <audio id="player" controls="controls">
+            <source src="{{ musica.link }}" type="audio/mp3" />
+        </audio>
+    </div>
+
+</body>
+</html>
+
+<script>
+    const playBtn = document.getElementById("play");
+    const pauseBtn = document.getElementById("pause");
+
+    function playAudio() {
+        document.getElementById('player').play();
+        playBtn.style.display = 'none';
+        pauseBtn.style.display = 'inline';
+    };
+    function pauseAudio() {
+        document.getElementById('player').pause();
+        pauseBtn.style.display = 'none';
+        playBtn.style.display = 'inline';
+    };
+</script>
