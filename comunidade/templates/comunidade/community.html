@@ -1,18 +1,21 @@
 {% extends "comunidade/base.html" %} {% block content %}
 <div>
-<p class="nome"> {{community.nome}}</p>
-<p class="tag">@{{community.nome_tag}}</p>
-<p>{{community.sobre}}</p>
-<img src="{{ community.profile_picture.url }}" alt="Imagem de perfil">
-<p>{{community.profile_picture.url}}</p>
-<button>
-  <a href="{% url 'community_edit' community.nome_tag %}">Editar</a>
-</button>
-<button>
-  <a href="{% url 'community_delete' community.nome_tag %}">Deletar</a>
-</button>
-<button>
-  <a href="{% url 'base' %}">Voltar</a>
-</button>
+  <p class="nome">{{community.nome}}</p>
+  <p class="tag">@{{community.nome_tag}}</p>
+  <p>{{community.sobre}}</p>
+  {% load static %}
+  <img
+    src="{% static community.profile_picture.url %}"
+    alt="Imagem de perfil"
+  />
+  <button>
+    <a href="{% url 'community_edit' community.nome_tag %}">Editar</a>
+  </button>
+  <button>
+    <a href="{% url 'community_delete' community.nome_tag %}">Deletar</a>
+  </button>
+  <button>
+    <a href="{% url 'base' %}">Voltar</a>
+  </button>
 </div>
 {% endblock %}
