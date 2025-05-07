@@ -3,9 +3,8 @@
   <p class="nome">{{community.nome}}</p>
   <p class="tag">@{{community.nome_tag}}</p>
   <p>{{community.sobre}}</p>
-  {% load static %}
   <img
-    src="{% static community.profile_picture.url %}"
+    src="{{ community.profile_picture.url }}"
     alt="Imagem de perfil"
   />
   <button>

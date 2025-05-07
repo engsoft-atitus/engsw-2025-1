@@ -6,6 +6,7 @@ venv/
 ENV/
 env/
 uploads/
+media/
 
 .idea/
 .vscode/
