@@ -1,14 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProfileCreationForm,UsuarioForm
 from usuario.models import Usuario,Profile
-from django.shortcuts import get_object_or_404
 
 def cadastro_view(request):
     user_form = UsuarioForm(request.POST or None)
     profile_form = ProfileCreationForm(request.POST or None) 
-    print(profile_form.is_valid(),user_form.is_valid())
-    print(profile_form.errors)
-    print(user_form.errors)
     if request.method == 'POST' and user_form.is_valid() \
         and profile_form.is_valid():
         username = user_form.cleaned_data.get("username")
@@ -21,7 +17,7 @@ def cadastro_view(request):
         usuario.set_password(password)
         usuario.save()
 
-        profile = get_object_or_404(Profile, user_id=usuario.id)
+        profile = Profile.objects.filter(user_id=usuario.id).get()
         profile.nascimento = nascimento
         profile.save()
 
