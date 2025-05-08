@@ -37,9 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD
     'comunidade',
-    'musica',
+    'musica'
+=======
     'usuario'
+>>>>>>> origin/cadastro-do-usuario
 ]
 
 MIDDLEWARE = [

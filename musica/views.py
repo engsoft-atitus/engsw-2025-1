@@ -1,13 +1,17 @@
-from django.shortcuts import render, redirect
 import requests
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.utils.safestring import mark_safe
 from .models import MusicaSalva
-# Create your views here.
+import json
 
+
+# Create your views here.
 def buscar_musicas(request):
     musicas_encontradas = []
     query = request.GET.get('q')  # Pega o que foi digitado
     if query:
-        url = f"https://api.deezer.com/search?q={query}&limit=10"
+        url = f"https://api.deezer.com/search?q={query}&limit=9"
         r = requests.get(url)
         dados = r.json()
 
@@ -19,23 +23,28 @@ def buscar_musicas(request):
                 'imagem': track['album']['cover_medium'],  # imagem do álbum
             }
             musicas_encontradas.append(musica)
-
-    return render(request, 'buscar.html', {'musicas': musicas_encontradas})
+    request.session['musicas'] = musicas_encontradas
+    return render(request, 'usuarios/buscar.html', {'musicas': musicas_encontradas})
 
 def player(request):
-
     nome = request.GET.get('nome')
     nomeartista = request.GET.get('nomeartista')
     linkmusica = request.GET.get('linkmusica')
     imagem = request.GET.get('imagem')
 
+    musicas = request.session.get('musicas', [])
     musica = {
         'titulo': nome,
         'artista': nomeartista,
         'link': linkmusica,
         'imagem': imagem,
     }
-    return render(request, 'player.html', {'musica': musica} )
+    print("JSON da playlist:", json.dumps(musicas))
+
+    return render(request, 'player/player.html', {
+        'musica': musica,
+        'playlist': mark_safe(json.dumps(musicas)),
+    })
 
 def salvar_musica(request):
     if request.method == "POST":
@@ -70,4 +79,5 @@ def ver_playlist(request):
             }
             musicas_encontradas.append(musica_info)
 
-    return render(request, 'playlist.html', {'musicas': musicas_encontradas})
+    return render(request, 'usuarios/playlist.html', {'musicas': musicas_encontradas})
+    

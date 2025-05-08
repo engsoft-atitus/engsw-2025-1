@@ -1,0 +1,13 @@
+{% extends "comunidade/base.html" %} {% block content %}
+<form action="" method="post">
+  {% csrf_token %}
+  <p>{{ form.nome.label }}</p>
+  <p>{{ form.nome }}</p>
+  <p>{{ form.sobre.label }}</p>
+  <p>{{ form.sobre }}</p>
+  <button type="submit">Edit</button>
+  <button>
+    <a href="{% url 'community' community.nome_tag %}">Voltar</a>
+  </button>
+</form>
+{% endblock %}

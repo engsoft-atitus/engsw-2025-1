@@ -1,0 +1,23 @@
+<h1>Buscar músicas</h1>
+
+{% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/script.js' %}"></script>
+
+<form method="GET" action="{% url 'buscar_musicas' %}">
+    <input type="text" name="q" placeholder="Digite o nome da música">
+    <button type="submit">Buscar</button>
+</form>
+
+{% if musicas %}
+    <h2>Resultados:</h2>
+    <ul>
+        {% for musica in musicas %}
+            <li style="margin-bottom: 20px;">
+                <img src="{{ musica.imagem }}" alt="Capa do Álbum" width="100">
+                <p><strong>{{ musica.nome }}</strong> - {{ musica.nomeartista }}</p>
+                <audio src="{{ musica.linkmusica }}" controls></audio>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

@@ -1,0 +1,13 @@
+{% extends "comunidade/base.html" %} {% block content %}
+<div class="formulario">
+  <form action="" method="post">
+    {% csrf_token %} {# Token pra evitar ataques csrf #} 
+    <p>{{ form.nome.label }}</p>
+    <p>{{ form.nome }} </p>
+    <p>{{ form.sobre.label }} </p>
+    <p>{{ form.sobre }}</p>
+    <button type="submit">submit</button>
+    <a href="{% url 'base' %}"><button type="button">Voltar</button></a>
+  </form>
+</div>
+{% endblock %}
