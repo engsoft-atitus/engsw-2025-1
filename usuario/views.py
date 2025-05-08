@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import ProfileCreationForm,UsuarioForm,LoginForm
 from usuario.models import Usuario,Profile
 from django.shortcuts import get_object_or_404
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,logout
 
 def cadastro_view(request):
     user_form = UsuarioForm(request.POST or None)
@@ -47,10 +47,15 @@ def login_view(request):
         user = authenticate(request,email=email,password=password)
         if user:
             login(request,user)
-            return redirect(xina)
+            return redirect(request.GET.get('next','xina'))
         
     context = {'form':form}
     return render(request,'usuarios/login.html',context=context)
+
+def logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return redirect(login_view)
 
 def xina(request):
     return render(request,'usuarios/xina.html')
