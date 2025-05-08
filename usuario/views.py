@@ -1,14 +1,8 @@
-<<<<<<< HEAD
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ProfileCreationForm,UsuarioForm
-from usuario.models import Usuario,Profile
-=======
 from django.shortcuts import render, redirect
 from .forms import ProfileCreationForm,UsuarioForm,LoginForm
 from usuario.models import Usuario,Profile
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate,login,logout
->>>>>>> refs/remotes/origin/painel-comunidade
 
 def cadastro_view(request):
     user_form = UsuarioForm(request.POST or None)
