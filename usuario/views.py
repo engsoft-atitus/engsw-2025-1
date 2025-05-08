@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProfileCreationForm,UsuarioForm
 from usuario.models import Usuario,Profile
+=======
+from django.shortcuts import render, redirect
+from .forms import ProfileCreationForm,UsuarioForm,LoginForm
+from usuario.models import Usuario,Profile
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate,login,logout
+>>>>>>> refs/remotes/origin/painel-comunidade
 
 def cadastro_view(request):
     user_form = UsuarioForm(request.POST or None)
@@ -20,6 +28,7 @@ def cadastro_view(request):
         profile = Profile.objects.filter(user_id=usuario.id).get()
         profile.nascimento = nascimento
         profile.save()
+        return redirect(login_view)
 
     context = {"user_form":user_form,"profile_form":profile_form}
     return render(request,'usuarios/cadastro.html',context=context)
@@ -34,3 +43,25 @@ def cadastro_view(request):
         form = CadastroForm()
 
     return render(request, 'usuarios/cadastro.html', {'form': form})"""
+
+def login_view(request):
+    form = LoginForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        email = form.cleaned_data.get('email')
+        password = form.cleaned_data.get('password')
+
+        user = authenticate(request,email=email,password=password)
+        if user:
+            login(request,user)
+            return redirect(request.GET.get('next','xina'))
+        
+    context = {'form':form}
+    return render(request,'usuarios/login.html',context=context)
+
+def logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return redirect(login_view)
+
+def xina(request):
+    return render(request,'usuarios/xina.html')

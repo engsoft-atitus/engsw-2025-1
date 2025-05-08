@@ -1,7 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from comunidade.forms import CommunityForm
 from comunidade.models import Community
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def index(request):
     communities = Community.objects.all() # Consulta todas as linhas
     context = {"communities": communities} # Context é as variáveis que vão ser usadas no template

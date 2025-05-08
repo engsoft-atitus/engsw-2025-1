@@ -3,6 +3,7 @@ from django.forms import ModelForm
 import re
 from django.core.exceptions import ValidationError
 from usuario.models import Usuario,Profile
+from django.core.validators import MaxLengthValidator
 
 class CadastroForm(forms.Form):
     usuario = forms.CharField(max_length=100)
@@ -44,8 +45,10 @@ class CadastroForm(forms.Form):
             raise ValidationError("As senhas não coincidem.")
 
 class UsuarioForm(ModelForm):
-    password1 = forms.CharField(label="Senha",widget=forms.PasswordInput)
-    password2 = forms.CharField(label="Confirmar Senha",widget=forms.PasswordInput)
+    password1 = forms.CharField(label="Senha",widget=forms.PasswordInput,
+                                max_length=100,validators=[MaxLengthValidator(100)])
+    password2 = forms.CharField(label="Confirmar Senha",widget=forms.PasswordInput,
+                                max_length=100,validators=[MaxLengthValidator(100)])
     
     class Meta:
         model = Usuario
@@ -75,3 +78,7 @@ class ProfileCreationForm(ModelForm):
         model = Profile
         fields = ['nascimento']
         widgets = {'nascimento':forms.DateInput(attrs={'type': 'date'})}
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(max_length=200)
+    password = forms.CharField(max_length=100,widget=forms.PasswordInput)
