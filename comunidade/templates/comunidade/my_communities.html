@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community page</title>
+    {% load static %}
+    <link rel= "stylesheet" type= "text/css" href= "{% static 'comunidade/base.css' %}">
+  </head>
+  <body>
+    <h2>Minhas comunidades:</h2>
+    <h2>Explorar:</h2>
+    <div class="cards-see">
+      {% for community in communities %}
+    
+      <div class="card">
+        <p class="nome">{{community.nome}}</p>
+        <p class="tag">@{{community.nome_tag}}</p>
+
+        <!--If usuario_na_comunidade-->
+
+            <!--   <button>Acessar</button> -->
+        
+            <!--If usuario_não_comunidade-->
+            <button><a href="{% url 'community_preview' community.nome_tag %}">Ver</a></button>
+
+    </div>
+      {% endfor %}
+    </div>
+      </body>
+</html>

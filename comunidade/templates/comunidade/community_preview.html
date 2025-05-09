@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community page</title>
+    {% load static %}
+    <link rel= "stylesheet" type= "text/css" href= "{% static 'comunidade/base.css' %}">
+  </head>
+  <div class="community-block">
+    <p class="nome">{{community.nome}}</p>
+    <p class="tag">@{{community.nome_tag}}</p>
+    <p>{{community.sobre}}</p>
+    <img
+      src="{{ community.profile_picture.url }}"
+      alt="Imagem de perfil"
+      class="community-image"
+    />
+    <button> Participar
+    </button>
+  </div>
+      
+</body>
+</html>

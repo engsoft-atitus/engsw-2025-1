@@ -15,6 +15,23 @@
     gap: 32px; 
 }
 
+.cards-see{
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); 
+  gap: 32px; 
+}
+
+.sobre{
+  visibility: hidden;
+  position: absolute;
+}
+
+
+.card:hover .sobre{
+  visibility: visible;
+  position: static;
+}
+
 .nome{
     font-size: xx-large;
     font-weight: 600;
@@ -80,6 +97,20 @@ button {
   box-shadow: #fff 2px 2px 0 0, #000 2px 2px 0 1px;
   transform: translate(2px, 2px);
 }
+
+.community-image{
+  height: 20vw;
+  width: 25vw;
+  border-radius: 24px;
+}
+
+.community-block{
+  display: flex;
+  flex-flow: column;
+  gap: 16px;
+  align-items: center;
+}
+  
 
 @media (min-width: 768px) {
   .button {

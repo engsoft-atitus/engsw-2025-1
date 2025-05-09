@@ -3,6 +3,11 @@ from comunidade.forms import CommunityForm
 from comunidade.models import Community
 from django.contrib.auth.decorators import login_required
 
+
+#todo
+# - Quando editamos a comunidade, a foto é resetada, e sempre temos que colocar uma nova
+# - Não postar media no git hub
+
 @login_required
 def index(request):
     communities = Community.objects.all() # Consulta todas as linhas
@@ -36,7 +41,6 @@ def community_edit(request,nome_tag):
 
             if nome != community.nome:
                 community.nome = nome
-                community.nome_tag_generator()
 
             community.nome = nome
             community.sobre = sobre
@@ -59,3 +63,13 @@ def community_delete(request,nome_tag):
     community = get_object_or_404(Community, nome_tag=nome_tag)
     community.delete()
     return redirect(index)
+
+def my_communities(request):
+    communities = Community.objects.all() # Consulta todas as linhas
+    context = {"communities": communities} # Context é as variáveis que vão ser usadas no template
+    return render(request,"comunidade/my_communities.html",context=context)
+
+def community_preview(request, nome_tag):
+    community = get_object_or_404(Community, nome_tag=nome_tag)
+    context = {'community':community}
+    return render(request,"comunidade/community_preview.html",context=context)
