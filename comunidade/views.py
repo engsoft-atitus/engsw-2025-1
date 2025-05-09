@@ -39,9 +39,6 @@ def community_edit(request,nome_tag):
             sobre = form.cleaned_data['sobre']
             profile_picture = form.cleaned_data['profile_picture']
 
-            if nome != community.nome:
-                community.nome = nome
-
             community.nome = nome
             community.sobre = sobre
             community.profile_picture = profile_picture
