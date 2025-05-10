@@ -1,7 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from comunidade.forms import CommunityForm,CommunityEditForm
 from comunidade.models import Community
+from comunidade.models import Community_User
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 
 
 #todo
@@ -63,11 +65,57 @@ def community_delete(request,nome_tag):
     return redirect(index)
 
 def my_communities(request):
-    communities = Community.objects.all() # Consulta todas as linhas
-    context = {"communities": communities} # Context é as variáveis que vão ser usadas no template
+
+    if request.user.is_authenticated:
+        user_id = request.user.id
+    
+    user_communities = Community_User.objects.filter(user_id=user_id)
+    community_ids = user_communities.values_list('community_id', flat=True)
+    user_communities_information = Community.objects.filter(id__in=community_ids)
+
+    print("Comunidade do usuarios: ")
+    print(user_communities)
+    print(user_communities_information)
+
+    communities = Community.objects.exclude(id__in=community_ids)
+    context = {"communities": communities, "user_communities": user_communities_information}
+    
     return render(request,"comunidade/my_communities.html",context=context)
 
 def community_preview(request, nome_tag):
     community = get_object_or_404(Community, nome_tag=nome_tag)
-    context = {'community':community}
+
+    is_participating = False
+    if request.user.is_authenticated:
+        user_id = request.user.id
+
+        user_communities = Community_User.objects.filter(user_id=user_id)
+        user_community_ids = user_communities.values_list('community_id', flat=True)
+
+        if community.id in user_community_ids:
+            is_participating = True
+
+    context = {'community':community, 'is_participating': is_participating}
     return render(request,"comunidade/community_preview.html",context=context)
+
+def join_community(request, community_id):
+    community = get_object_or_404(Community, id=community_id)
+
+    if not Community_User.objects.filter(user=request.user, community=community).exists():
+        community_user= Community_User.objects.create(user=request.user, community=community)
+        print("COmunidade-Usuario criado: ")
+        print(community_user)
+        community_user.save()
+
+
+    return redirect('my_communities')
+
+def exit_community(request, community_id):
+    
+    community = get_object_or_404(Community, id=community_id)
+    Community_User.objects.filter(user=request.user, community=community).delete()
+    
+    print("COmunidade para ser excluida: ")
+    print(community)
+
+    return redirect(my_communities) 

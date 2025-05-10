@@ -9,6 +9,13 @@
     color: rgb(92, 89, 89);
 }
 
+.my-communities-block{
+  display: flex;
+  flex-flow: column;
+  gap: 16px;
+  align-items: center;
+}
+
 .cards{
     display: grid;
     grid-template-columns: repeat(3, 1fr); 

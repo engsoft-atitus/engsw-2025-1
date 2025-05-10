@@ -16,8 +16,17 @@
       alt="Imagem de perfil"
       class="community-image"
     />
-    <button> Participar
-    </button>
+    {% if not is_participating%}
+    <form method="post" action="{% url 'join_community' community.id %}">
+      {% csrf_token %}
+      <button type="submit">Participar</button>
+    </form>
+    {% else %}
+      <form method="post" action="{% url 'exit_community' community.id %}">
+        {% csrf_token %}
+        <button type="submit">Sair</button>
+      </form>
+    {% endif%}
   </div>
       
 </body>
