@@ -9,3 +9,12 @@ class CommunityForm(ModelForm):
         widgets = {
             'sobre': forms.Textarea(),
         }
+
+class CommunityEditForm(ModelForm):
+    profile_picture = forms.ImageField(required=None)
+    class Meta:
+        model = Community
+        fields = ('nome','sobre')
+        widgets = {
+            'sobre': forms.Textarea(),
+        }

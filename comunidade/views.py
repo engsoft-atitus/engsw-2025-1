@@ -1,11 +1,10 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from comunidade.forms import CommunityForm
+from comunidade.forms import CommunityForm,CommunityEditForm
 from comunidade.models import Community
 from django.contrib.auth.decorators import login_required
 
 
 #todo
-# - Quando editamos a comunidade, a foto é resetada, e sempre temos que colocar uma nova
 # - Não postar media no git hub
 
 @login_required
@@ -31,7 +30,7 @@ def community_create(request):
 
 def community_edit(request,nome_tag):    
     if request.method == 'POST':
-        form = CommunityForm(request.POST,request.FILES)
+        form = CommunityEditForm(request.POST,request.FILES)
         if form.is_valid():
             community = get_object_or_404(Community, nome_tag=nome_tag)
             
@@ -41,13 +40,15 @@ def community_edit(request,nome_tag):
 
             community.nome = nome
             community.sobre = sobre
-            community.profile_picture = profile_picture
+            if profile_picture != None:
+                community.profile_picture = profile_picture
 
             community.save()
-            return redirect(index)
+            return redirect(community_view, nome_tag=nome_tag)
+        
     community = get_object_or_404(Community, nome_tag=nome_tag)
-    form = CommunityForm(initial={'nome':community.nome,'sobre':community.sobre,
-                                  'profile_picture':community.profile_picture})
+    form = CommunityEditForm(initial={'nome':community.nome,'sobre':community.sobre,
+                                  'profile_picture':community.profile_picture.url})
     context = {"form":form,"community":community}
     return render(request,"comunidade/community_edit.html",context=context)
 
