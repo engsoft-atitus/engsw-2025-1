@@ -36,9 +36,27 @@
     {% if user_form.errors %}
     <div style="color: red">
       <ul>
-        {% for field in user_form %} {% for error in field.errors %}
+        {% for field in user_form %} 
+          {% for error in field.errors %}
+          <li>{{ error }}</li>
+          {% endfor %} 
+        {% endfor %} 
+        {% for error in user_form.non_field_errors %}
         <li>{{ error }}</li>
-        {% endfor %} {% endfor %} {% for error in user_form.non_field_errors %}
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %} {% if user_form.errors %}
+    
+    <div style="color: red">
+      <ul>
+        {% for field in profile_form %} 
+          {% for error in field.errors %}
+          <li>{{ error }}</li>
+          {% endfor %} 
+        {% endfor %} 
+        
+        {% for error in profile_form.non_field_errors%}
         <li>{{ error }}</li>
         {% endfor %}
       </ul>
@@ -51,7 +69,7 @@
 
     <script>
       flatpickr("#id_nascimento", {
-        dateFormat: "d/m/Y", // Formato brasileiro: dia/mês/ano
+        dateFormat: "m/d/Y", // Formato brasileiro: dia/mês/ano
         maxDate: "today", // Não deixar datas futuras
         locale: "pt", // Deixar o calendário em português
       });

@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Community page</title>
-    {% load static %}
-    <link rel= "stylesheet" type= "text/css" href= "{% static 'comunidade/base.css' %}">
-  </head>
+  {% extends "comunidade/base.html" %}
+  {% block content %}
   <div class="community-block">
     <p class="nome">{{community.nome}}</p>
     <p class="tag">@{{community.nome_tag}}</p>
@@ -16,18 +9,28 @@
       alt="Imagem de perfil"
       class="community-image"
     />
-    {% if not is_participating%}
-    <form method="post" action="{% url 'join_community' community.id %}">
-      {% csrf_token %}
-      <button type="submit">Participar</button>
-    </form>
+    {% if community.criador.id == user_id %}
+      <button>
+        <a href="{% url 'community_edit' community.nome_tag %}">Editar</a>
+      </button>
+      <button>
+        <a href="{% url 'community_delete' community.nome_tag %}">Deletar</a>
+      </button>
     {% else %}
-      <form method="post" action="{% url 'exit_community' community.id %}">
+      {% if not is_participating %}
+      <form method="post" action="{% url 'join_community' community.id %}">
         {% csrf_token %}
-        <button type="submit">Sair</button>
+        <button type="submit">Participar</button>
       </form>
-    {% endif%}
+      {% else %}
+        <form method="post" action="{% url 'exit_community' community.id %}">
+          {% csrf_token %}
+          <button type="submit">Sair</button>
+        </form>
+      {% endif %}
+    {% endif %}
+    <button>
+      <a href="{% url 'my_communities' %}">Voltar</a>
+    </button>
   </div>
-      
-</body>
-</html>
+  {% endblock %}    

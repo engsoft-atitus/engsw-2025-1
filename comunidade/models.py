@@ -7,10 +7,12 @@ from django.contrib.auth import get_user_model
 
 # Classe herda da class Model
 class Community(models.Model):
+    User = get_user_model()
     nome = models.CharField(max_length=100,validators=[MinLengthValidator(5)])
     nome_tag = models.CharField(max_length=105,unique=True,validators=[MinLengthValidator(10)])
     sobre = models.CharField(max_length=256)
     profile_picture = models.ImageField()
+    criador = models.ForeignKey(User,on_delete=models.CASCADE)
 
     def nome_tag_generator(self):
         while True:
