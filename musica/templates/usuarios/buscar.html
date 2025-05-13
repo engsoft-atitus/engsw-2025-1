@@ -54,8 +54,11 @@
         <input type="text" name="q" placeholder="Digite o nome da música">
         <button type="submit">Buscar</button>
     </form>
-    <a href="{% url 'ver_playlist' %}">
-        <button>Ver Playlist</button>
+    <a href="{% url 'listar_playlists' %}">
+        <button>Ver Playlists</button>
+    </a>
+    <a href="{% url 'criar_playlist' %}">
+        <button type="button">Criar Nova Playlist</button>
     </a>
 
     {% if musicas %}
@@ -74,10 +77,17 @@
                 target="" class="play">
                 <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="50">
             </a>
-            <form method="POST" action="{% url 'salvar_musica' %}" id="adicionarPlaylist">
+            <form method="POST" action="{% url 'salvar_musica' %}">
                 {% csrf_token %}
-                <input type="text" value="{{ musica.nome }}" name="nome">
-                <input type="text" value="{{ musica.nomeartista }}" name="nomeartista">
+                <input type="hidden" name="nome" value="{{ musica.nome }}">
+                <input type="hidden" name="nomeartista" value="{{ musica.nomeartista }}">
+
+                <select name="playlist_id" required>
+                    {% for playlist in playlists %}
+                    <option value="{{ playlist.id }}">{{ playlist.nome }}</option>
+                    {% endfor %}
+                </select>
+
                 <button type="submit">Salvar na Playlist</button>
             </form>
         </li>

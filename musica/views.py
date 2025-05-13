@@ -1,13 +1,14 @@
 import requests
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.utils.safestring import mark_safe
-from .models import MusicaSalva
+from .models import MusicaSalva, Playlist
 import json
 
 
 # Create your views here.
 def buscar_musicas(request):
+    playlists = Playlist.objects.all()
     musicas_encontradas = []
     query = request.GET.get('q')  # Pega o que foi digitado
     if query:
@@ -24,7 +25,7 @@ def buscar_musicas(request):
             }
             musicas_encontradas.append(musica)
     request.session['musicas'] = musicas_encontradas
-    return render(request, 'usuarios/buscar.html', {'musicas': musicas_encontradas})
+    return render(request, 'usuarios/buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists})
 
 def player(request):
     nome = request.GET.get('nome')
@@ -50,19 +51,29 @@ def salvar_musica(request):
     if request.method == "POST":
         nome = request.POST.get('nome')
         artista = request.POST.get('nomeartista')
+        playlist_id = request.POST.get('playlist_id')
 
-        print(nome)
-        print(artista)
+        playlist = get_object_or_404(Playlist, id=playlist_id)
 
-        # Evita duplicadas
-        if not MusicaSalva.objects.filter(nome=nome, artista=artista).exists():
-            MusicaSalva.objects.create(nome=nome, artista=artista)
-            print('Música Adicionada')
+        # Verifica se a música já existe
+        musica, criada = MusicaSalva.objects.get_or_create(
+            nome=nome,
+            artista=artista
+        )
 
-    return redirect('buscar_musicas')
+        # Adiciona à playlist, se ainda não estiver
+        if not musica.playlists.filter(id=playlist.id).exists():
+            musica.playlists.add(playlist)
+            print("Música adicionada à playlist.")
+        else:
+            print("Música já está nessa playlist.")
 
-def ver_playlist(request):
-    musicas_salvas = MusicaSalva.objects.all()
+    return redirect('listar_playlists')
+
+def ver_playlist(request, playlist_id):
+    playlist = get_object_or_404(Playlist, id=playlist_id)
+    musicas_salvas = playlist.musicas.all()
+
     musicas_encontradas = []
 
     for musica in musicas_salvas:
@@ -79,5 +90,21 @@ def ver_playlist(request):
             }
             musicas_encontradas.append(musica_info)
 
-    return render(request, 'usuarios/playlist.html', {'musicas': musicas_encontradas})
+    return render(request, 'usuarios/playlist.html', {
+        'musicas': musicas_encontradas,
+        'playlist': playlist
+    })
+
+def criar_playlist(request):
+    if request.method == 'POST':
+        nome = request.POST.get('nome')
+        descricao = request.POST.get('descricao')
+        Playlist.objects.create(nome=nome, descricao=descricao)
+        return redirect('listar_playlists')
+
+    return render(request, 'usuarios/criar_playlist.html')
+
+def listar_playlists(request):
+    playlists = Playlist.objects.all()  # ou filtrar por usuário se tiver isso depois
+    return render(request, 'usuarios/minhasPlaylists.html', {'playlists': playlists})
     
