@@ -9,20 +9,20 @@
       alt="Imagem de perfil"
       class="community-image"
     />
-    {% if community.criador.id == user_id %}
+    {% if community.criador.id == user_id %} {# admin #}
       <button>
         <a href="{% url 'community_edit' community.nome_tag %}">Editar</a>
       </button>
       <button>
         <a href="{% url 'community_delete' community.nome_tag %}">Deletar</a>
       </button>
-    {% else %}
-      {% if not is_participating %}
+    {% else %} 
+      {% if not is_participating %} {# Não participando#}
       <form method="post" action="{% url 'join_community' community.id %}">
         {% csrf_token %}
         <button type="submit">Participar</button>
       </form>
-      {% else %}
+      {% else %} {# Participando #}
         <form method="post" action="{% url 'exit_community' community.id %}">
           {% csrf_token %}
           <button type="submit">Sair</button>
