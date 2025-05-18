@@ -26,4 +26,4 @@ urlpatterns = [
     path('', views.buscar_musicas, name='buscar_musicas'),
     path('player/', views.player, name='player'),
     path("comunidade/",include("comunidade.urls"))
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

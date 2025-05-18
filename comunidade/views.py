@@ -1,55 +1,106 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from comunidade.forms import CommunityForm
-from comunidade.models import Community
+from comunidade.forms import CommunityForm,CommunityEditForm
+from comunidade.models import Community,Community_User
+from django.contrib.auth.decorators import login_required
 
-def index(request):
-    communities = Community.objects.all() # Consulta todas as linhas
-    context = {"communities": communities} # Context é as variáveis que vão ser usadas no template
-    return render(request,"comunidade/communities.html",context=context)
-
+@login_required
 def community_create(request):
+    form = CommunityForm(request.POST,request.FILES or None)
     if request.method == 'POST':
-        form = CommunityForm(request.POST)
         if form.is_valid():
             nome = form.cleaned_data['nome']
             sobre = form.cleaned_data['sobre']
-            community = Community(nome=nome,sobre=sobre)
+            profile_picture = form.cleaned_data['profile_picture']
+            
+            community = Community(nome=nome,sobre=sobre,profile_picture=profile_picture,criador=request.user)
             community.nome_tag_generator()
             community.save() # Salva no banco de dados
-            return redirect(index) # Redireciona para outra view 
-    form = CommunityForm()
-    context = {"form":form}
+            return redirect(my_communities) # Redireciona para outra view 
+    context = {"form":form, "titulo": "Criar Comunidade"}
     return render(request,"comunidade/community_create.html",context=context)
 
-def community_edit(request,nome_tag):    
-    if request.method == 'POST':
-        form = CommunityForm(request.POST)
-        if form.is_valid():
-            community = get_object_or_404(Community, nome_tag=nome_tag)
-            
-            nome = form.cleaned_data['nome']
-            sobre = form.cleaned_data['sobre']
+@login_required
+def community_edit(request,nome_tag):
+    community = get_object_or_404(Community, nome_tag=nome_tag)
+    if community.criador.id == request.user.id:     
+        if request.method == 'POST':
+            form = CommunityEditForm(request.POST,request.FILES)
+            if form.is_valid():
+                
+                nome = form.cleaned_data['nome']
+                sobre = form.cleaned_data['sobre']
+                profile_picture = form.cleaned_data['profile_picture']
 
-            if nome != community.nome:
                 community.nome = nome
-                community.nome_tag_generator()
+                community.sobre = sobre
+                if profile_picture != None:
+                    community.profile_picture = profile_picture
 
-            community.nome = nome
-            community.sobre = sobre
+                community.save()
+                return redirect(community_preview, nome_tag=nome_tag)
+        
+        community = get_object_or_404(Community, nome_tag=nome_tag)
+        form = CommunityEditForm(initial={'nome':community.nome,'sobre':community.sobre,
+                                    'profile_picture':community.profile_picture.url})
+        context = {"form":form,"community":community,"titulo": "Editar Comunidade"}
+        return render(request,"comunidade/community_edit.html",context=context)
+    return redirect(my_communities)
 
-            community.save()
-            return redirect(index)
-    community = get_object_or_404(Community, nome_tag=nome_tag)
-    form = CommunityForm(initial={'nome':community.nome,'sobre':community.sobre})
-    context = {"form":form,"community":community}
-    return render(request,"comunidade/community_edit.html",context=context)
-
-def community_view(request, nome_tag):
-    community = get_object_or_404(Community, nome_tag=nome_tag)
-    context = {'community':community}
-    return render(request,"comunidade/community.html",context=context)
-
+@login_required
 def community_delete(request,nome_tag):
     community = get_object_or_404(Community, nome_tag=nome_tag)
-    community.delete()
-    return redirect(index)
+    if community.criador.id == request.user.id:
+        community.delete()
+    return redirect(my_communities)
+
+@login_required
+def my_communities(request):
+    user_communities = Community_User.objects.filter(user_id=request.user.id)
+    community_ids = user_communities.values_list('community_id', flat=True)
+    user_communities_information = Community.objects.filter(id__in=community_ids)
+    
+    criador_communities = Community.objects.filter(criador=request.user.id)
+    criador_communities_ids = criador_communities.values_list('id',flat=True)
+
+
+    communities = Community.objects.exclude(id__in=community_ids).exclude(id__in=criador_communities_ids)
+
+    context = {"communities": communities,
+               "user_communities": user_communities_information,
+               "criador_communities":criador_communities,
+               "titulo":"Minhas Comunidades"}
+    return render(request,"comunidade/my_communities.html",context=context)
+
+@login_required
+def community_preview(request, nome_tag):
+    community = get_object_or_404(Community, nome_tag=nome_tag)
+    is_participating = False
+    user_communities = Community_User.objects.filter(user_id=request.user.id)
+    user_community_ids = user_communities.values_list('community_id', flat=True)
+
+    if community.id in user_community_ids:
+        is_participating = True
+
+    context = {'community':community, 
+               'is_participating': is_participating, 
+               'user_id': request.user.id,
+               "titulo": community.nome}
+    return render(request,"comunidade/community_preview.html",context=context)
+
+@login_required
+def join_community(request, community_id):
+    community = get_object_or_404(Community, id=community_id)
+
+    if not Community_User.objects.filter(user=request.user, community=community).exists() \
+        and community.criador.id != request.user.id:
+        community_user= Community_User.objects.create(user=request.user, community=community)
+        community_user.save()
+
+    return redirect('my_communities')
+
+@login_required
+def exit_community(request, community_id):
+    community = get_object_or_404(Community, id=community_id)
+    Community_User.objects.filter(user=request.user, community=community).delete()
+
+    return redirect(my_communities) 

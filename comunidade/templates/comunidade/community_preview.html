@@ -1,0 +1,36 @@
+  {% extends "comunidade/base.html" %}
+  {% block content %}
+  <div class="community-block">
+    <p class="nome">{{community.nome}}</p>
+    <p class="tag">@{{community.nome_tag}}</p>
+    <p>{{community.sobre}}</p>
+    <img
+      src="{{ community.profile_picture.url }}"
+      alt="Imagem de perfil"
+      class="community-image"
+    />
+    {% if community.criador.id == user_id %}
+      <button>
+        <a href="{% url 'community_edit' community.nome_tag %}">Editar</a>
+      </button>
+      <button>
+        <a href="{% url 'community_delete' community.nome_tag %}">Deletar</a>
+      </button>
+    {% else %}
+      {% if not is_participating %}
+      <form method="post" action="{% url 'join_community' community.id %}">
+        {% csrf_token %}
+        <button type="submit">Participar</button>
+      </form>
+      {% else %}
+        <form method="post" action="{% url 'exit_community' community.id %}">
+          {% csrf_token %}
+          <button type="submit">Sair</button>
+        </form>
+      {% endif %}
+    {% endif %}
+    <button>
+      <a href="{% url 'my_communities' %}">Voltar</a>
+    </button>
+  </div>
+  {% endblock %}    

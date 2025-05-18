@@ -5,8 +5,11 @@ __pycache__/
 venv/
 ENV/
 env/
+uploads/
+media/
 
 .idea/
 .vscode/
+.venv/
 
 *.sqlite3

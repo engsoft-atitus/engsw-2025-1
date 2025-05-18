@@ -1,0 +1,57 @@
+{% extends "comunidade/base.html" %}
+    {% block content %}
+    <button><a href="{% url 'community_create' %}">Criar comunidade</a></button>
+    <div class="my-communities-block">
+      <div>
+        <div>
+          <h2>Minhas comunidades:</h2>
+            <div class="cards-see">
+              {% for community in criador_communities %}
+    
+                <div class="card">
+                  <p class="nome">{{community.nome}}</p>
+                  <p class="tag">@{{community.nome_tag}}</p>
+    
+                  <button>
+                    <a href="{% url 'community_preview' community.nome_tag %}">Ver</a>
+                  </button>
+                </div>
+              {% endfor %}
+            </div>
+        </div>
+        <h2>Comunidades seguidas:</h2>
+        <div class="cards-see">
+          {% for community in user_communities %}
+
+          <div class="card">
+            <p class="nome">{{community.nome}}</p>
+            <p class="tag">@{{community.nome_tag}}</p>
+
+            <button>
+              <a href="{% url 'community_preview' community.nome_tag %}">Ver</a>
+            </button>
+          </div>
+          {% endfor %}
+        </div>
+        <div>
+          <h2>Explorar:</h2>
+
+          <div class="cards-see">
+            {% for community in communities %}
+
+            <div class="card">
+              <p class="nome">{{community.nome}}</p>
+              <p class="tag">@{{community.nome_tag}}</p>
+
+              <button>
+                <a href="{% url 'community_preview' community.nome_tag %}"
+                  >Ver</a
+                >
+              </button>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
