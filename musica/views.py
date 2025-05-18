@@ -89,6 +89,9 @@ def ver_playlist(request, playlist_id):
                 'imagem': track['album']['cover_medium'],
             }
             musicas_encontradas.append(musica_info)
+            print("JSON da música:", json.dumps(musica_info, indent=4))
+
+    request.session['musicas'] = musicas_encontradas
 
     return render(request, 'usuarios/playlist.html', {
         'musicas': musicas_encontradas,
@@ -107,4 +110,5 @@ def criar_playlist(request):
 def listar_playlists(request):
     playlists = Playlist.objects.all()  # ou filtrar por usuário se tiver isso depois
     return render(request, 'usuarios/minhasPlaylists.html', {'playlists': playlists})
+
     

@@ -1,13 +1,18 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
 from random import randint
+from django.contrib.auth import get_user_model
+
 # Create your models here.
 
 # Classe herda da class Model
 class Community(models.Model):
+    User = get_user_model()
     nome = models.CharField(max_length=100,validators=[MinLengthValidator(5)])
-    nome_tag = models.CharField(max_length=104,unique=True,validators=[MinLengthValidator(9)])
+    nome_tag = models.CharField(max_length=105,unique=True,validators=[MinLengthValidator(10)])
     sobre = models.CharField(max_length=256)
+    profile_picture = models.ImageField()
+    criador = models.ForeignKey(User,on_delete=models.CASCADE)
 
     def nome_tag_generator(self):
         while True:
@@ -16,3 +21,13 @@ class Community(models.Model):
             if not Community.objects.filter(nome_tag=nome):
                 break
         self.nome_tag = nome
+    def __str__(self):
+        return f"{self.nome} (@{self.nome_tag})"
+
+class Community_User(models.Model):
+    User = get_user_model()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    community = models.ForeignKey(Community, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.community.nome_tag}"  # ou outro campo relevante

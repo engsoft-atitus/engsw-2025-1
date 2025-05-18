@@ -1,13 +1,30 @@
 {% extends "comunidade/base.html" %} {% block content %}
 <div class="formulario">
-  <form action="" method="post">
-    {% csrf_token %} {# Token pra evitar ataques csrf #} 
+  <form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %} {# Token pra evitar ataques csrf #}
     <p>{{ form.nome.label }}</p>
-    <p>{{ form.nome }} </p>
-    <p>{{ form.sobre.label }} </p>
+    <p>{{ form.nome }}</p>
+
+    {% if form.errors %} {% for error in form.nome.errors %}
+    <p>{{error}}</p>
+    {% endfor %} {% endif %}
+
+    <p>{{ form.sobre.label }}</p>
     <p>{{ form.sobre }}</p>
+
+    {% if form.errors %} {% for error in form.sobre.errors %}
+    <p>{{error}}</p>
+    {% endfor %} {% endif %}
+
+    <p>{{ form.profile_picture.label }}</p>
+    <p>{{ form.profile_picture }}</p>
+
+    {% if form.errors %} {% for error in form.profile_picture.errors %}
+    <p>{{error}}</p>
+    {% endfor %} {% endif %}
+
     <button type="submit">submit</button>
-    <a href="{% url 'base' %}"><button type="button">Voltar</button></a>
+    <a href="{% url 'my_communities' %}"><button type="button">Voltar</button></a>
   </form>
 </div>
 {% endblock %}

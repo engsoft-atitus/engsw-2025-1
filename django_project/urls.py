@@ -30,4 +30,4 @@ urlpatterns = [
     path('playlist/<int:playlist_id>/', views.ver_playlist, name='ver_playlist'),
     path('criar_playlist/', views.criar_playlist, name='criar_playlist'),
     path("comunidade/",include("comunidade.urls"))
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
