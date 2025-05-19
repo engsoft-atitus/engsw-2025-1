@@ -3,7 +3,8 @@ from . import views
 
 urlpatterns = [
     path('cadastro/', views.cadastro_view, name='cadastro'),
-    path('login/',views.login_view,name='login'),
-    path('xina/',views.xina,name='xina'),#apagar
-    path('logout/',views.logout_view,name='logout')
+    path('login/' , views.login_view, name='login'),
+    path('perfil/', views.perfil_view, name='perfil'),
+    path('genero/', views.genero_view, name='genero'),
+    path('sign/', views.sign_view, name='sign'),
 ]
