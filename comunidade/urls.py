@@ -9,5 +9,7 @@ urlpatterns = [
     path('<str:nome_tag>/edit',views.community_edit,name="community_edit"),
     path('<str:nome_tag>/delete',views.community_delete,name="community_delete"),
     path('join/<int:community_id>/', views.join_community, name='join_community'),
-    path('exit/<int:community_id>/', views.exit_community, name='exit_community')
+    path('exit/<int:community_id>/', views.exit_community, name='exit_community'),
+    path('post/<int:community_id>/',views.community_post, name="community_post"),
+    path('post/<int:post_id>/delete/',views.delete_post, name="delete_post")
 ] 

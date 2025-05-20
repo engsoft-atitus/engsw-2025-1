@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from comunidade.forms import CommunityForm,CommunityEditForm
-from comunidade.models import Community,Community_User
+from comunidade.forms import CommunityForm,CommunityEditForm,PostForm
+from comunidade.models import Community,Community_User,Post
 from django.contrib.auth.decorators import login_required
 
 @login_required
@@ -78,14 +78,29 @@ def community_preview(request, nome_tag):
     user_communities = Community_User.objects.filter(user_id=request.user.id)
     user_community_ids = user_communities.values_list('community_id', flat=True)
 
+    posts = Post.objects.filter(community=community.id).order_by("-data_post")
     if community.id in user_community_ids:
         is_participating = True
 
+    form = PostForm()
     context = {'community':community, 
                'is_participating': is_participating, 
                'user_id': request.user.id,
-               "titulo": community.nome}
+               "titulo": community.nome,
+               "posts":posts,
+               "form":form}
+
     return render(request,"comunidade/community_preview.html",context=context)
+
+@login_required
+def community_post(request,community_id):
+    community = get_object_or_404(Community,id=community_id)
+    form = PostForm(request.POST)
+    if request.method == "POST" and form.is_valid():
+        body = form.cleaned_data["body"]
+        post = Post(body=body,user=request.user,community=community)
+        post.save()
+    return redirect(community_preview, nome_tag = community.nome_tag)
 
 @login_required
 def join_community(request, community_id):
@@ -96,11 +111,19 @@ def join_community(request, community_id):
         community_user= Community_User.objects.create(user=request.user, community=community)
         community_user.save()
 
-    return redirect('my_communities')
+    return redirect(community_preview, nome_tag = community.nome_tag)
 
 @login_required
 def exit_community(request, community_id):
     community = get_object_or_404(Community, id=community_id)
     Community_User.objects.filter(user=request.user, community=community).delete()
 
-    return redirect(my_communities) 
+    return redirect(my_communities)
+
+@login_required
+def delete_post(request,post_id):
+    post = get_object_or_404(Post, id=post_id)
+    nome_tag = post.community.nome_tag
+    if post.user.id == request.user.id:
+        post.delete()
+    return redirect(community_preview, nome_tag = nome_tag)

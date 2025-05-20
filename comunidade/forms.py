@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from comunidade.models import Community
+from comunidade.models import Community,Post
 
 class CommunityForm(ModelForm):
     class Meta:
@@ -18,3 +18,8 @@ class CommunityEditForm(ModelForm):
         widgets = {
             'sobre': forms.Textarea(),
         }
+
+class PostForm(ModelForm):
+    class Meta:
+        model = Post
+        fields = ('body',)
