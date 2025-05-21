@@ -1,4 +1,5 @@
-  {% extends "comunidade/base.html" %}
+{% extends "comunidade/base.html" %}
+{% load static %}
   {% block content %}
   <div class="community-block">
     <p class="nome">{{community.nome}}</p>
@@ -58,11 +59,12 @@
         <p class="post-body">{{post.body}}</p>
         <p>{{post.data_post}}</p>
         {% if post.user == request.user %}
-          <button onclick="editarPost(this.parentNode)">Editar</button>
-          <button><a href="{% url 'delete_post' post.id %}">Deletar</a></button>
+          <button class="edit-post" onclick="toggleEdicao(this.parentNode)">Editar</button>
+          <button class="delete-post"><a href="{% url 'delete_post' post.id %}">Deletar</a></button>
+          
         {% endif %}
       </section>
     {% endfor %}
-
+    <script src="{% static 'comunidade/community_preview.js' %}"></script>
   </div>
   {% endblock %}    

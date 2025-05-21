@@ -19,7 +19,7 @@ def community_create(request):
     context = {"form":form, "titulo": "Criar Comunidade"}
     return render(request,"comunidade/community_create.html",context=context)
 
-@login_required
+@login_required # Edita a comunidade
 def community_edit(request,nome_tag):
     community = get_object_or_404(Community, nome_tag=nome_tag)
     if community.criador.id == request.user.id:     
@@ -33,6 +33,7 @@ def community_edit(request,nome_tag):
 
                 community.nome = nome
                 community.sobre = sobre
+                #Caso enviem uma foto de perfil
                 if profile_picture != None:
                     community.profile_picture = profile_picture
 
@@ -46,7 +47,7 @@ def community_edit(request,nome_tag):
         return render(request,"comunidade/community_edit.html",context=context)
     return redirect(my_communities)
 
-@login_required
+@login_required #Deleta a comunidade
 def community_delete(request,nome_tag):
     community = get_object_or_404(Community, nome_tag=nome_tag)
     if community.criador.id == request.user.id:
