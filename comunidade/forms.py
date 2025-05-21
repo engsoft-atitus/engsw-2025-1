@@ -23,3 +23,6 @@ class PostForm(ModelForm):
     class Meta:
         model = Post
         fields = ('body',)
+        widgets = {
+            'body': forms.Textarea(),
+        }

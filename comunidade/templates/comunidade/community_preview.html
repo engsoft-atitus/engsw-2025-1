@@ -9,6 +9,7 @@
       alt="Imagem de perfil"
       class="community-image"
     />
+    
     {% if community.criador.id == user_id %} {# admin #}
       <button>
         <a href="{% url 'community_edit' community.nome_tag %}">Editar</a>
@@ -16,38 +17,52 @@
       <button>
         <a href="{% url 'community_delete' community.nome_tag %}">Deletar</a>
       </button>
+    
+      <form action="{% url 'community_post' community.id %}" method="post">
+        {% csrf_token %}
+        {{form.body}}
+        <button type="submit">Enviar</button>
+      </form>
+
     {% else %} 
       {% if not is_participating %} {# Não participando#}
+  
       <form method="post" action="{% url 'join_community' community.id %}">
         {% csrf_token %}
         <button type="submit">Participar</button>
       </form>
+  
       {% else %} {# Participando #}
+  
       <form action="{% url 'community_post' community.id %}" method="post">
         {% csrf_token %}
-        {{form.as_p}}
+        {{form.body}}
         <button type="submit">Enviar</button>
       </form>
+  
       <form method="post" action="{% url 'exit_community' community.id %}">
           {% csrf_token %}
           <button type="submit">Sair</button>
         </form>
-      {% endif %}
+  
+        {% endif %}
     {% endif %}
+  
     <button>
       <a href="{% url 'my_communities' %}">Voltar</a>
     </button>
     
     {% for post in posts %}
-      <section>
+      <section id="{{post}}">
         <p>{{post.user.username}}</p>
-        <p>{{post.body}}</p>
+        <p class="post-body">{{post.body}}</p>
         <p>{{post.data_post}}</p>
         {% if post.user == request.user %}
-          <button><a href="">Editar</a></button>
+          <button onclick="editarPost(this.parentNode)">Editar</button>
           <button><a href="{% url 'delete_post' post.id %}">Deletar</a></button>
         {% endif %}
       </section>
     {% endfor %}
+
   </div>
   {% endblock %}    
