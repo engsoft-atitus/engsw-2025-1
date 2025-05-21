@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Perfil do Usuário</h2>
+        <div class="info-bloco">
+    <p><strong>Nome:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</p>
+    <p><strong>Usuário:</strong> {{ request.user.username }}</p>
+    <p><strong>Email:</strong> {{ request.user.email }}</p>
+</div>
+
+{% if perfil.nascimento or perfil.generos_musicas or perfil.biografia %}
+    <div class="info-bloco">
+        {% if perfil.nascimento %}
+            <p><strong>Nascimento:</strong> {{ perfil.nascimento }}</p>
+        {% endif %}
+        {% if perfil.generos_musicas %}
+            <p><strong>Gêneros Musicais:</strong> {{ perfil.generos_musicas }}</p>
+        {% endif %}
+        {% if perfil.biografia %}
+            <p><strong>Biografia:</strong> {{ perfil.biografia }}</p>
+        {% endif %}
+        <p><strong>Privacidade:</strong> {{ perfil.privacidade|yesno:"Privado,Público" }}</p>
+    </div>
+{% endif %}
+        <h2>Informações Adicionais</h2>
+        <form method="post">
+            {% csrf_token %}
+
+            <label for="{{ form.nascimento.id_for_label }}">Data de Nascimento:</label>
+            {{ form.nascimento }}
+            {% for error in form.nascimento.errors %}
+                <div class="form-error">{{ error }}</div>
+            {% endfor %}
+
+            <label>Gêneros Musicais:</label>
+
+            <button type="button" onclick="window.location.href='{% url 'genero' %}'" style="margin-bottom: 16px;">
+                Selecionar Gêneros
+            </button>
+
+            {% for error in form.generos_musicas.errors %}
+                <div class="form-error">{{ error }}</div>
+            {% endfor %}
+
+            <label for="{{ form.biografia.id_for_label }}">Biografia:</label>
+            {{ form.biografia }}
+            {% for error in form.biografia.errors %}
+                <div class="form-error">{{ error }}</div>
+            {% endfor %}
+
+            <label>
+                {{ form.privacidade }} Perfil Privado
+            </label>
+            {% for error in form.privacidade.errors %}
+                <div class="form-error">{{ error }}</div>
+            {% endfor %}
+
+            <div class="button-group">
+                <button type="submit">Salvar Perfil</button>
+                <a href="{% url 'perfil' %}" class="button-secondary">Voltar</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -7,6 +7,10 @@ import json
 
 
 # Create your views here.
+def home(request):
+    return HttpResponse("Bem-vindo à página inicial!")
+
+
 def buscar_musicas(request):
     playlists = Playlist.objects.all()
     musicas_encontradas = []
@@ -107,44 +111,12 @@ def criar_playlist(request):
 
     return render(request, 'usuarios/criar_playlist.html')
 
+def excluir_playlist(request, playlist_id):
+    playlist = get_object_or_404(Playlist, id=playlist_id)
+    playlist.delete()
+    return redirect('listar_playlists')
+
 def listar_playlists(request):
     playlists = Playlist.objects.all()  # ou filtrar por usuário se tiver isso depois
     return render(request, 'usuarios/minhasPlaylists.html', {'playlists': playlists})
-
-def proxima_musica(playlist, musica_atual_nome):
-    musicas = list(playlist.musicas.all())
-    if not musicas:
-        return None
-    nomes = [m.nome for m in musicas]
-    try:
-        idx = nomes.index(musica_atual_nome)
-    except ValueError:
-        return musicas[0]
-    proximo_idx = (idx + 1) % len(musicas)
-    return musicas[proximo_idx]
-
-# Exemplo de uso em uma view:
-def tocar_proxima(request, playlist_id, musica_atual_nome):
-    playlist = get_object_or_404(Playlist, id=playlist_id)
-    proxima = proxima_musica(playlist, musica_atual_nome)
-    if not proxima:
-        return redirect('ver_playlist', playlist_id=playlist_id)
-    # Buscar info da Deezer
-    url = f"https://api.deezer.com/search?q={proxima.nome} {proxima.artista}&limit=1"
-    r = requests.get(url)
-    dados = r.json()
-    if dados.get("data"):
-        track = dados["data"][0]
-        musica_info = {
-            'nome': track['title'],
-            'linkmusica': track['preview'],
-            'nomeartista': track['artist']['name'],
-            'imagem': track['album']['cover_medium'],
-        }
-        return render(request, 'player/player.html', {
-            'musica': musica_info,
-            'playlist': mark_safe(json.dumps([musica_info])),
-        })
-    return redirect('ver_playlist', playlist_id=playlist_id)
-
-
+    

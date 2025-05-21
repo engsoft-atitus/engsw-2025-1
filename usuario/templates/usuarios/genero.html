@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Generos Musicais</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .info-bloco {
+            background-color: #f0f0f0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .genre-box {
+            padding: 15px;
+            background-color: #ccc;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+
+        .genre-box.selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .genre-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #finalizar {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #finalizar:disabled {
+            background-color: #ccc;
+        }
+
+        .form-error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .selected-genres {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Gêneros Musicais do Usuário</h2>
+        <div class="info-bloco">
+            <p><strong>Nome:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</p>
+            <p><strong>Usuário:</strong> {{ request.user.username }}</p>
+        
+        </div>
+
+        {% if perfil.generos_musicas %}
+            <p><strong>Gêneros Musicais:</strong> {{ perfil.generos_musicas }}</p>
+        {% endif %}
+
+        <label for="generos_musicas">Selecione seus gêneros musicais (máximo de 3):</label>
+        
+        <!-- Quadradinhos de gêneros musicais -->
+        <div class="genre-container">
+            <div class="genre-box" data-genre="Rock">Rock</div>
+            <div class="genre-box" data-genre="Pop">Pop</div>
+            <div class="genre-box" data-genre="Jazz">Jazz</div>
+            <div class="genre-box" data-genre="Hip-hop">Hip-hop</div>
+            <div class="genre-box" data-genre="Clássica">Clássica</div>
+            <div class="genre-box" data-genre="Reggae">Reggae</div>
+            <div class="genre-box" data-genre="Eletrônica">Eletrônica</div>
+            <div class="genre-box" data-genre="Indie">Indie</div>
+            <div class="genre-box" data-genre="Sertanejo">Sertanejo</div>
+            <div class="genre-box" data-genre="Blues">Blues</div>
+        </div>
+
+        <button id="finalizar" disabled>Finalizar Escolha</button>
+        <p class="selected-genres" id="resultado"></p>
+
+        <div class="form-error" id="error-message"></div>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.generos_musicas }}
+            {% for error in form.generos_musicas.errors %}
+                <div class="form-error">{{ error }}</div>
+            {% endfor %}
+        </form>
+    </div>
+
+    <script>
+        const genreBoxes = document.querySelectorAll('.genre-box');
+        const finalizarButton = document.getElementById('finalizar');
+        const resultado = document.getElementById('resultado');
+        const errorMessage = document.getElementById('error-message');
+
+        let selectedGenres = [];
+
+        // Adicionando evento de clique aos quadradinhos de gênero
+        genreBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                if (selectedGenres.includes(box.dataset.genre)) {
+                    selectedGenres = selectedGenres.filter(genre => genre !== box.dataset.genre);
+                    box.classList.remove('selected');
+                } else {
+                    if (selectedGenres.length < 3) {
+                        selectedGenres.push(box.dataset.genre);
+                        box.classList.add('selected');
+                    }
+                }
+                toggleFinalizeButton();
+            });
+        });
+
+        // Função para habilitar ou desabilitar o botão de finalizar
+        function toggleFinalizeButton() {
+            if (selectedGenres.length === 3) {
+                finalizarButton.disabled = false;
+                errorMessage.textContent = ''; // Limpa a mensagem de erro
+            } else {
+                finalizarButton.disabled = true;
+                errorMessage.textContent = 'Você deve selecionar exatamente 3 gêneros musicais.';
+            }
+        }
+
+        // Evento de clique no botão de finalizar
+        finalizarButton.addEventListener('click', () => {
+            resultado.textContent = `Gêneros Musicais Selecionados: ${selectedGenres.join(', ')}`;
+            // Aqui, você pode enviar esses dados para o servidor, se necessário
+            // Exemplo:
+            // document.getElementById('form_generos').value = selectedGenres.join(',');
+            console.log('Gêneros selecionados:', selectedGenres);
+           // Para verificar o formato do JSON
+            $.ajax({
+                url: '/usuario/genero/', // URL da view Django
+                type: 'POST',
+                data: {
+                    selectedGenres: selectedGenres.join(', '),                   
+                    csrfmiddlewaretoken: '{{ csrf_token }}',  // Passa o token CSRF (importante para o Django)
+                    user:'{{ request.user.id }}' // Passa o ID do usuário logado
+                },
+                success: function(response) {
+                    window.location.href = '/usuario/perfil/';
+                },
+                error: function(xhr, status, error) {
+                    alert('Erro na requisição: ' + error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

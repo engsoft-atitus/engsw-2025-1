@@ -1,78 +1,56 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
 
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css"
-    />
-  </head>
-  <body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+</head>
+<body>
     <h1>Cadastro de Usuário</h1>
 
     <form method="post">
-      {% csrf_token %}
-      <p>{{user_form.username.label}}</p>
-      <p>{{user_form.username}}</p>
-      <p>{{user_form.email.label}}</p>
-      <p>{{user_form.email}}</p>
-      <p>{{user_form.password1.label}}</p>
-      <p>{{user_form.password1}}</p>
-      <p>{{user_form.password2.label}}</p>
-      <p>{{user_form.password2}}</p>
-      <p>{{profile_form.nascimento.label}}</p>
-      <p>{{profile_form.nascimento}}</p>
-      <button type="submit">Cadastrar</button>
+        {% csrf_token %}
+
+        <p>{{ form.primeiro_nome.label_tag }} {{ form.primeiro_nome }}</p>
+        <p>{{ form.sobrenome.label_tag }} {{ form.sobrenome }}</p>
+        <p>{{ form.usuario.label_tag }} {{ form.usuario }}</p>
+        <p>{{ form.email.label_tag }} {{ form.email }}</p>
+        <p>{{ form.senha.label_tag }} {{ form.senha }}</p>
+        <p>{{ form.confirmacao.label_tag }} {{ form.confirmacao }}</p>
+        <p>{{ form.nascimento.label_tag }} {{ form.nascimento }}</p>
+        <p>{{ form.generos_musicas.label_tag }} {{ form.generos_musicas }}</p>
+        <p>{{ form.biografia.label_tag }} {{ form.biografia }}</p>
+        <p>{{ form.privacidade.label_tag }} {{ form.privacidade }}</p>
+
+        <button type="submit">Cadastrar</button>
     </form>
 
-    {% if user_form.errors %}
-    <div style="color: red">
-      <ul>
-        {% for field in user_form %} 
-          {% for error in field.errors %}
-          <li>{{ error }}</li>
-          {% endfor %} 
-        {% endfor %} 
-        {% for error in user_form.non_field_errors %}
-        <li>{{ error }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %} {% if user_form.errors %}
-    
-    <div style="color: red">
-      <ul>
-        {% for field in profile_form %} 
-          {% for error in field.errors %}
-          <li>{{ error }}</li>
-          {% endfor %} 
-        {% endfor %} 
-        
-        {% for error in profile_form.non_field_errors%}
-        <li>{{ error }}</li>
-        {% endfor %}
-      </ul>
-    </div>
+    {% if form.errors %}
+        <div style="color: red;">
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
-
     <script>
-      flatpickr("#id_nascimento", {
-        dateFormat: "m/d/Y", // Formato brasileiro: dia/mês/ano
-        maxDate: "today", // Não deixar datas futuras
-        locale: "pt", // Deixar o calendário em português
-      });
+        flatpickr("#id_nascimento", {
+            dateFormat: "Y-m-d",
+            maxDate: "today",
+            locale: "pt"
+        });
     </script>
-  </body>
+</body>
 </html>

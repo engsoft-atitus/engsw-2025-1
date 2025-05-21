@@ -1,61 +1,92 @@
+# views.py
 from django.shortcuts import render, redirect
-from .forms import ProfileCreationForm,UsuarioForm,LoginForm
-from usuario.models import Usuario,Profile
-from django.shortcuts import get_object_or_404
-from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth import authenticate, login
+from .forms import CadastroForm, LoginForm
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from usuario.models import Profile
+from .forms import ProfileForm
+from django.http import JsonResponse
 
 def cadastro_view(request):
-    user_form = UsuarioForm(request.POST or None)
-    profile_form = ProfileCreationForm(request.POST or None) 
-    if request.method == 'POST' and user_form.is_valid() \
-        and profile_form.is_valid():
-        username = user_form.cleaned_data.get("username")
-        email = user_form.cleaned_data.get("email")
-        password = user_form.cleaned_data.get("password1")
-
-        nascimento = profile_form.cleaned_data.get("nascimento")
-
-        usuario = Usuario(username=username,email=email)
-        usuario.set_password(password)
-        usuario.save()
-
-        profile = Profile.objects.filter(user_id=usuario.id).get()
-        profile.nascimento = nascimento
-        profile.save()
-        return redirect(login_view)
-
-    context = {"user_form":user_form,"profile_form":profile_form}
-    return render(request,'usuarios/cadastro.html',context=context)
-
-    """if request.method == 'POST':
+    if request.method == 'POST':
         form = CadastroForm(request.POST)
         if form.is_valid():
-            # Aqui você pode salvar no banco ou só mostrar uma mensagem
-            print("Usuário cadastrado:", form.cleaned_data['usuario'])
-            return redirect('cadastro')  # redireciona para a mesma página ou outra
+            novo_usuario = User.objects.create_user(
+                username=form.cleaned_data['usuario'],
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['senha'],
+                first_name=form.cleaned_data['primeiro_nome'],
+                last_name=form.cleaned_data['sobrenome']
+            )
+            return redirect('login')
     else:
         form = CadastroForm()
 
-    return render(request, 'usuarios/cadastro.html', {'form': form})"""
+    return render(request, 'usuarios/cadastro.html', {'form': form})
+
+
 
 def login_view(request):
-    form = LoginForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
-        email = form.cleaned_data.get('email')
-        password = form.cleaned_data.get('password')
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            senha = form.cleaned_data['senha']
 
-        user = authenticate(request,email=email,password=password)
-        if user:
-            login(request,user)
-            return redirect(request.GET.get('next','xina'))
-        
-    context = {'form':form}
-    return render(request,'usuarios/login.html',context=context)
+            try:
+                user_obj = User.objects.get(email=email)
+                user = authenticate(request, username=user_obj.username, password=senha)
+            except User.DoesNotExist:
+                user = None
 
-def logout_view(request):
-    if request.user.is_authenticated:
-        logout(request)
-    return redirect(login_view)
+            if user is not None:
+                login(request, user)
+                return redirect('perfil')
+            else:
+                form.add_error(None, "Credenciais inválidas.")
+    else:
+        form = LoginForm()
 
-def xina(request):
-    return render(request,'usuarios/xina.html')
+    return render(request, 'usuarios/login.html', {'form': form})
+
+
+@login_required
+def perfil_view(request):
+    perfil, _ = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=perfil)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil')  # volta para a mesma página, com os dados atualizados
+    else:
+        form = ProfileForm(instance=perfil)
+
+    return render(request, 'usuarios/perfil.html', {
+        'form': form,
+        'perfil': perfil
+    })
+
+@login_required
+def genero_view(request):
+    print("entrou na view genero")
+
+    if request.method == 'POST':
+        print("entrou no if do post")
+        # Captura os dados enviados via POST
+        dados = request.POST.get('selectedGenres')  # Aqui estamos capturando o valor enviado como selected_Genres
+        print(f"Dados recebidos: {dados}")  # Apenas para depuração, você pode remover isso mais tarde
+        if dados:
+            print(dados)  # Apenas para depuração, você pode remover isso mais tarde
+            Profile.objects.filter(id=request.user.id).update(generos_musicas=dados)
+            # Aqui você pode adicionar a lógica para processar os dados, como salvar no banco de dados ou outra operação
+            return JsonResponse({'message': 'Dados recebidos com sucesso!'})
+        else:
+            return JsonResponse({'error': 'Nenhum dado foi enviado.'}, status=400)
+    
+    return render(request, 'usuarios/genero.html')
+
+
+def sign_view(request):
+    return render(request, 'usuarios/sign.html')
