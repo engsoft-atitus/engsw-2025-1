@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect,get_object_or_404
 from comunidade.forms import CommunityForm,CommunityEditForm,PostForm
 from comunidade.models import Community,Community_User,Post
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+import json
 
 @login_required
 def community_create(request):
@@ -128,3 +130,20 @@ def delete_post(request,post_id):
     if post.user.id == request.user.id:
         post.delete()
     return redirect(community_preview, nome_tag = nome_tag)
+
+@login_required
+def edit_post(request):
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        post_id = json_data.get('id')
+        post = get_object_or_404(Post,id=post_id)
+        if post.user.id == request.user.id:
+            body = json_data.get('postBody')
+            print(json_data)
+            if len(body) <= 500:
+                post.body = body
+                post.save()
+                return JsonResponse({'body':body})
+            else:
+                pass #TODO tratar erro
+    return redirect(my_communities)

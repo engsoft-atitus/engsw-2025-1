@@ -54,12 +54,12 @@
     </button>
     
     {% for post in posts %}
-      <section id="{{post}}">
+      <section id="{{post.id}}">
         <p>{{post.user.username}}</p>
         <p class="post-body">{{post.body}}</p>
         <p>{{post.data_post}}</p>
         {% if post.user == request.user %}
-          <button class="edit-post" onclick="toggleEdicao(this.parentNode)">Editar</button>
+          <button class="edit-post" onclick="setEditPost(this.parentNode)">Editar</button>
           <button class="delete-post"><a href="{% url 'delete_post' post.id %}">Deletar</a></button>
           
         {% endif %}

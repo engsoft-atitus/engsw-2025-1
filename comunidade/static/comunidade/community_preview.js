@@ -1,54 +1,100 @@
-function toggleEdicao(element) {
-if (element.querySelector(".post-body") !== null) {  
+"use strict";
+
+function setEditPost(element) {
     let postBody = element.querySelector(".post-body");
-    let botaoEditar = element.querySelector(".edit-post");
-    let botaoDeletar = element.querySelector(".delete-post");
-    
-    let editPostBody = document.createElement("input");
-    let botaoSalvar = document.createElement("button");
-    let botaoVoltar = document.createElement("button");
+    let editPostBody = document.createElement("textarea");
 
     editPostBody.classList.add("post-body-edit");
-    botaoSalvar.classList.add("post-save-post");
-    botaoVoltar.classList.add("post-return-post"); // Return???
-    botaoVoltar.setAttribute("onclick","toggleEdicao(this.parentNode)");
-
+    editPostBody.innerText = postBody.innerText;
     postBody.replaceWith(editPostBody);
-    botaoEditar.replaceWith(botaoSalvar);
-    botaoDeletar.replaceWith(botaoVoltar);
 
+    let botaoEditar = element.querySelector(".edit-post");
+    let botaoSalvar = document.createElement("button");
+
+    botaoSalvar.classList.add("post-save-edit");
     botaoSalvar.innerText = "Salvar";
+    botaoSalvar.setAttribute("onclick", "editPost(this.parentNode)")
+    botaoEditar.replaceWith(botaoSalvar);
+
+    let botaoDeletar = element.querySelector(".delete-post");
+    let botaoVoltar = document.createElement("button");
+
+    botaoVoltar.classList.add("post-return-edit"); // Return???
+    botaoVoltar.setAttribute("onclick", "setPost(this.parentNode)");
     botaoVoltar.innerText = "Voltar";
+    botaoDeletar.replaceWith(botaoVoltar);
+}
 
-} else {
+function setPost(element) {
     let editPostBody = element.querySelector(".post-body-edit");
-    let botaoSalvar = element.querySelector(".post-save-edit");
-    let botaoVoltar = element.querySelector(".post-return-post");
-    
     let postBody = document.createElement("p");
-    let botaoEditar = document.createElement("button");
-    let botaoDeletar = document.createElement("button");
-
     postBody.classList.add("post-body");
-    botaoEditar.classList.add("edit-post");
-    botaoDeletar.classList.add("delete-post"); // Return???
-    botaoEditar.setAttribute("onclick","toggleEdicao(this.parentNode)");
-        
-    postBody.innerText = "bola";
-
-    console.log(botaoSalvar);
-
+    postBody.innerText = editPostBody.innerHTML;
     editPostBody.replaceWith(postBody);
+
+    let botaoSalvar = element.querySelector(".post-save-edit");
+    let botaoEditar = document.createElement("button");
+    botaoEditar.classList.add("edit-post");
+    botaoEditar.setAttribute("onclick", "setEditPost(this.parentNode)");
+    botaoEditar.innerText = "Editar";
     botaoSalvar.replaceWith(botaoEditar);
+
+    let botaoVoltar = element.querySelector(".post-return-edit");
+    let botaoDeletar = document.createElement("button");
+    botaoDeletar.classList.add("delete-post");
+
+    let aDeletar = document.createElement("a");
+    aDeletar.setAttribute("href", "/comunidade/post/" + element.id + "/delete/");
+    aDeletar.innerText = "Deletar";
+    botaoDeletar.appendChild(aDeletar);
+
     botaoVoltar.replaceWith(botaoDeletar);
 
-    botaoEditar.innerText = "Editar";
-    botaoDeletar.innerText = "Deletar";
 }
 
-
+function editPost(element) {
+    let editPostBody = element.querySelector(".post-body-edit")
+    let body = editPostBody.value;
+    let id = element.id;
+    sendPost(body, id);
+    editPostBody.innerHTML = body;
+    setPost(element);
 }
 
-function toggleButtonEdicao(){ // Cancela a edição do post,voltando ao normal
-    let postBody
+async function sendPost(postBody, id) {
+    const url = "/comunidade/post/edit/";
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { 'X-CSRFToken': getCookie("csrftoken") },
+            body: JSON.stringify({
+                "id": id,
+                "postBody": postBody
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            });
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+//Eu não entendo essa função
+//O uso dela
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
