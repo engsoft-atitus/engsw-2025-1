@@ -17,7 +17,7 @@ body {
     align-items: center;
     flex-direction: column;
     height: 100vh;
-    width: 100%;
+    background-color: rgb(23, 23, 23);
 }
 
 button{
@@ -79,8 +79,8 @@ audio {
 
         <div class="player-control">
             <button id="return" onclick="returnSong()"><img style="width: 50px; rotate: -180deg;" src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856" alt=""></button>
-            <button id="play" onclick="playAudio()"><img style="width: 50px;" src="https://static.vecteezy.com/system/resources/thumbnails/035/753/221/small/video-play-button-icon-for-graphic-design-logo-web-site-social-media-mobile-app-ui-illustration-png.png" alt=""></button>
-            <button id="pause" onclick="pauseAudio()"><img style="width: 50px;" src="https://cdn-icons-png.flaticon.com/512/61/61180.png" alt=""></button>
+            <button id="play" onclick="playAudio()"><img style="width: 50px;" src="https://media.discordapp.net/attachments/1361902019777921094/1364753581168660480/play-button_1.png?ex=6829cc91&is=68287b11&hm=95ea40a0d593fbffe0602a70688bf478a2974ab9156772225687190f5df2e390&=&format=webp&quality=lossless&width=384&height=384" alt=""></button>
+            <button id="pause" onclick="pauseAudio()"><img style="width: 50px;" src="https://media.discordapp.net/attachments/1361902019777921094/1364753581412057158/pause.png?ex=68248691&is=68233511&hm=1de1ab3fb3bfe76f0d81ea06d470abc2b691fda81cad87df7bbf0cdcec18be33&=&format=webp&quality=lossless&width=640&height=640" alt=""></button>
             <button id="next" onclick="nextSong()"><img style="width: 50px;" src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856" alt=""></button>
         </div>
 
@@ -93,8 +93,11 @@ audio {
 
 
 <script>
-    const playlist = {{ playlist }}; // django + js para pegar a playlist de musicas em "musicas_encontradas" CONSIDERE Q FUNCIONA
+    const playlist = {{ playlist }} // django + js para pegar a playlist de musicas em "musicas_encontradas" CONSIDERE Q FUNCIONA
     let currentIndex = playlist.findIndex(m => m.linkmusica === "{{ musica.link }}");
+    console.log("Playlist carregada:", playlist);
+    console.log("Música atual:", "{{ musica.link }}");
+    console.log("Índice encontrado:", currentIndex);
     const player = document.getElementById('player');
     const audioSource = document.getElementById('audio-source');
     const playBtn = document.getElementById("play");

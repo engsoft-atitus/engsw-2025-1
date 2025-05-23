@@ -22,8 +22,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('usuario/', include('usuario.urls')), #TODO antes era '' vazio, CORRIGIR
-    path('', views.buscar_musicas, name='buscar_musicas'),
-    path('player/', views.player, name='player'),
-    path("comunidade/",include("comunidade.urls"))
+    path('', views.home, name='home'),
+    path('usuario/', include('usuario.urls')),
+    path("comunidade/",include("comunidade.urls")),
+    path("musica/",include("musica.urls")), 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
