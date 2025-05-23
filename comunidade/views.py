@@ -43,6 +43,7 @@ def community_edit(request,nome_tag):
                 return redirect(community_preview, nome_tag=nome_tag)
         
         community = get_object_or_404(Community, nome_tag=nome_tag)
+        #Initial se refere aos valores padrões do formulário, nesse caso o valor normal da comunidade
         form = CommunityEditForm(initial={'nome':community.nome,'sobre':community.sobre,
                                     'profile_picture':community.profile_picture.url})
         context = {"form":form,"community":community,"titulo": "Editar Comunidade"}
@@ -95,6 +96,7 @@ def community_preview(request, nome_tag):
 
     return render(request,"comunidade/community_preview.html",context=context)
 
+
 @login_required
 def community_post(request,community_id):
     community = get_object_or_404(Community,id=community_id)
@@ -105,6 +107,7 @@ def community_post(request,community_id):
         post.save()
     return redirect(community_preview, nome_tag = community.nome_tag)
 
+#Um usuário se vincula da comunidade
 @login_required
 def join_community(request, community_id):
     community = get_object_or_404(Community, id=community_id)
@@ -116,6 +119,7 @@ def join_community(request, community_id):
 
     return redirect(community_preview, nome_tag = community.nome_tag)
 
+# Um usuário se desvincula da comunidade
 @login_required
 def exit_community(request, community_id):
     community = get_object_or_404(Community, id=community_id)
@@ -123,6 +127,7 @@ def exit_community(request, community_id):
 
     return redirect(my_communities)
 
+# Deleta um post da comunidade
 @login_required
 def delete_post(request,post_id):
     post = get_object_or_404(Post, id=post_id)
@@ -139,7 +144,6 @@ def edit_post(request):
         post = get_object_or_404(Post,id=post_id)
         if post.user.id == request.user.id:
             body = json_data.get('postBody')
-            print(json_data)
             if len(body) <= 500:
                 post.body = body
                 post.save()
