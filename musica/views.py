@@ -29,7 +29,7 @@ def buscar_musicas(request):
             }
             musicas_encontradas.append(musica)
     request.session['musicas'] = musicas_encontradas
-    return render(request, 'usuarios/buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists})
+    return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists})
 
 def player(request):
     nome = request.GET.get('nome')
@@ -46,7 +46,7 @@ def player(request):
     }
     print("JSON da playlist:", json.dumps(musicas))
 
-    return render(request, 'player/player.html', {
+    return render(request, 'player.html', {
         'musica': musica,
         'playlist': mark_safe(json.dumps(musicas)),
     })
@@ -97,7 +97,7 @@ def ver_playlist(request, playlist_id):
 
     request.session['musicas'] = musicas_encontradas
 
-    return render(request, 'usuarios/playlist.html', {
+    return render(request, 'playlist.html', {
         'musicas': musicas_encontradas,
         'playlist': playlist
     })
@@ -109,7 +109,7 @@ def criar_playlist(request):
         Playlist.objects.create(nome=nome, descricao=descricao)
         return redirect('listar_playlists')
 
-    return render(request, 'usuarios/criar_playlist.html')
+    return render(request, 'criar_playlist.html')
 
 def excluir_playlist(request, playlist_id):
     playlist = get_object_or_404(Playlist, id=playlist_id)
@@ -118,5 +118,5 @@ def excluir_playlist(request, playlist_id):
 
 def listar_playlists(request):
     playlists = Playlist.objects.all()  # ou filtrar por usuário se tiver isso depois
-    return render(request, 'usuarios/minhasPlaylists.html', {'playlists': playlists})
+    return render(request, 'minhasPlaylists.html', {'playlists': playlists})
     
