@@ -1,104 +1,144 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
-* {
-    margin: 0;
-    padding: 0;
-    font-family: 'Oswald', 'Sans-serif';
-}
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
-    width: 100%;
-}
-
-button{
-    margin: 0;
-    padding: 0;
-    border: none;
-    background: none;
-}
-
-audio {
-    display: none;
-}
-
-#pause {
-    display: none;
-}
-
-#play img {
-    width: 50px;
-}
-
-#pause img {
-    width: 50px;
-}
-
-.album-img {
-    border-radius: 15px;
-    padding: 2px;
-}
-
-.album-img img {
-    object-fit: contain;
-    border-radius: 20px;
-
-}
-
-.player-control {
-    display: flex;
-    justify-content: center;
-    align-items: center;    
-}
-
-.player-card {
-    padding: 10px;
-    background-color: cornflowerblue;
-    border-radius: 15px;
-}
-</style>
+    <link rel="stylesheet" href="{% static 'musica/css/base.css' %}">
     <title>Document</title>
+
+    <style>
+
+        .album-img img {
+            border-radius: 10px;
+        }
+
+        .title {
+            padding: 20px;
+        }
+
+        .title h2,
+        h3 {
+            line-height: 20px;
+            text-align: center;
+        }
+
+        #pause {
+            display: none;
+        }
+
+        button {
+            margin: 0;
+            padding: 0;
+            border: none;
+            background: none;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #555, #aaa);
+            border-radius: 4px;
+            transition: width 0.2s;
+        }
+
+        .progress-thumb {
+            position: absolute;
+            top: 50%;
+            left: 0%;
+            transform: translate(-50%, -50%);
+            width: 14px;
+            height: 14px;
+            background-color: #444;
+            border-radius: 50%;
+            pointer-events: none;
+            /* Para não interferir no clique */
+        }
+
+        audio {
+            display: none;
+        }
+
+        .player-control {
+            margin-top: 20px;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="player-card">
-        <div class="album-img">
-            <img src='{{ musica.imagem }}' alt="Capa">
-        </div>
+    <main>
+        <section class="sec">
+            <header>
+                <div class="voltar">
+                </div>
+                <h1>Music Player</h1>
+                <div class="menu">
+                </div>
+            </header>
+            <div class="album-img">
+                <img src='{{ musica.imagem }}' alt="Capa">
+            </div>
+        </section>
+        <section>
+            <div class="title">
+                <h2>{{musica.titulo}}</h2>
+                <h3>{{musica.artista}}</h3>
+            </div>
 
-        <h2>{{musica.titulo}}</h2>
-        <h3>{{musica.artista}}</h3>
+            <audio id="player" controls="controls">
+                <source id="audio-source" src="{{ musica.link }}" type="audio/mp3" />
+            </audio>
 
-        <div class="player-control">
-            <button id="return" onclick="returnSong()"><img style="width: 50px; rotate: -180deg;" src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856" alt=""></button>
-            <button id="play" onclick="playAudio()"><img style="width: 50px;" src="https://static.vecteezy.com/system/resources/thumbnails/035/753/221/small/video-play-button-icon-for-graphic-design-logo-web-site-social-media-mobile-app-ui-illustration-png.png" alt=""></button>
-            <button id="pause" onclick="pauseAudio()"><img style="width: 50px;" src="https://cdn-icons-png.flaticon.com/512/61/61180.png" alt=""></button>
-            <button id="next" onclick="nextSong()"><img style="width: 50px;" src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856" alt=""></button>
-        </div>
+            <div class="progress-container" onclick="seek(event)">
+                <div class="progress-bar" id="progress-bar"></div>
+                <div class="progress-thumb" id="progress-thumb"></div>
+            </div>
 
-        <audio id="player" controls="controls">
-            <source id="audio-source" src="{{ musica.link }}" type="audio/mp3" />
-        </audio>
-    </div>
+            <div class="player-control">
+                <button id="return" onclick="returnSong()"><img style="width: 50px; rotate: -180deg;"
+                        src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856"
+                        alt=""></button>
+                <button id="play" onclick="playAudio()"><img style="width: 50px;"
+                        src="{% static 'musica/img/play.webp' %}" alt=""></button>
+                <button id="pause" onclick="pauseAudio()"><img style="width: 50px;"
+                        src="{% static 'musica/img/pause.webp' %}" alt=""></button>
+                <button id="next" onclick="nextSong()"><img style="width: 50px;"
+                        src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856"
+                        alt=""></button>
+            </div>
+        </section>
+        <nav>
+            <a href="">Home</a>
+            <a href="">Buscar</a>
+            <a href="">Biblioteca</a>
+        </nav>
+    </main>
 </body>
+
 </html>
 
-
 <script>
-    const playlist = {{ playlist }}; // django + js para pegar a playlist de musicas em "musicas_encontradas" CONSIDERE Q FUNCIONA
+    const playlist = {{ playlist }} // django + js para pegar a playlist de musicas em "musicas_encontradas" CONSIDERE Q FUNCIONA
     let currentIndex = playlist.findIndex(m => m.linkmusica === "{{ musica.link }}");
     const player = document.getElementById('player');
     const audioSource = document.getElementById('audio-source');
     const playBtn = document.getElementById("play");
     const pauseBtn = document.getElementById("pause");
+    const progressBar = document.getElementById('progress-bar');
+    const progressContainer = document.querySelector('.progress-container');
+    const thumb = document.getElementById('progress-thumb');
+    let isDragging = false;
 
     function playAudio() {
         player.play();
@@ -135,4 +175,40 @@ audio {
         document.querySelector('h2').innerText = musica.nome;
         document.querySelector('h3').innerText = musica.nomeartista;
     }
+
+    // Atualiza a barra normalmente
+    player.addEventListener('timeupdate', () => {
+        if (!isDragging) {
+            const percent = (player.currentTime / player.duration) * 100;
+            progressBar.style.width = percent + '%';
+            thumb.style.left = percent + '%';
+        }
+    });
+
+    // Clique ou arraste na barra
+    function updateBar(e) {
+        const rect = progressContainer.getBoundingClientRect();
+        const offsetX = e.clientX - rect.left;
+        const percent = Math.max(0, Math.min(1, offsetX / rect.width));
+        const percentValue = percent * 100;
+
+        progressBar.style.width = percentValue + '%';
+        thumb.style.left = percentValue + '%';
+        player.currentTime = percent * player.duration;
+    }
+
+    progressContainer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        updateBar(e);
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) updateBar(e);
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+        }
+    });
 </script>
