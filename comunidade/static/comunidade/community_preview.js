@@ -57,12 +57,13 @@ function setPost(element) {
 
 //Envia uma request para o server e caso receba uma response ele
 //volta o post para o estado normal e insere o novo body(Texto do post)
-function editPost(element) {
+async function editPost(element) {
     let editPostBody = element.querySelector(".post-body-edit")
     let body = editPostBody.value;
     let id = element.id;
-    sendEditPost(body, id);
-    editPostBody.innerHTML = body;
+    const response = await sendEditPost(body, id);
+
+    editPostBody.innerHTML = response['postBody'];
     setPost(element);
 }
 
@@ -79,10 +80,19 @@ async function sendEditPost(postBody, id) {
                 "postBody": postBody
             }),
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            });
+            .then(response => {
+                console.log(response.status);
+                if (!response.ok) {
+                    throw new Error("HTTP STATUS " + response.status);
+                }
+                return response.json();
+            })
+            .then(response => {
+                let result;
+                result = response;
+                return result;
+            })
+        return response;
     } catch (error) {
         console.error(error.message);
     }

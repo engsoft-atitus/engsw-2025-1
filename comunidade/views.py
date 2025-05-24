@@ -66,7 +66,6 @@ def my_communities(request):
     criador_communities = Community.objects.filter(criador=request.user.id)
     criador_communities_ids = criador_communities.values_list('id',flat=True)
 
-
     communities = Community.objects.exclude(id__in=community_ids).exclude(id__in=criador_communities_ids)
 
     context = {"communities": communities,
@@ -147,7 +146,7 @@ def edit_post(request):
             if len(body) <= 500:
                 post.body = body
                 post.save()
-                return JsonResponse({'body':body})
+                return JsonResponse({'status':'true','postBody':body},status=200)
             else:
-                pass #TODO tratar erro
+                return JsonResponse({'status':'false','message':'Body exceeded max length of 500','postBody':post.body},status=406)
     return redirect(my_communities)
