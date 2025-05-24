@@ -1,7 +1,9 @@
 {% extends "comunidade/base.html" %}
 {% load static %}
   {% block content %}
-  <div class="community-block">
+  <div class="container">
+    <div class="community-block">
+    
     <p class="nome">{{community.nome}}</p>
     <p class="tag">@{{community.nome_tag}}</p>
     <p>{{community.sobre}}</p>
@@ -12,19 +14,22 @@
     />
     
     {% if community.criador.id == user_id %} {# admin #}
+    <div class="botoes-admin">
       <button>
         <a href="{% url 'community_edit' community.nome_tag %}">Editar</a>
       </button>
       <button>
         <a href="{% url 'community_delete' community.nome_tag %}">Deletar</a>
       </button>
+    </div>
     
+    <div class="posts-admin">
       <form action="{% url 'community_post' community.id %}" method="post">
         {% csrf_token %}
         {{form.body}}
         <button type="submit">Enviar</button>
       </form>
-
+    </div>
     {% else %} 
       {% if not is_participating %} {# Não participando#}
   
@@ -54,10 +59,14 @@
     </button>
     
     {% for post in posts %}
-      <section id="{{post.id}}">
-        <p>{{post.user.username}}</p>
+      <section id="{{post.id}}" >
+        <div class="centralizar">
+        <div  class="comentario">
+        <h4>{{post.user.username}}</h4>
         <p class="post-body">{{post.body}}</p>
         <p>{{post.data_post}}</p>
+        </div>
+      </div>
         {% if post.user == request.user %}
           <button class="edit-post" onclick="setEditPost(this.parentNode)">Editar</button>
           <button class="delete-post"><a href="{% url 'delete_post' post.id %}">Deletar</a></button>
@@ -65,6 +74,7 @@
         {% endif %}
       </section>
     {% endfor %}
+    </div>
     <script src="{% static 'comunidade/community_preview.js' %}"></script>
   </div>
   {% endblock %}    

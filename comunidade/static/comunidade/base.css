@@ -17,7 +17,7 @@ body{
   font-style: normal;
 }
 
-.container{
+.container-transparente{
   width: 90%; /* Adaptável em telas pequenas */
   max-width: 400px;
   background-color: rgba(255, 255, 255, 0.5);
@@ -36,8 +36,30 @@ body{
   
 }
 
+.community-image{
+
+}
+.container{
+  width: 90%; /* Adaptável em telas pequenas */
+  max-width: 72%;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  color: black;
+  
+  /* Centralização INTERNA do conteúdo */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 20px; /* Espaço nas bordas */
+  
+}
+
 .main{
-  width: 100%;
+  width: 90;
   display: flex;
   flex-direction: column;
   align-items: center;  /* Centraliza filhos horizontalmente */
@@ -48,6 +70,26 @@ body{
 
 .tag{
     color: rgb(92, 89, 89);
+}
+.botoes-admin{
+  display: flex;
+  flex-flow: row;
+  gap: 16px;
+  align-items: center;
+
+}
+.posts-admin{
+  display: flex;
+  flex-flow: column;
+  gap: 16px;
+  align-items: center;
+
+}
+.community-block{
+  display: flex;
+  flex-flow: column;
+  gap: 16px;
+  align-items: center;
 }
 
 .my-communities-block{
@@ -181,10 +223,43 @@ button:disabled {
 .formulario input,
 .formulario textarea,
 .formulario select {
+  background-color: #c3c6c9;
+  border-radius: 8px; 
+  border: solid #a6a8aa;
+
   display: block;
   width: 100%;
   padding: 8px;
   margin-top: 16px;
   margin-bottom: 16px;
   box-sizing: border-box;
+}
+
+.comentario{
+  max-width: 80%;
+  display: flex;
+  flex-flow: column;
+  gap: 8px;
+  padding: 8px;
+  margin: 8px;
+  background-color: #ffffff;
+  border: solid;
+  border-color: #182D34;
+  border-radius: 8px;
+
+  align-items: flex-start;
+
+  word-wrap: break-word; /* Quebra palavras muito longas */
+  overflow-wrap: break-word; /* Moderno (prefira este) */
+  word-break: break-word;
+}
+
+.comentario h4{
+  color: grey;
+}
+
+.centralizar{
+  display: flex;
+  flex-flow: column;
+  align-items: center;
 }
