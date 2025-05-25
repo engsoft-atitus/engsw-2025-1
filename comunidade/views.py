@@ -3,7 +3,7 @@ from comunidade.forms import CommunityForm,CommunityEditForm,PostForm
 from comunidade.models import Community,Community_User,Post
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-import json
+import json 
 
 @login_required
 def community_create(request):
@@ -92,7 +92,7 @@ def community_preview(request, nome_tag):
                "titulo": community.nome,
                "posts":posts,
                "form":form}
-
+               
     return render(request,"comunidade/community_preview.html",context=context)
 
 

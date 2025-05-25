@@ -1,6 +1,7 @@
 {% extends "comunidade/base.html" %}
 {% load static %}
   {% block content %}
+  {% load tz %}
   <div class="community-block">
     <p class="nome">{{community.nome}}</p>
     <p class="tag">@{{community.nome_tag}}</p>
@@ -56,8 +57,14 @@
     {% for post in posts %}
       <section id="{{post.id}}">
         <p>{{post.user.username}}</p>
+        <!--Placeholder para foto de perfil-->
+        <img src="https://placecats.com/75/75" alt="profile picture" style="border-radius: 50%;">
+        <!--Coloca um css pra fazer isso virar uma quadrado pq se tiver mais de 100 caracteres, o site quebra-->
         <p class="post-body">{{post.body}}</p>
-        <p>{{post.data_post}}</p>
+
+        {% localtime on %}
+          <p>{{post.data_post|date:"Y m d H:i"}}</p>
+        {% endlocaltime %}
         {% if post.user == request.user %}
           <button class="edit-post" onclick="setEditPost(this.parentNode)">Editar</button>
           <button class="delete-post"><a href="{% url 'delete_post' post.id %}">Deletar</a></button>
