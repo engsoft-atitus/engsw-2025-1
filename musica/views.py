@@ -14,7 +14,6 @@ import json
 @login_required
 def buscar_musicas(request):
     user = request.user
-    print(user.id)
     playlists = Playlist.objects.filter(user=request.user)  # Filtra as playlists do usuário logado (Aqui também é responsável por mostrar as playlists do usuário na lista de playlists)
     musicas_encontradas = []
     query = request.GET.get('q')  # Pega o que foi digitado
