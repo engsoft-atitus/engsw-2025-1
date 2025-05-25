@@ -71,7 +71,7 @@
         <p class="post-body">{{post.body}}</p>
 
         {% localtime on %}
-          <p>{{post.data_post|date:"Y m d H:i"}}</p>
+          <p>{{post.data_post|timezone:"America/Sao_Paulo"|date:"Y m d H:i"}}</p>
         {% endlocaltime %}
         </div>
       </div>
