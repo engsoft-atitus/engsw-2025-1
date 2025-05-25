@@ -39,12 +39,13 @@
       </form>
   
       {% else %} {# Participando #}
-  
+      <div class="posts-admin">
       <form action="{% url 'community_post' community.id %}" method="post">
         {% csrf_token %}
         {{form.body}}
         <button type="submit">Enviar</button>
       </form>
+    </div>
   
       <form method="post" action="{% url 'exit_community' community.id %}">
           {% csrf_token %}
