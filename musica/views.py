@@ -10,8 +10,6 @@ import json
 
 
 # Create your views here.
-def home(request):
-    return redirect('sign')
 
 @login_required
 def buscar_musicas(request):
