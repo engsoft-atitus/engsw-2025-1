@@ -64,10 +64,15 @@
       <section id="{{post.id}}" >
         <div class="centralizar">
         <div  class="comentario">
-        <h4>{{post.user.username}}</h4>
+        
+          <div class="usuario-post">
         <!--Placeholder para foto de perfil-->
         <img src="https://placecats.com/75/75" alt="profile picture" style="border-radius: 50%;">
         <!--Coloca um css pra fazer isso virar uma quadrado pq se tiver mais de 100 caracteres, o site quebra-->
+        <h4>{{post.user.username}}</h4>
+        
+        </div>
+        
         <p class="post-body">{{post.body}}</p>
 
         {% localtime on %}

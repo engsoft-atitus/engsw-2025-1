@@ -346,3 +346,20 @@ section {
     font-size: 0.95rem;
   }
 }
+
+nav {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-around;
+  background-color: #7f8c8d;
+  }
+
+.usuario-post{
+  display: flex;
+  flex-flow: row;
+  gap: 16px;
+  align-items: center;
+}
