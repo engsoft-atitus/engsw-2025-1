@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
@@ -9,8 +10,118 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+    <style>
+        body {
+            background: linear-gradient(
+            to bottom right,
+            #ED6827,
+            #EF4E44,
+            #4D1E9B,
+            #182D34,
+            black);
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+            height: 100vh;
+        }
+    
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            margin-top: 10px;
+            color:white;
+        }
+    
+        form {
+            width: 100%;
+            max-width: 400px;
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+    
+        form p {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 0rem;
+            text-align: left;
+        }
+    
+        form label {
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+    
+        form input,
+        form textarea,
+        form select {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    
+        button[type="submit"] {
+    margin: 2rem auto 0 auto; /* Centraliza horizontalmente e dá espaçamento acima */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+    
+        button[type="submit"]::after {
+            content: "→";
+        }
+    
+        a {
+            margin-top: 1rem;
+            display: block;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+    
+        a button {
+            background: none;
+            border: none;
+            color: white;
+            font-weight: bold;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    
+        @media (max-width: 480px) {
+            form {
+                padding: 1.5rem 1rem;
+            }
+        }
+        .top-section .logo {
+      width: 150px;
+      height: auto;
+      background-color: white;
+      border-radius: 100%;
+      
+    }
+    </style>
 </head>
 <body>
+    <div class="top-section">
+        <img class="logo" src="{% static 'app/imagens/logo.png' %}" alt="Logo">
+      </div>
     <h1>Login de Usuário</h1>
     
     <form method="post">
@@ -20,7 +131,7 @@
         <p>{{ form.senha.label_tag }} {{ form.senha }}</p>
 
 
-        <button type="submit">Entrar</button>
+        <button type="submit"></button>
     </form>
 
     {% if form.errors %}
@@ -37,6 +148,9 @@
             </ul>
         </div>
     {% endif %}
+    <a href="{% url 'cadastro' %}">
+        <button>Você não tem cadastro? Cadastre-se aqui</button>
+      </a>
 
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

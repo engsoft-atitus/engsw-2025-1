@@ -88,5 +88,5 @@ def genero_view(request):
     return render(request, 'usuarios/genero.html')
 
 
-def sign_view(request):
-    return render(request, 'usuarios/sign.html')
+def home(request):
+    return render(request, 'usuarios/home.html')

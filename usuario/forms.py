@@ -56,7 +56,7 @@ class LoginForm(forms.Form):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['nascimento', 'generos_musicas', 'biografia', 'privacidade']
+        fields = ['nascimento', 'biografia', 'privacidade']
         widgets = {
             'nascimento': forms.DateInput(attrs={'type': 'date'}),
             'biografia': forms.Textarea(attrs={'rows': 4}),

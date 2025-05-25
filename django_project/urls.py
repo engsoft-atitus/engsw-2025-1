@@ -19,10 +19,11 @@ from django.urls import path, include
 from django.conf import settings
 from musica import views
 from django.conf.urls.static import static
+from usuario.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
+    path('', home, name='home'),
     path('usuario/', include('usuario.urls')),
     path("comunidade/",include("comunidade.urls")),
     path("musica/",include("musica.urls")), 

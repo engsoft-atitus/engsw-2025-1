@@ -7,8 +7,6 @@ import json
 
 
 # Create your views here.
-def home(request):
-    return HttpResponse("Bem-vindo à página inicial!")
 
 
 def buscar_musicas(request):

@@ -8,7 +8,13 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      background-color: #ffffff;
+      background: linear-gradient(
+            to bottom right,
+            #ED6827,
+            #EF4E44,
+            #4D1E9B,
+            #182D34,
+            black); 
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -19,7 +25,7 @@
     }
 
     .top-section {
-      background-color: black;
+      background-color: rgba(0, 0, 0, 0.7);
       width: 100%;
       height: 50%;
       border-bottom-left-radius: 50% 20%;
@@ -34,7 +40,7 @@
     .text-section {
       margin-top: 2rem;
       text-align: center;
-      color: #888;
+      color: white;
     }
 
     .btn-section {
@@ -44,7 +50,7 @@
     }
 
     .btn-custom {
-      background-color: #b0b0b0;
+      background-color:#C71585;
       color: white;
       box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2);
       border: none;
@@ -52,7 +58,8 @@
     }
 
     .btn-custom:hover {
-      background-color: #999999;
+      background-color: #40002b;
+      color: #C71585;
     }
 
     .top-section .logo {
@@ -63,8 +70,9 @@
 
     @media (max-width: 768px) {
       .top-section .logo {
-        width: 180px;
+        width: 300px;
       }
+      
     }
   </style>
 </head>
