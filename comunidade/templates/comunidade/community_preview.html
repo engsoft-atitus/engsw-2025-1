@@ -2,7 +2,9 @@
 {% load static %}
   {% block content %}
   {% load tz %}
-  <div class="community-block">
+  <div class="container">
+    <div class="community-block">
+    
     <p class="nome">{{community.nome}}</p>
     <p class="tag">@{{community.nome_tag}}</p>
     <p>{{community.sobre}}</p>
@@ -13,19 +15,22 @@
     />
     
     {% if community.criador.id == user_id %} {# admin #}
+    <div class="botoes-admin">
       <button>
         <a href="{% url 'community_edit' community.nome_tag %}">Editar</a>
       </button>
       <button>
         <a href="{% url 'community_delete' community.nome_tag %}">Deletar</a>
       </button>
+    </div>
     
+    <div class="posts-admin">
       <form action="{% url 'community_post' community.id %}" method="post">
         {% csrf_token %}
         {{form.body}}
         <button type="submit">Enviar</button>
       </form>
-
+    </div>
     {% else %} 
       {% if not is_participating %} {# Não participando#}
   
@@ -35,12 +40,13 @@
       </form>
   
       {% else %} {# Participando #}
-  
+      <div class="posts-admin">
       <form action="{% url 'community_post' community.id %}" method="post">
         {% csrf_token %}
         {{form.body}}
         <button type="submit">Enviar</button>
       </form>
+    </div>
   
       <form method="post" action="{% url 'exit_community' community.id %}">
           {% csrf_token %}
@@ -55,8 +61,10 @@
     </button>
     
     {% for post in posts %}
-      <section id="{{post.id}}">
-        <p>{{post.user.username}}</p>
+      <section id="{{post.id}}" >
+        <div class="centralizar">
+        <div  class="comentario">
+        <h4>{{post.user.username}}</h4>
         <!--Placeholder para foto de perfil-->
         <img src="https://placecats.com/75/75" alt="profile picture" style="border-radius: 50%;">
         <!--Coloca um css pra fazer isso virar uma quadrado pq se tiver mais de 100 caracteres, o site quebra-->
@@ -65,6 +73,8 @@
         {% localtime on %}
           <p>{{post.data_post|date:"Y m d H:i"}}</p>
         {% endlocaltime %}
+        </div>
+      </div>
         {% if post.user == request.user %}
           <button class="edit-post" onclick="setEditPost(this.parentNode)">Editar</button>
           <button class="delete-post"><a href="{% url 'delete_post' post.id %}">Deletar</a></button>
@@ -72,6 +82,7 @@
         {% endif %}
       </section>
     {% endfor %}
+    </div>
     <script src="{% static 'comunidade/community_preview.js' %}"></script>
   </div>
   {% endblock %}    
