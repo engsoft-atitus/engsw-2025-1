@@ -1,35 +1,85 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'musica/css/base.css' %}">
     <title>Document</title>
+
+    <style>
+        ul {
+            width: 90%;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .button {
+            margin-bottom: 20px;
+        }
+
+        .textfield {
+            width: 50%;
+            max-width: 50%;
+        }
+
+        p {
+            color: rgb(43, 43, 43);
+            font-size: 15px;
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 
 <body>
+    <main>
+        <section>
+            <header>
+                <h1>Biblioteca</h1>
+            </header>
+        </section>
+        <section>
+            <ul>
+                <a href="{% url 'criar_playlist' %}">
+                    <button type="button" class="button">Criar Nova Playlist</button>
+                </a>
 
-    <h1 class="title">Minhas Playlists</h1>
-    <a href="{% url 'criar_playlist' %}">
-        <button type="button">Criar Nova Playlist</button>
-    </a>
-
-    <ul>
-        {% for playlist in playlists %}
-        <li>
-            <h2>{{ playlist.nome }}</h2>
-            <p>{{ playlist.descricao }}</p>
-            <a href="{% url 'ver_playlist' playlist.id %}">Ver músicas</a>
-            <a href="{% url 'excluir_playlist' playlist.id %}"
-                onclick="return confirm('Tem certeza que deseja excluir esta playlist?');">
-                <button type="button">Excluir</button>
-            </a>
-        </li>
-        {% empty %}
-        <li>Você ainda não tem nenhuma playlist.</li>
-        {% endfor %}
-    </ul>
-
+                <h1 class="section-title">Playlists</h1>
+                {% for playlist in playlists %}
+                <li>
+                    <div class="textfield">
+                        <h1>{{ playlist.nome }}</h1>
+                        <p>{{ playlist.descricao }}</p>
+                    </div>
+                    <a href="{% url 'ver_playlist' playlist.id %}"><img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30"></a>
+                    <a href="{% url 'excluir_playlist' playlist.id %}"
+                        onclick="return confirm('Tem certeza que deseja excluir esta playlist?');">
+                        <button type="button" class="button">Excluir</button>
+                    </a>
+                </li>
+                {% empty %}
+                <li>Você ainda não tem nenhuma playlist.</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+    <nav>
+        <a href="{% url 'buscar_musicas' %}">Buscar</a>
+        <a href="{% url 'listar_playlists' %}">Biblioteca</a>
+        <a href="{% url 'my_communities' %}">Comunidade</a>
+        <a href="{% url 'perfil' %}">Perfil</a>
+    </nav>
 </body>
 
 </html>

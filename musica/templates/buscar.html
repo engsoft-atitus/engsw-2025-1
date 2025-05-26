@@ -21,8 +21,17 @@
             width: 100%;
         }
 
+        .capa {
+            width: 30%;
+        }
+
         .textfield {
             width: 50%;
+            max-width: 50%;
+        }
+
+        .play {
+            width: 20%;
         }
 
         h1 {
@@ -61,7 +70,7 @@
         <section>
             {% if musicas %}
             <h2>Resultados:</h2>
-            <ul>
+            <ul class="musica-grid">
                 {% for musica in musicas %}
                 <li>
                     <div class="capa">
@@ -73,7 +82,7 @@
                     </div>
                     <a href="{% url 'player' %}?nome={{ musica.nome }}&nomeartista={{ musica.nomeartista }}&linkmusica={{ musica.linkmusica }}&imagem={{ musica.imagem }}"
                         target="" class="play">
-                        <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="50">
+                        <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30">
                     </a>
                     <div class="mobile-menu">
                         <span>&#8226;&#8226;&#8226;</span>
@@ -99,14 +108,13 @@
             </ul>
             {% endif %}
         </section>
-
-        <nav>
-            <a href="{% url 'buscar_musicas' %}">Buscar</a>
-            <a href="{% url 'listar_playlists' %}">Biblioteca</a>
-            <a href="{% url 'my_communities' %}">Comunidade</a>
-            <a href="{% url 'perfil' %}">Perfil</a>
-        </nav>
     </main>
+    <nav>
+        <a href="{% url 'buscar_musicas' %}">Buscar</a>
+        <a href="{% url 'listar_playlists' %}">Biblioteca</a>
+        <a href="{% url 'my_communities' %}">Comunidade</a>
+        <a href="{% url 'perfil' %}">Perfil</a>
+    </nav>
     <script src="{% static 'musica/js/mobile-nav-bar.js' %}"></script>
 
 
