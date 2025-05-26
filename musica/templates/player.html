@@ -9,7 +9,6 @@
     <title>Document</title>
 
     <style>
-
         .album-img img {
             border-radius: 10px;
         }
@@ -28,21 +27,34 @@
             display: none;
         }
 
-        button {
+        .player-button {
             margin: 0;
             padding: 0;
             border: none;
             background: none;
         }
 
+        #play img,
+        #pause img {
+            width: 50px;
+        }
+
+        #return img,
+        #next img {
+            width: 30px;
+        }
+
+        #return img {
+            transform: rotate(180deg);
+        }
+
         .progress-container {
-            width: 100%;
+            width: 90%;
             height: 8px;
             background-color: #ccc;
             border-radius: 4px;
             cursor: pointer;
             position: relative;
-            margin-top: 20px;
         }
 
         .progress-bar {
@@ -72,6 +84,10 @@
 
         .player-control {
             margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
         }
     </style>
 </head>
@@ -106,16 +122,15 @@
             </div>
 
             <div class="player-control">
-                <button id="return" onclick="returnSong()"><img style="width: 50px; rotate: -180deg;"
-                        src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856"
+                <button class="player-button" id="return" onclick="returnSong()">
+                    <img src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856" alt="">
+                </button>
+                <button class="player-button" id="play" onclick="playAudio()"><img src="{% static 'musica/img/play.webp' %}" alt=""></button>
+                <button class="player-button" id="pause" onclick="pauseAudio()"><img src="{% static 'musica/img/pause.webp' %}"
                         alt=""></button>
-                <button id="play" onclick="playAudio()"><img style="width: 50px;"
-                        src="{% static 'musica/img/play.webp' %}" alt=""></button>
-                <button id="pause" onclick="pauseAudio()"><img style="width: 50px;"
-                        src="{% static 'musica/img/pause.webp' %}" alt=""></button>
-                <button id="next" onclick="nextSong()"><img style="width: 50px;"
-                        src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856"
-                        alt=""></button>
+                <button class="player-button" id="next" onclick="nextSong()">
+                    <img src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856" alt="">
+                </button>
             </div>
         </section>
         <nav>

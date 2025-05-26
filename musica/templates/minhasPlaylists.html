@@ -10,6 +10,9 @@
 <body>
 
     <h1 class="title">Minhas Playlists</h1>
+    <a href="{% url 'criar_playlist' %}">
+        <button type="button">Criar Nova Playlist</button>
+    </a>
 
     <ul>
         {% for playlist in playlists %}
