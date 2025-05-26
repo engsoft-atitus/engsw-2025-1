@@ -44,9 +44,7 @@ header {
 .sec {
     height: 60vh;
     border-radius: 0 0 70px 70px;
-    background: #858282;
-    background: #858282;
-    background: linear-gradient(360deg, #FFFFFF 0%, #5F5F5F 100%);
+    background: linear-gradient(360deg, #D9D9D9 -24.93%, #737373 75.07%);
 }
 
 h1 {
@@ -70,7 +68,7 @@ nav {
 }
 
 .mobile-menu span {
-    font-size: 10px; 
+    font-size: 10px;
 }
 
 .nav-list {

@@ -3,6 +3,7 @@
 <html lang="pt-br">
 
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'musica/css/base.css' %}">
@@ -47,20 +48,36 @@
         }
 
         .title {
-            text-align: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .title h1 {
+            font-weight: 900;
+        }
+
+        header h1 {
+            color: #ffffff;
         }
     </style>
 </head>
 
 <body>
     <main>
-        <section>
+        <section class="sec">
             <header>
-                <div class="title">
-                    <h1>{{ playlist.nome }}</h1>
-                    <p>{{ playlist.descricao }}</p>
+                <div class="voltar">
+                </div>
+                <h1>Playlist</h1>
+                <div class="menu">
                 </div>
             </header>
+        </section>
+        <section>
+            <div class="title">
+                <h1>{{ playlist.nome }}</h1>
+                <p>{{ playlist.descricao }}</p>
+            </div>
         </section>
         <section>
             <ul>
@@ -85,10 +102,10 @@
         </section>
     </main>
     <nav>
-        <a href="{% url 'buscar_musicas' %}">Buscar</a>
-        <a href="{% url 'listar_playlists' %}">Biblioteca</a>
-        <a href="{% url 'my_communities' %}">Comunidade</a>
-        <a href="{% url 'perfil' %}">Perfil</a>
+        <a href="{% url 'buscar_musicas' %}"><i class="fa-duotone fa-solid fa-magnifying-glass"></i></a>
+        <a href="{% url 'listar_playlists' %}"><i class="fa-solid fa-list"></i></a>
+        <a href="{% url 'my_communities' %}"><i class="fa-duotone fa-solid fa-users"></i></a>
+        <a href="{% url 'perfil' %}"><i class="fa-duotone fa-solid fa-user"></i></a>
     </nav>
 </body>
 
