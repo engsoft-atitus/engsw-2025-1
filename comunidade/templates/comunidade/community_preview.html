@@ -5,8 +5,10 @@
   <div class="container">
     <div class="community-block">
     
-    <p class="nome">{{community.nome}}</p>
-    <p class="tag">@{{community.nome_tag}}</p>
+    <div class="titulo-comunidade-preview">
+      <p class="nome">{{community.nome}}</p>
+      <p class="tag">@{{community.nome_tag}}</p>
+      </div>
     <p>{{community.sobre}}</p>
     <img
       src="{{ community.profile_picture.url }}"
@@ -50,7 +52,7 @@
   
       <form method="post" action="{% url 'exit_community' community.id %}">
           {% csrf_token %}
-          <button type="submit">Sair</button>
+          <button type="submit">Sair da comunidade</button>
         </form>
   
         {% endif %}

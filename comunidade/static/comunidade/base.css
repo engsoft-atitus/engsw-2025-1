@@ -186,9 +186,9 @@ button:disabled {
 .formulario input,
 .formulario textarea,
 .formulario select {
-  background-color: #c3c6c9;
+  background-color: #ffffff;
   border-radius: 8px; 
-  border: solid #a6a8aa;
+  border: solid #333435;
 
   display: block;
   width: 100%;
