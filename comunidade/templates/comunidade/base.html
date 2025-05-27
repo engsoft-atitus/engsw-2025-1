@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,5 +15,12 @@
     <div class = "main">
       {% block content %} {% endblock %}
      </div>
+
+     <nav>
+      <a href="{% url 'buscar_musicas' %}">Buscar</a>
+      <a href="{% url 'listar_playlists' %}">Biblioteca</a>
+      <a href="{% url 'my_communities' %}">Comunidade</a>
+      <a href="{% url 'perfil' %}">Perfil</a>
+  </nav>
   </body>
 </html>

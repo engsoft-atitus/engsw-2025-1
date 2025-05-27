@@ -1,5 +1,6 @@
 {% extends "comunidade/base.html" %} {% block content %}
-<form action="" method="post" enctype="multipart/form-data" >
+<div class="container">
+<form action="" method="post" enctype="multipart/form-data" class="formulario" >
   {% csrf_token %} {# Token pra evitar ataques csrf #} 
   <p>{{ form.nome.label }}</p>
   <p>{{ form.nome }} </p>
@@ -33,4 +34,5 @@
     <a href="{% url 'community_preview' community.nome_tag %}">Voltar</a>
   </button>
 </form>
+</div>
 {% endblock %}
