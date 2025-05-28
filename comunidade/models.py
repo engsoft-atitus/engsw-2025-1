@@ -31,3 +31,10 @@ class Community_User(models.Model):
     
     def __str__(self):
         return f"{self.user.email} - {self.community.nome_tag}"  # ou outro campo relevante
+
+class Post(models.Model):
+    User = get_user_model()
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    body = models.CharField(max_length=500)
+    data_post = models.DateTimeField(auto_now_add=True)
+    community = models.ForeignKey(Community,on_delete=models.CASCADE)

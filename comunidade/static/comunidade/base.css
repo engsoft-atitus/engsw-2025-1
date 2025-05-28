@@ -1,133 +1,184 @@
+body{
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(
+    to bottom right,
+    #ED6827,
+    #EF4E44,
+    #4D1E9B,
+    #182D34,
+    black   
+  );
+  color: #e6e6e7;
+ 
+  font-family: "Comfortaa", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 5;
+  font-style: normal;
+}
+
+.container-transparente{
+  width: 90%;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  color: black;
+  
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 20px;
+  
+}
+
+.community-image{
+  width: 80%;
+  object-fit: contain;
+
+}
+.container{
+  width: 90%; 
+  max-width: 72%;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  color: black;
+  
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 20px; 
+  
+}
+
 .main{
-    display: flex;
-    flex-flow: column;
-    gap: 16px;
-    align-items: center;
+  width: 90;
+  display: flex;
+  flex-direction: column;
+  align-items: center;  
+  justify-content: center; 
+  gap: 16px;
+  padding: 20px;
 }
 
 .tag{
     color: rgb(92, 89, 89);
+    word-break: break-word; 
 }
+.botoes-admin{
+  display: flex;
+  flex-flow: row;
+  gap: 16px;
+  align-items: center;
 
-.my-communities-block{
+}
+.posts-admin{
   display: flex;
   flex-flow: column;
   gap: 16px;
   align-items: center;
 }
 
-.cards{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 32px; 
+.posts-admin textarea{
+  width: 80%;
 }
-
-.cards-see{
-  display: grid;
-  grid-template-columns: repeat(5, 1fr); 
-  gap: 32px; 
-}
-
-.sobre{
-  visibility: hidden;
-  position: absolute;
-}
-
-
-.card:hover .sobre{
-  visibility: visible;
-  position: static;
-}
-
-.nome{
-    font-size: xx-large;
-    font-weight: 600;
-    margin-bottom: 0px;
-}
-
-.card{
-    display: flex;
-    flex-flow: column;
-    gap: 4px;
-    align-items: center;
-    border-style: solid ;
-    background-color: whitesmoke;
-    border-radius: 16px;
-    border-color: black;
-    padding: 54px;
-    padding-top: 0;
-    padding-bottom: 16px;
-}
-
-/* https://getcssscan.com/css-buttons-examples */
-button {
-  appearance: button;
-  background-color: #000;
-  background-image: none;
-  border: 1px solid #000;
-  border-radius: 4px;
-  box-shadow: #fff 4px 4px 0 0,#000 4px 4px 0 1px;
-  box-sizing: border-box;
-  color: #fff;
-  cursor: pointer;
-  display: inline-block;
-  font-family: ITCAvantGardeStd-Bk,Arial,sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-  margin: 0 5px 10px 0;
-  overflow: visible;
-  padding: 12px 40px;
-  text-align: center;
-  text-transform: none;
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-user-select: none;
-  vertical-align: middle;
-  white-space: nowrap;
-}
-
-.button:focus {
-  text-decoration: none;
-}
-
-.button:hover {
-  text-decoration: none;
-}
-
-.button:active {
-  box-shadow: rgba(0, 0, 0, .125) 0 3px 5px inset;
-  outline: 0;
-}
-
-.button:not([disabled]):active {
-  box-shadow: #fff 2px 2px 0 0, #000 2px 2px 0 1px;
-  transform: translate(2px, 2px);
-}
-
-.community-image{
-  height: 20vw;
-  width: 25vw;
-  border-radius: 24px;
-}
-
 .community-block{
   display: flex;
   flex-flow: column;
   gap: 16px;
   align-items: center;
 }
-  
 
-@media (min-width: 768px) {
-  .button {
-    padding: 12px 50px;
-  }
-}
-a{
-    color: white;
+.my-communities-block {
+  width: 80%;
+  display: flex;
+  flex-flow: column;
+  gap: 16px;
+  align-items: center;
 }
 
+/* https://getcssscan.com/css-buttons-examples */
+/* CSS */
+button{
+  align-items: center;
+  appearance: none;
+  background-color: #fff;
+  border-radius: 24px;
+  border-style: none;
+  box-shadow: rgba(0, 0, 0, .2) 0 3px 5px -1px,rgba(0, 0, 0, .14) 0 6px 10px 0,rgba(0, 0, 0, .12) 0 1px 18px 0;
+  box-sizing: border-box;
+  color: #3c4043;
+  cursor: pointer;
+  display: inline-flex;
+  fill: currentcolor;
+  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 48px;
+  justify-content: center;
+  letter-spacing: .25px;
+  line-height: normal;
+  max-width: 100%;
+  overflow: visible;
+  padding: 2px 24px;
+  position: relative;
+  text-align: center;
+  text-transform: none;
+  transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1),opacity 15ms linear 30ms,transform 270ms cubic-bezier(0, 0, .2, 1) 0ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: auto;
+  will-change: transform,opacity;
+  z-index: 0;
+  transition: background-color 0.5s ease, transform 0.3s ease
+}
+
+button:hover {
+  background-color: #7443c2;
+}
+
+button:hover a{
+ color: #ffffff;
+}
+
+button:active {
+  box-shadow: 0 4px 4px 0 rgb(60 64 67 / 30%), 0 8px 12px 6px rgb(60 64 67 / 15%);
+  outline: none;
+}
+
+button:focus {
+  outline: none;
+  border: 2px solid #4D1E9B;
+}
+
+button:not(:disabled) {
+  box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
+}
+
+button:not(:disabled):hover {
+  box-shadow: rgba(60, 64, 67, .3) 0 2px 3px 0, rgba(60, 64, 67, .15) 0 6px 10px 4px;
+}
+
+button:not(:disabled):focus {
+  box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
+}
+
+button:not(:disabled):active {
+  box-shadow: rgba(60, 64, 67, .3) 0 4px 4px 0, rgba(60, 64, 67, .15) 0 8px 12px 6px;
+}
+
+button:disabled {
+  box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
+}
 .formulario {
   margin: 0 auto;
 }
@@ -135,6 +186,10 @@ a{
 .formulario input,
 .formulario textarea,
 .formulario select {
+  background-color: #ffffff;
+  border-radius: 8px; 
+  border: solid #333435;
+
   display: block;
   width: 100%;
   padding: 8px;
@@ -143,3 +198,168 @@ a{
   box-sizing: border-box;
 }
 
+.comentario{
+  max-width: 80%;
+  display: flex;
+  flex-flow: column;
+  gap: 8px;
+  padding: 8px;
+  margin: 8px;
+  background-color: #ffffff;
+  border: solid;
+  border-color: #182D34;
+  border-radius: 8px;
+
+  align-items: flex-start;
+
+  word-wrap: break-word; 
+  overflow-wrap: break-word; 
+  word-break: break-word;
+}
+
+.comentario h4{
+  color: grey;
+}
+
+.centralizar{
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+
+.cards-see {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+
+.card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1/1; 
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.genre-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.genre-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  color: white;
+  text-align: center;
+}
+
+.nome {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: white;
+  text-decoration: none;
+}
+
+
+.nome:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+
+section {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+.centralizar {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.comentario {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.comentario:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.comentario h4 {
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.post-body {
+  margin: 12px 0;
+  color: #34495e;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.comentario p:last-of-type {
+  margin: 0;
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+
+@media (max-width: 600px) {
+  .comentario {
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .comentario h4 {
+    font-size: 1rem;
+  }
+  
+  .post-body {
+    font-size: 0.95rem;
+  }
+}
+
+nav {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-around;
+  background-color: #7f8c8d;
+  }
+
+.usuario-post{
+  display: flex;
+  flex-flow: row;
+  gap: 16px;
+  align-items: center;
+}

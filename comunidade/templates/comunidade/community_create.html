@@ -1,4 +1,5 @@
 {% extends "comunidade/base.html" %} {% block content %}
+<div class="container">
 <div class="formulario">
   <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %} {# Token pra evitar ataques csrf #}
@@ -23,8 +24,10 @@
     <p>{{error}}</p>
     {% endfor %} {% endif %}
 
-    <button type="submit">submit</button>
+
     <a href="{% url 'my_communities' %}"><button type="button">Voltar</button></a>
+    <button type="submit">Submit</button>
   </form>
+</div>
 </div>
 {% endblock %}

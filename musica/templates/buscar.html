@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'musica/css/base.css' %}">
+    <title>Document</title>
+
+    <style>
+        ul {
+            width: 90%;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .capa {
+            width: 30%;
+        }
+
+        .textfield {
+            width: 50%;
+            max-width: 50%;
+        }
+
+        .play {
+            width: 20%;
+        }
+
+        h1 {
+            color: black;
+        }
+
+        h2 {
+            font-size: 15px;
+            line-height: 20px;
+        }
+
+        .capa img {
+            border-radius: 10px;
+        }
+
+        .barra-pesquisa {
+            border-radius: 5px;
+            border: 1px solid #6545F0;
+            padding: 2px 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <main>
+        <section>
+            <header>
+                <form method="GET" action="{% url 'buscar_musicas' %}">
+                    <input class="barra-pesquisa" type="text" name="q" placeholder=" O que você quer ouvir ?">
+                    <button class="button" type="submit">Buscar</button>
+                </form>
+            </header>
+        </section>
+
+        <section>
+            {% if musicas %}
+            <h2>Resultados:</h2>
+            <ul class="musica-grid">
+                {% for musica in musicas %}
+                <li>
+                    <div class="capa">
+                        <img src="{{ musica.imagem }}" alt="Capa do Álbum" width="100">
+                    </div>
+                    <div class="textfield">
+                        <h1>{{ musica.nome }}</h1>
+                        <h2>{{ musica.nomeartista }}</h2>
+                    </div>
+                    <a href="{% url 'player' %}?nome={{ musica.nome }}&nomeartista={{ musica.nomeartista }}&linkmusica={{ musica.linkmusica }}&imagem={{ musica.imagem }}"
+                        target="" class="play">
+                        <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30">
+                    </a>
+                    <div class="mobile-menu">
+                        <span>&#8226;&#8226;&#8226;</span>
+                    </div>
+                    <div class="nav-list">
+                        <button class="close-menu">✕</button>
+                        <form method="POST" action="{% url 'salvar_musica' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="nome" value="{{ musica.nome }}">
+                            <input type="hidden" name="nomeartista" value="{{ musica.nomeartista }}">
+
+                            <select name="playlist_id" required>
+                                {% for playlist in playlists %}
+                                <option value="{{ playlist.id }}">{{ playlist.nome }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <button type="submit">Salvar na Playlist</button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </section>
+    </main>
+    <nav>
+        <a href="{% url 'buscar_musicas' %}">Buscar</a>
+        <a href="{% url 'listar_playlists' %}">Biblioteca</a>
+        <a href="{% url 'my_communities' %}">Comunidade</a>
+        <a href="{% url 'perfil' %}">Perfil</a>
+    </nav>
+    <script src="{% static 'musica/js/mobile-nav-bar.js' %}"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'musica/css/base.css' %}">
+    <title>Minha Playlist</title>
+    <style>
+        ul {
+            width: 90%;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .capa {
+            width: 30%;
+        }
+
+        .textfield {
+            width: 50%;
+            max-width: 50%;
+        }
+
+        .play {
+            width: 20%;
+        }
+
+        h1 {
+            color: black;
+        }
+
+        h2 {
+            font-size: 15px;
+            line-height: 20px;
+        }
+
+        .capa img {
+            border-radius: 10px;
+        }
+
+        .title {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .title h1 {
+            font-weight: 900;
+        }
+
+        header h1 {
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <section class="sec">
+            <header>
+                <div class="voltar">
+                </div>
+                <h1>Playlist</h1>
+                <div class="menu">
+                </div>
+            </header>
+        </section>
+        <section>
+            <div class="title">
+                <h1>{{ playlist.nome }}</h1>
+                <p>{{ playlist.descricao }}</p>
+            </div>
+        </section>
+        <section>
+            <ul>
+                {% for musica in musicas %}
+                <li>
+                    <div class="capa">
+                        <img src="{{ musica.imagem }}" alt="Capa do Álbum" width="100">
+                    </div>
+                    <div class="textfield">
+                        <h1>{{ musica.nome }}</h1>
+                        <h2>{{ musica.nomeartista }}</h2>
+                    </div>
+                    <a href="{% url 'player' %}?nome={{ musica.nome }}&nomeartista={{ musica.nomeartista }}&linkmusica={{ musica.linkmusica }}&imagem={{ musica.imagem }}"
+                        class="play">
+                        <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="50">
+                    </a>
+                </li>
+                {% empty %}
+                <p>Nenhuma música salva nesta playlist.</p>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+    <nav>
+        <a href="{% url 'buscar_musicas' %}"><i class="fa-duotone fa-solid fa-magnifying-glass"></i></a>
+        <a href="{% url 'listar_playlists' %}"><i class="fa-solid fa-list"></i></a>
+        <a href="{% url 'my_communities' %}"><i class="fa-duotone fa-solid fa-users"></i></a>
+        <a href="{% url 'perfil' %}"><i class="fa-duotone fa-solid fa-user"></i></a>
+    </nav>
+</body>
+
+</html>
