@@ -89,4 +89,4 @@ def genero_view(request):
 
 
 def home(request):
-    return render(request, 'usuarios/sign.html')
+    return render(request, 'usuarios/home.html')

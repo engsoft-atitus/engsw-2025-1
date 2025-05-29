@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generos Musicais</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
         body {
+            background: linear-gradient(
+                to bottom right,
+                #ED6827,
+                #EF4E44,
+                #4D1E9B,
+                #182D34,
+                black);
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
@@ -13,7 +22,6 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #f7f7f7;
         }
 
         .container {
@@ -23,26 +31,58 @@
         }
 
         .info-bloco {
-            background-color: #f0f0f0;
+            background-color: rgba(255, 255, 255, 0.5);
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 8px;
+
         }
 
         .genre-box {
-            padding: 15px;
-            background-color: #ccc;
-            text-align: center;
+            position: relative;
+            width: 150px;
+            height: 120px;
+            border-radius: 20px;
+            overflow: hidden;
             cursor: pointer;
-            border-radius: 8px;
-            transition: background-color 0.3s;
-            margin: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid rgba(255, 255, 255, 0.5); /* branco semi-transparente */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
 
-        .genre-box.selected {
-            background-color: #4CAF50;
-            color: white;
+        /* imagem de fundo */
+        .genre-background {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-size: cover;
+            background-position: center;
+            transition: filter 0.3s, brightness 0.3s;
+            z-index: 0;
         }
+
+        /* texto */
+        .genre-label {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 6px 10px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* efeito visual ao selecionar */
+        .genre-box.selected .genre-background {
+            filter: blur(2px) brightness(0.5);
+        }
+
+        .genre-box:hover .genre-background {
+            filter: blur(4px) brightness(0.7);
+        }
+
+
 
         .genre-container {
             display: flex;
@@ -75,11 +115,58 @@
             font-size: 18px;
             font-weight: bold;
         }
+
+
+
+        @media (max-width: 600px) {
+        body {
+            padding: 10px;
+            height: auto;
+        }
+
+        .container {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .info-bloco {
+            padding: 15px;
+        }
+
+        .genre-container {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .genre-box {
+            width: 90%;
+            height: 100px;
+            font-size: 16px;
+        }
+
+        .genre-label {
+            font-size: 14px;
+            padding: 4px 8px;
+        }
+
+        #finalizar {
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .selected-genres {
+            font-size: 16px;
+        }
+
+    }
+    
+
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Gêneros Musicais do Usuário</h2>
+        <h2 style="color:white">Gêneros Musicais do Usuário</h2>
         <div class="info-bloco">
             <p><strong>Nome:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</p>
             <p><strong>Usuário:</strong> {{ request.user.username }}</p>
@@ -90,23 +177,54 @@
             <p><strong>Gêneros Musicais:</strong> {{ perfil.generos_musicas }}</p>
         {% endif %}
 
-        <label for="generos_musicas">Selecione seus gêneros musicais (máximo de 3):</label>
+        <label style="color:white" for="generos_musicas">Selecione seus gêneros musicais (máximo de 3):</label>
         
         <!-- Quadradinhos de gêneros musicais -->
         <div class="genre-container">
-            <div class="genre-box" data-genre="Rock">Rock</div>
-            <div class="genre-box" data-genre="Pop">Pop</div>
-            <div class="genre-box" data-genre="Jazz">Jazz</div>
-            <div class="genre-box" data-genre="Hip-hop">Hip-hop</div>
-            <div class="genre-box" data-genre="Clássica">Clássica</div>
-            <div class="genre-box" data-genre="Reggae">Reggae</div>
-            <div class="genre-box" data-genre="Eletrônica">Eletrônica</div>
-            <div class="genre-box" data-genre="Indie">Indie</div>
-            <div class="genre-box" data-genre="Sertanejo">Sertanejo</div>
-            <div class="genre-box" data-genre="Blues">Blues</div>
+            <div class="genre-box" data-genre="Rock">
+                <div class="genre-background" style="background-image: url('{% static 'app/imagens/rock.jpg' %}');"></div>
+                <span class="genre-label">Rock</span>
+            </div>
+            <div class="genre-box" data-genre="Pop">
+                <div class="genre-background" style="background-image: url('{% static 'app/imagens/pop.jpg' %}');"></div>
+                <span class="genre-label">Pop</span>
+            </div>
+            <div class="genre-box" data-genre="Jazz">
+                <div class="genre-background" style="background-image: url('{% static 'app/imagens/jazz.jpeg' %}');"></div>
+                <span class="genre-label">Jazz</span>
+            </div>
+            <div class="genre-box" data-genre="Hip-hop">
+                <div class="genre-background" style="background-image: url('{% static 'app/imagens/hiphop.jpeg' %}');"></div>
+                <span class="genre-label">Hip-hop</span>
+            </div>
+            <div class="genre-box" data-genre="Clássica">
+                <div class="genre-background" style="background-image: url('{% static 'app/imagens/classica.jpeg' %}');"></div>
+                <span class="genre-label">Clássica</span>
+            </div>
+            <div class="genre-box" data-genre="Reggae">
+                <div class="genre-background" style="background-image: url('{% static 'app/imagens/reggae.jpeg' %}');"></div>
+                <span class="genre-label">Reggae</span>
+            </div>
+            <div class="genre-box" data-genre="Eletrônica">
+                <div class="genre-background" style="background-image: url('{% static 'app/imagens/eletronica.jpeg' %}');"></div>
+                <span class="genre-label">Eletrônica</span>
+            </div>
+            <div class="genre-box" data-genre="Pagode">
+                <div class="genre-background" style="background-image: url('{% static 'app/imagens/pagode.jpeg' %}');"></div>
+                <span class="genre-label">Pagode</span>
+            </div>
+            <div class="genre-box" data-genre="Sertanejo">
+                <div class="genre-background" style="background-image: url('{% static 'app/imagens/sertanejo.jpeg' %}');"></div>
+                <span class="genre-label">Sertanejo</span>
+            </div>
+            <div class="genre-box" data-genre="Blues">
+                <div class="genre-background" style="background-image: url('{% static 'app/imagens/blues.jpeg' %}');"></div>
+                <span class="genre-label">Blues</span>
+            </div>
         </div>
+        
 
-        <button id="finalizar" disabled>Finalizar Escolha</button>
+        <button style="background-color:#C71585" id="finalizar" disabled>Finalizar Escolha</button>
         <p class="selected-genres" id="resultado"></p>
 
         <div class="form-error" id="error-message"></div>
@@ -179,6 +297,7 @@
                 }
             });
         });
+        
     </script>
 </body>
 </html>
