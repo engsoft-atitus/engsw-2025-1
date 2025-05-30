@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinLengthValidator
+from django.core.validators import MinLengthValidator,MinValueValidator
 from random import randint
 from django.contrib.auth import get_user_model
 
@@ -38,3 +38,25 @@ class Post(models.Model):
     body = models.CharField(max_length=500)
     data_post = models.DateTimeField(auto_now_add=True)
     community = models.ForeignKey(Community,on_delete=models.CASCADE)
+    curtidas = models.IntegerField(validators=[MinValueValidator(0)],default=0)
+
+    def __str__(self):
+        return f"{self.id}"
+
+    def like(self):
+        self.curtidas += 1
+
+    def dislike(self):
+        self.curtidas -= 1
+
+#Dava pra fazer com manyToMany, mas eu to com preguiça (e usando vim por razões complicadas)
+class Post_User(models.Model):
+    User = get_user_model()
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    post = models.ForeignKey(Post,on_delete=models.CASCADE)
+
+    def __str__(self):
+            return f"{self.user} - {self.post}"
+    
+   
+

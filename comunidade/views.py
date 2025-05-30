@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from comunidade.forms import CommunityForm,CommunityEditForm,PostForm
-from comunidade.models import Community,Community_User,Post
+from comunidade.models import Community,Community_User,Post,Post_User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import json 
@@ -103,7 +103,10 @@ def community_post(request,community_id):
     if request.method == "POST" and form.is_valid():
         body = form.cleaned_data["body"]
         post = Post(body=body,user=request.user,community=community)
+        post_user = Post_User(user=request.user,post=post)
+        post.curtir()
         post.save()
+        post_user.save()
     return redirect(community_preview, nome_tag = community.nome_tag)
 
 #Um usuário se vincula da comunidade
@@ -149,4 +152,38 @@ def edit_post(request):
                 return JsonResponse({'status':'true','postBody':body},status=200)
             else:
                 return JsonResponse({'status':'false','message':'Body exceeded max length of 500','postBody':post.body},status=406)
+    return redirect(my_communities)
+
+@login_required
+def like_post(request):
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        post_id = json_data.get('id')
+        post = get_object_or_404(Post,id=post_id)
+        try:
+            post_user = Post_User.objects.get(
+                    user=request.user,
+                    post=post)
+            post_user.post.like()
+            post_user.save()
+            return JsonResponse({'status':'true'},status=200)
+        except:
+            return JsonResponse({'status':'false'},status=500)
+    return redirect(my_communities)
+
+@login_required
+def dislike_post(request):
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        post_id = json_data.get('id')
+        post = get_object_or_404(Post,id=post_id)
+        try:
+            post_user = Post_User.objects.get(
+                    user=request.user,
+                    post=post)
+            post_user.post.dislike()
+            post_user.save()
+            return JsonResponse({'status':'true'},status=200)
+        except:
+            return JsonResponse({'status':'false'},status=500)
     return redirect(my_communities)

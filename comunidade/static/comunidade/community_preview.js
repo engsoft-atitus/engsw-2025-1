@@ -117,3 +117,15 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+async function like(element){
+	let likeElement = element.querySelector(".like-post"); 
+	let curtidas = element.querySelector(".curtidas").value;
+	let id = element.id;
+	const response = await setLike(id);
+	curtidas.value += 1;
+}
+
+async function setLike(id){
+	const response = await fetch();
+}
