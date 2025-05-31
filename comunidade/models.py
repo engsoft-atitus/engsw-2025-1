@@ -39,6 +39,7 @@ class Post(models.Model):
     data_post = models.DateTimeField(auto_now_add=True)
     community = models.ForeignKey(Community,on_delete=models.CASCADE)
     curtidas = models.IntegerField(validators=[MinValueValidator(0)],default=0)
+    curtidores = models.ManyToManyField(User,related_name='curtidores')
 
     def __str__(self):
         return f"{self.id}"
@@ -48,15 +49,3 @@ class Post(models.Model):
 
     def dislike(self):
         self.curtidas -= 1
-
-#Dava pra fazer com manyToMany, mas eu to com preguiça (e usando vim por razões complicadas)
-class Post_User(models.Model):
-    User = get_user_model()
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
-    post = models.ForeignKey(Post,on_delete=models.CASCADE)
-
-    def __str__(self):
-            return f"{self.user} - {self.post}"
-    
-   
-

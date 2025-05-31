@@ -76,13 +76,17 @@
         </div>
         
         <p class="post-body">{{post.body}}</p>
-	<p class="curtidas">{{post.curtidas}}</p>
+	      <p class="curtidas">{{post.curtidas}}</p>
         {% localtime on %}
           <p>{{post.data_post|timezone:"America/Sao_Paulo"|date:"Y m d H:i"}}</p>
         {% endlocaltime %}
         </div>
       </div>
-	<button class="like-post" onclick="like(this.parentNode)">Curtir</button>
+        {% if request.user in post.curtidores.all %}
+	      <button class="like-post" onclick="dislike(this.parentNode)">Dislike</button> 
+        {% else %}
+        <button class="like-post" onclick="like(this.parentNode)">Like</button>
+        {% endif %}
         {% if post.user == request.user %}
           <button class="edit-post" onclick="setEditPost(this.parentNode)">Editar</button>
           <button class="delete-post"><a href="{% url 'delete_post' post.id %}">Deletar</a></button>

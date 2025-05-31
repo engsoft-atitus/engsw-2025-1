@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from comunidade.forms import CommunityForm,CommunityEditForm,PostForm
-from comunidade.models import Community,Community_User,Post,Post_User
+from comunidade.models import Community,Community_User,Post
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import json 
@@ -84,7 +84,7 @@ def community_preview(request, nome_tag):
     posts = Post.objects.filter(community=community.id).order_by("-data_post")
     if community.id in user_community_ids:
         is_participating = True
-
+    
     form = PostForm()
     context = {'community':community, 
                'is_participating': is_participating, 
@@ -102,11 +102,13 @@ def community_post(request,community_id):
     form = PostForm(request.POST)
     if request.method == "POST" and form.is_valid():
         body = form.cleaned_data["body"]
-        post = Post(body=body,user=request.user,community=community)
-        post_user = Post_User(user=request.user,post=post)
-        post.curtir()
+        post = Post.objects.create(
+            body=body,
+            user=request.user,
+            community=community)
+        post.curtidores.add(request.user)
+        post.like() # O usuário já da like no seu próprio post
         post.save()
-        post_user.save()
     return redirect(community_preview, nome_tag = community.nome_tag)
 
 #Um usuário se vincula da comunidade
@@ -159,13 +161,11 @@ def like_post(request):
     if request.method == "POST":
         json_data = json.loads(request.body)
         post_id = json_data.get('id')
-        post = get_object_or_404(Post,id=post_id)
         try:
-            post_user = Post_User.objects.get(
-                    user=request.user,
-                    post=post)
-            post_user.post.like()
-            post_user.save()
+            post = Post.objects.filter(id=post_id).get()
+            post.curtidores.add(request.user)
+            post.like()
+            post.save()
             return JsonResponse({'status':'true'},status=200)
         except:
             return JsonResponse({'status':'false'},status=500)
@@ -176,13 +176,11 @@ def dislike_post(request):
     if request.method == "POST":
         json_data = json.loads(request.body)
         post_id = json_data.get('id')
-        post = get_object_or_404(Post,id=post_id)
         try:
-            post_user = Post_User.objects.get(
-                    user=request.user,
-                    post=post)
-            post_user.post.dislike()
-            post_user.save()
+            post = Post.objects.filter(id=post_id).get()
+            post.curtidores.remove(request.user)
+            post.dislike()
+            post.save()
             return JsonResponse({'status':'true'},status=200)
         except:
             return JsonResponse({'status':'false'},status=500)

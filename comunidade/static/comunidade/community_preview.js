@@ -120,12 +120,78 @@ function getCookie(name) {
 
 async function like(element){
 	let likeElement = element.querySelector(".like-post"); 
-	let curtidas = element.querySelector(".curtidas").value;
-	let id = element.id;
-	const response = await setLike(id);
-	curtidas.value += 1;
+	let curtidas = element.querySelector(".curtidas");
+    let curtidasValue = parseInt(curtidas.innerText);
+	const response = await setLike(element.id);
+	curtidasValue += 1;
+    curtidas.innerText = curtidasValue;
+    likeElement.innerText = "Dislike";
+    likeElement.setAttribute("onclick","dislike(this.parentNode)");
+}
+
+async function dislike(element){
+	let likeElement = element.querySelector(".like-post"); 
+	let curtidas = element.querySelector(".curtidas");
+    let curtidasValue = parseInt(curtidas.innerText);
+	const response = await setDislike(element.id);
+	curtidasValue -= 1;
+    curtidas.innerText = curtidasValue;
+    likeElement.innerText = "Like"
+    likeElement.setAttribute("onclick","like(this.parentNode)");
 }
 
 async function setLike(id){
-	const response = await fetch();
+	const url = "/comunidade/post/like/";
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { 'X-CSRFToken': getCookie("csrftoken") },
+            body: JSON.stringify({
+                "id": id
+            }),
+        })
+            .then(response => {
+                console.log(response.status);
+                if (!response.ok) {
+                    throw new Error("HTTP STATUS " + response.status);
+                }
+                return response.json();
+            })
+            .then(response => {
+                let result;
+                result = response;
+                return result;
+            })
+        return response;
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+async function setDislike(id){
+	const url = "/comunidade/post/dislike/";
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { 'X-CSRFToken': getCookie("csrftoken") },
+            body: JSON.stringify({
+                "id": id
+            }),
+        })
+            .then(response => {
+                console.log(response.status);
+                if (!response.ok) {
+                    throw new Error("HTTP STATUS " + response.status);
+                }
+                return response.json();
+            })
+            .then(response => {
+                let result;
+                result = response;
+                return result;
+            })
+        return response;
+    } catch (error) {
+        console.error(error.message);
+    }
 }
