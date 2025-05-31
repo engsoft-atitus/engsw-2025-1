@@ -1,12 +1,13 @@
 # views.py
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .forms import CadastroForm, LoginForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from usuario.models import Profile
 from .forms import ProfileForm
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 def cadastro_view(request):
     if request.method == 'POST':
@@ -67,6 +68,12 @@ def perfil_view(request):
         'form': form,
         'perfil': perfil
     })
+
+@require_POST
+def logout_view(request):
+    print("Logout foi chamado!")
+    logout(request)
+    return redirect('login')    
 
 @login_required
 def genero_view(request):

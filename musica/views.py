@@ -136,4 +136,4 @@ def listar_playlists(request):
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect('sign')
+    return redirect('login')

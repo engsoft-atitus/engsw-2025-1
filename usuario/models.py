@@ -5,8 +5,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nascimento = models.DateField(null=True, blank=True)
     generos_musicas = models.CharField(max_length=200, null=True, blank=True)
-    biografia = models.TextField(null=True, blank=True)
-    privacidade = models.BooleanField(default=True)
+    biografia = models.TextField(null=True, blank=True)  # CLOB no Oracle, cuidado com buscas
+    privacidade = models.IntegerField(default=1, choices=[(0, 'Privado'), (1, 'Público')])  # substitui BooleanField
 
     def __str__(self):
         return self.user.username
