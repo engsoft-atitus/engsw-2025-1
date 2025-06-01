@@ -1,9 +1,9 @@
 from django.db import models
-from django.core.validators import MinLengthValidator
-from random import randint
+from musica.models import MusicaSalva
 from django.contrib.auth import get_user_model
+from django.core.validators import MinLengthValidator
 
-# Create your models here.
+from random import randint
 
 # Classe herda da class Model
 class Community(models.Model):
@@ -38,3 +38,4 @@ class Post(models.Model):
     body = models.CharField(max_length=500)
     data_post = models.DateTimeField(auto_now_add=True)
     community = models.ForeignKey(Community,on_delete=models.CASCADE)
+    musica = models.ForeignKey(MusicaSalva,blank=True)

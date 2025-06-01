@@ -22,7 +22,7 @@ class CommunityEditForm(ModelForm):
 class PostForm(ModelForm):
     class Meta:
         model = Post
-        fields = ('body',)
+        fields = ('body','musica')
         widgets = {
             'body': forms.Textarea(),
         }
