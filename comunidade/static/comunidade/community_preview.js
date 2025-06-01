@@ -121,7 +121,11 @@ function getCookie(name) {
 async function like(element){
 	let likeElement = element.querySelector(".like-post"); 
 	let curtidas = element.querySelector(".curtidas");
+    console.log(curtidas);
+    console.log(element);
+    console.log(element.id);  
     let curtidasValue = parseInt(curtidas.innerText);
+
 	const response = await setLike(element.id);
 	curtidasValue += 1;
     curtidas.innerText = curtidasValue;
@@ -132,8 +136,15 @@ async function like(element){
 async function dislike(element){
 	let likeElement = element.querySelector(".like-post"); 
 	let curtidas = element.querySelector(".curtidas");
+    console.log(curtidas);
+    
+    console.log(element);
+    console.log(element.id);
+
     let curtidasValue = parseInt(curtidas.innerText);
-	const response = await setDislike(element.id);
+	
+    const response = await setDislike(element.id);
+
 	curtidasValue -= 1;
     curtidas.innerText = curtidasValue;
     likeElement.innerText = "Like"

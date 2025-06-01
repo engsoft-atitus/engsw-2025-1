@@ -161,6 +161,7 @@ def like_post(request):
     if request.method == "POST":
         json_data = json.loads(request.body)
         post_id = json_data.get('id')
+
         try:
             post = Post.objects.filter(id=post_id).get()
             post.curtidores.add(request.user)
@@ -176,6 +177,7 @@ def dislike_post(request):
     if request.method == "POST":
         json_data = json.loads(request.body)
         post_id = json_data.get('id')
+
         try:
             post = Post.objects.filter(id=post_id).get()
             post.curtidores.remove(request.user)
