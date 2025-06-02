@@ -118,41 +118,36 @@ function getCookie(name) {
     return cookieValue;
 }
 
-async function like(element){
-	let likeElement = element.querySelector(".like-post"); 
-	let curtidas = element.querySelector(".curtidas");
-    console.log(curtidas);
-    console.log(element);
-    console.log(element.id);  
+async function like(element) {
+    let likeElement = element.querySelector(".like-post");
+    let curtidas = element.querySelector(".curtidas");
+    let image = likeElement.querySelector(".like");
     let curtidasValue = parseInt(curtidas.innerText);
 
-	const response = await setLike(element.id);
-	curtidasValue += 1;
+    await setLike(element.id);
+
+    curtidasValue += 1;
     curtidas.innerText = curtidasValue;
-    likeElement.innerText = "Dislike";
-    likeElement.setAttribute("onclick","dislike(this.parentNode)");
+    image.setAttribute("src", "/static/comunidade/dislike.png");
+    likeElement.setAttribute("onclick", "dislike(this.parentNode)");
 }
 
-async function dislike(element){
-	let likeElement = element.querySelector(".like-post"); 
-	let curtidas = element.querySelector(".curtidas");
-    console.log(curtidas);
-    
-    console.log(element);
-    console.log(element.id);
-
+async function dislike(element) {
+    let likeElement = element.querySelector(".like-post");
+    let curtidas = element.querySelector(".curtidas");
+    let image = likeElement.querySelector(".like");
     let curtidasValue = parseInt(curtidas.innerText);
-	
-    const response = await setDislike(element.id);
 
-	curtidasValue -= 1;
+    await setDislike(element.id);
+
+    curtidasValue -= 1;
     curtidas.innerText = curtidasValue;
-    likeElement.innerText = "Like"
-    likeElement.setAttribute("onclick","like(this.parentNode)");
+    image.setAttribute("src", "/static/comunidade/like.png");
+    likeElement.setAttribute("onclick", "like(this.parentNode)");
 }
 
-async function setLike(id){
-	const url = "/comunidade/post/like/";
+async function setLike(id) {
+    const url = "/comunidade/post/like/";
     try {
         const response = await fetch(url, {
             method: "POST",
@@ -167,11 +162,6 @@ async function setLike(id){
                     throw new Error("HTTP STATUS " + response.status);
                 }
                 return response.json();
-            })
-            .then(response => {
-                let result;
-                result = response;
-                return result;
             })
         return response;
     } catch (error) {
@@ -179,8 +169,8 @@ async function setLike(id){
     }
 }
 
-async function setDislike(id){
-	const url = "/comunidade/post/dislike/";
+async function setDislike(id) {
+    const url = "/comunidade/post/dislike/";
     try {
         const response = await fetch(url, {
             method: "POST",
@@ -195,11 +185,6 @@ async function setDislike(id){
                     throw new Error("HTTP STATUS " + response.status);
                 }
                 return response.json();
-            })
-            .then(response => {
-                let result;
-                result = response;
-                return result;
             })
         return response;
     } catch (error) {

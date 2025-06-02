@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
+
 body{
   margin: 0;
   min-height: 100vh;
@@ -380,4 +382,9 @@ nav {
   flex-flow: row;
   gap: 16px;
   align-items: center;
+}
+
+.like {
+  max-width: 25px;
+  max-height: 25px;
 }
