@@ -129,11 +129,11 @@ def excluir_playlist(request, playlist_id):
     return redirect('listar_playlists')
 
 @login_required
-def listar_playlists(request):
+def listar_playlists_usuario(request):
     playlists = Playlist.objects.filter(user=request.user)  # Filtra pelo usuário logado
     return render(request, 'minhasPlaylists.html', {'playlists': playlists})
     
+
 @login_required
-def logout_view(request):
-    logout(request)
-    return redirect('sign')
+def listar_playlists_todos(request):
+    playlists = Playlist.objects.all()
