@@ -9,6 +9,5 @@ urlpatterns = [
     path('playlist/<int:playlist_id>/', views.ver_playlist, name='ver_playlist'),
     path('playlist/<int:playlist_id>/excluir/', views.excluir_playlist, name='excluir_playlist'),
     path('criar_playlist/', views.criar_playlist, name='criar_playlist'),
-    path('logout/', views.logout_view, name='logout'),
 
 ]
