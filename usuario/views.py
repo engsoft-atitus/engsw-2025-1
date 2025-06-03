@@ -43,7 +43,7 @@ def login_view(request):
 
             if user is not None:
                 login(request, user)
-                return redirect('perfil')
+                return redirect('principal')
             else:
                 form.add_error(None, "Credenciais inválidas.")
     else:
@@ -97,3 +97,6 @@ def genero_view(request):
 
 def home(request):
     return render(request, 'usuarios/home.html')
+
+def principal_view(request):
+    return render(request, 'usuarios/principal.html')
