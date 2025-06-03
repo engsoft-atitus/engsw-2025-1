@@ -3,7 +3,8 @@ from comunidade.forms import CommunityForm,CommunityEditForm,PostForm
 from comunidade.models import Community,Community_User,Post
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-import json 
+import json
+import requests
 
 @login_required
 def community_create(request):
@@ -149,4 +150,27 @@ def edit_post(request):
                 return JsonResponse({'status':'true','postBody':body},status=200)
             else:
                 return JsonResponse({'status':'false','message':'Body exceeded max length of 500','postBody':post.body},status=406)
+    return redirect(my_communities)
+#login required?
+def deezer_search(request):
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        query = json_data.get('query')
+        url = f"https://api.deezer.com/search?q={query}&limit=9"
+        req = requests.get(url)
+        dados = req.json()
+        musicas = []
+        try:
+            for musica in dados.get('data',[]):
+                musicaDados = {
+                'nome': musica['title'],  # o nome da música
+                'linkmusica': musica['preview'],  # link de prévia da música
+                'nomeartista': musica['artist']['name'],  # nome do artista
+                'imagem': musica['album']['cover_medium'],  # imagem do álbum
+            }
+                musicas.append(musicaDados)
+        except:
+            return JsonResponse({'status':'false','message':'Something went wrong'},status=500)
+        print(musicas)
+        return JsonResponse({'musicas':musicas},status=200,safe=False)
     return redirect(my_communities)

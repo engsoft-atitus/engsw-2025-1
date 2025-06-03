@@ -30,6 +30,7 @@
       <form action="{% url 'community_post' community.id %}" method="post">
         {% csrf_token %}
         {{form.body}}
+        <button class="musica-btn" type="button">Inserir Música</button>
         <button type="submit">Enviar</button>
       </form>
     </div>
@@ -46,6 +47,7 @@
       <form action="{% url 'community_post' community.id %}" method="post">
         {% csrf_token %}
         {{form.body}}
+        <button class="musica-btn" type="button">Inserir Música</button>
         <button type="submit">Enviar</button>
       </form>
     </div>

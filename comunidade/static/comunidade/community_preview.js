@@ -1,5 +1,7 @@
 "use strict";
 
+let musicaBtn = document.body.querySelector(".musica-btn");
+
 // Muda o post para o modo edição
 function setEditPost(element) {
     let postBody = element.querySelector(".post-body");
@@ -116,4 +118,42 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+musicaBtn.addEventListener("click",showMusicQuery);
+musicaBtn.query = "tool";
+
+async function showMusicQuery(){
+    let pesquisa = document.createElement("input");
+    let btn = document.createElement("button");
+    let musicName = pesquisa.value;
+    pesquisa.setAttribute("");
+    btn.addEventListener("click",searchMusic);
+    btn.query = pesquisa.value
+}
+
+async function searchMusic(evt){
+    let url = "/comunidade/musicas/";
+     try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { 'X-CSRFToken': getCookie("csrftoken") },
+            body: JSON.stringify({
+                "query": evt.currentTarget.query
+            }),
+        })
+            .then(response => {
+                console.log(response.status);
+                if (!response.ok) {
+                    throw new Error("HTTP STATUS " + response.status);
+                }
+                return response.json();
+            })
+            .then(response => {
+                console.log(response);
+            })
+        return response;
+    } catch (error) {
+        console.error(error.message);
+    }
 }

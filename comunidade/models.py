@@ -38,4 +38,4 @@ class Post(models.Model):
     body = models.CharField(max_length=500)
     data_post = models.DateTimeField(auto_now_add=True)
     community = models.ForeignKey(Community,on_delete=models.CASCADE)
-    musica = models.ForeignKey(MusicaSalva,blank=True)
+    musica = models.ForeignKey(MusicaSalva,null=True,on_delete=models.CASCADE)
