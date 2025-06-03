@@ -104,7 +104,16 @@ def community_post(request,community_id):
     form = PostForm(request.POST)
     if request.method == "POST" and form.is_valid():
         body = form.cleaned_data["body"]
-        post = Post(body=body,user=request.user,community=community)
+        nome = form.cleaned_data["musica_nome"] 
+        artista = form.cleaned_data["musica_artista"]
+        if (nome != '') and (artista != ''):
+            musica, _ = MusicaSalva.objects.get_or_create(
+                    nome=nome,
+                    artista=artista
+                )
+        else:
+            musica = None
+        post = Post(body=body,user=request.user,community=community,musica=musica)
         post.save()
     return redirect(community_preview, nome_tag = community.nome_tag)
 
@@ -173,22 +182,6 @@ def deezer_search(request):
                 json.dumps(musicaDados)
                 musicas.append(musicaDados)
             return JsonResponse({'musicas':musicas},status=200)
-        except:
-            return JsonResponse({'status':'false','message':'Something went wrong'},status=500)
-    return redirect(my_communities)
-
-@login_required # Aqui a musica é salva via ajax
-def salvar_musica(request):
-    if request.method == "POST":
-        nome = request.POST.get('nome')
-        artista = request.POST.get('nomeArtista')
-
-        try: # Verifica se a música já existe
-            MusicaSalva.objects.get_or_create(
-                nome=nome,
-                artista=artista
-            )
-            return JsonResponse(status=200)
         except:
             return JsonResponse({'status':'false','message':'Something went wrong'},status=500)
     return redirect(my_communities)

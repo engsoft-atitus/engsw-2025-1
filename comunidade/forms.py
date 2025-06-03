@@ -20,6 +20,8 @@ class CommunityEditForm(ModelForm):
         }
 
 class PostForm(ModelForm):
+    musica_nome = forms.CharField(required=None)
+    musica_artista = forms.CharField(required=None)
     class Meta:
         model = Post
         fields = ('body',)

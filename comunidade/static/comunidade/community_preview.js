@@ -141,7 +141,8 @@ async function showMusicResults() {
     document.querySelectorAll('.musica-div').forEach(e => e.remove());
 
     Object.entries(response).forEach(([key, val]) => {
-        let musicaDiv = document.createElement("div");
+        let musicaDiv = document.createElement("button");
+        musicaDiv.setAttribute("type","button");
         musicaDiv.className = "musica-div";
         musicaDiv.style.width = "100px"; // da pra tirar isso daqui dps
         musicaDiv.style.height = "100px";
@@ -161,12 +162,17 @@ async function showMusicResults() {
         musicaImagem.style.height = "100px";
 
         musicaModalContent.appendChild(musicaDiv); //Adiciona uma das musicas para o modal
-        musicaDiv.appendChild(musicaNome) // Adiciona as caracteristicas da musicas para o modal
-            .appendChild(musicaLink)
-            .appendChild(musicaArtista)
-            .appendChild(musicaImagem);
-
+        musicaDiv.appendChild(musicaImagem) // Adiciona as caracteristicas da musicas para o modal
+            .appendChild(musicaNome)
+            .appendChild(musicaArtista);
+        musicaDiv.setAttribute("onclick",`setMusic('${val["nome"]}','${val["nomeartista"]}')`);
     });
+}
+
+function setMusic(musicaNome,musicaArtista){
+    document.getElementById("id_musica_nome").value = musicaNome;
+    document.getElementById("id_musica_artista").value = musicaArtista;
+    musicaModal.style.display = "none";
 }
 
 async function searchMusic(musicName) {
@@ -190,28 +196,6 @@ async function searchMusic(musicName) {
                 return data['musicas'];
             })
         return response;
-    } catch (error) {
-        console.error(error.message);
-    }
-}
-
-async function saveMusic(nome, artista) {
-    const url = "/comunidade/salvar_musica/";
-    try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers: { 'X-CSRFToken': getCookie("csrftoken") },
-            body: JSON.stringify({
-                "nome": nome,
-                "arista": artista
-            })
-        })
-            .then(response => {
-                console.log(response.status);
-                if (!response.ok) {
-                    throw new Error("HTTP STATUS " + response.status);
-                }
-            })
     } catch (error) {
         console.error(error.message);
     }

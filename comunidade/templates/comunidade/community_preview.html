@@ -48,6 +48,8 @@
         <form action="{% url 'community_post' community.id %}" method="post">
           {% csrf_token %}
           {{form.body}}
+          {{form.musica_nome.as_hidden}}
+          {{form.musica_artista.as_hidden}}
           <modal class="post-modal-music" id="musica-modal">
             <section class="modal-content" id="modal-content">
               <search class="search-music">            
@@ -79,6 +81,9 @@
             {% localtime on %}
               <p>{{post.data_post|timezone:"America/Sao_Paulo"|date:"Y m d H:i"}}</p>
             {% endlocaltime %}
+            {% if post.musica != None %}
+              <p>bala</p>
+            {% endif %}
           </article>
       </div>
         {% if post.user == request.user %}
