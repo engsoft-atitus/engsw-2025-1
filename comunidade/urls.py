@@ -13,5 +13,6 @@ urlpatterns = [
     path('post/<int:community_id>/',views.community_post, name="community_post"),
     path('post/<int:post_id>/delete/',views.delete_post, name="delete_post"),
     path('post/edit/',views.edit_post, name="edit_post"), # Isso não retorna um template
-    path('musicas/',views.deezer_search,name="deezer_search")
+    path('musicas/',views.deezer_search,name="deezer_search"),
+    path('salvar_musica/',views.salvar_musica,name="salvar_musica_ajax")
 ] 

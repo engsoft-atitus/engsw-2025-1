@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from comunidade.forms import CommunityForm,CommunityEditForm,PostForm
 from comunidade.models import Community,Community_User,Post
+from musica.models import MusicaSalva
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import json
@@ -151,7 +152,8 @@ def edit_post(request):
             else:
                 return JsonResponse({'status':'false','message':'Body exceeded max length of 500','postBody':post.body},status=406)
     return redirect(my_communities)
-#login required?
+
+@login_required
 def deezer_search(request):
     if request.method == "POST":
         json_data = json.loads(request.body)
@@ -167,10 +169,26 @@ def deezer_search(request):
                 'linkmusica': musica['preview'],  # link de prévia da música
                 'nomeartista': musica['artist']['name'],  # nome do artista
                 'imagem': musica['album']['cover_medium'],  # imagem do álbum
-            }
+                }
+                json.dumps(musicaDados)
                 musicas.append(musicaDados)
+            return JsonResponse({'musicas':musicas},status=200)
         except:
             return JsonResponse({'status':'false','message':'Something went wrong'},status=500)
-        print(musicas)
-        return JsonResponse({'musicas':musicas},status=200,safe=False)
+    return redirect(my_communities)
+
+@login_required # Aqui a musica é salva via ajax
+def salvar_musica(request):
+    if request.method == "POST":
+        nome = request.POST.get('nome')
+        artista = request.POST.get('nomeArtista')
+
+        try: # Verifica se a música já existe
+            MusicaSalva.objects.get_or_create(
+                nome=nome,
+                artista=artista
+            )
+            return JsonResponse(status=200)
+        except:
+            return JsonResponse({'status':'false','message':'Something went wrong'},status=500)
     return redirect(my_communities)

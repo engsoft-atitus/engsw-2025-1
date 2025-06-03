@@ -1,7 +1,4 @@
 "use strict";
-
-let musicaBtn = document.body.querySelector(".musica-btn");
-
 // Muda o post para o modo edição
 function setEditPost(element) {
     let postBody = element.querySelector(".post-body");
@@ -120,26 +117,66 @@ function getCookie(name) {
     return cookieValue;
 }
 
-musicaBtn.addEventListener("click",showMusicQuery);
-musicaBtn.query = "tool";
+let musicaModal = document.getElementById("musica-modal");
+let musicaModalContent = document.getElementById("modal-content");
+let musicaBtn = document.getElementById("musica-btn");
+let queryBtn = document.getElementById("query-btn");
 
-async function showMusicQuery(){
-    let pesquisa = document.createElement("input");
-    let btn = document.createElement("button");
-    let musicName = pesquisa.value;
-    pesquisa.setAttribute("");
-    btn.addEventListener("click",searchMusic);
-    btn.query = pesquisa.value
+musicaBtn.addEventListener("click", showMusicModal);
+queryBtn.addEventListener("click", showMusicResults);
+
+window.onclick = function (event) {
+    if (event.target === musicaModal) {
+        musicaModal.style.display = "none";
+    }
+}
+function showMusicModal() {
+    musicaModal.style.display = "block";
 }
 
-async function searchMusic(evt){
-    let url = "/comunidade/musicas/";
-     try {
+async function showMusicResults() {
+    let musicName = document.getElementById("music-query").value;
+    const response = await searchMusic(musicName);
+
+    document.querySelectorAll('.musica-div').forEach(e => e.remove());
+
+    Object.entries(response).forEach(([key, val]) => {
+        let musicaDiv = document.createElement("div");
+        musicaDiv.className = "musica-div";
+        musicaDiv.style.width = "100px"; // da pra tirar isso daqui dps
+        musicaDiv.style.height = "100px";
+
+        let musicaNome = document.createElement("p");
+        musicaNome.innerText = val["nome"];
+
+        let musicaLink = document.createElement("p");
+        musicaLink.innerText = val["linkmusica"];
+
+        let musicaArtista = document.createElement("p");
+        musicaArtista.innerText = val["nomeartista"];
+
+        let musicaImagem = document.createElement("img");
+        musicaImagem.setAttribute("src", val["imagem"]);
+        musicaImagem.style.width = "100px"; // da pra tirar isso daqui dps
+        musicaImagem.style.height = "100px";
+
+        musicaModalContent.appendChild(musicaDiv); //Adiciona uma das musicas para o modal
+        musicaDiv.appendChild(musicaNome) // Adiciona as caracteristicas da musicas para o modal
+            .appendChild(musicaLink)
+            .appendChild(musicaArtista)
+            .appendChild(musicaImagem);
+
+    });
+}
+
+async function searchMusic(musicName) {
+    const url = "/comunidade/musicas/";
+    try {
         const response = await fetch(url, {
             method: "POST",
             headers: { 'X-CSRFToken': getCookie("csrftoken") },
             body: JSON.stringify({
-                "query": evt.currentTarget.query
+                "query": musicName
             }),
         })
             .then(response => {
@@ -149,10 +186,32 @@ async function searchMusic(evt){
                 }
                 return response.json();
             })
-            .then(response => {
-                console.log(response);
+            .then(data => {
+                return data['musicas'];
             })
         return response;
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+async function saveMusic(nome, artista) {
+    const url = "/comunidade/salvar_musica/";
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { 'X-CSRFToken': getCookie("csrftoken") },
+            body: JSON.stringify({
+                "nome": nome,
+                "arista": artista
+            })
+        })
+            .then(response => {
+                console.log(response.status);
+                if (!response.ok) {
+                    throw new Error("HTTP STATUS " + response.status);
+                }
+            })
     } catch (error) {
         console.error(error.message);
     }
