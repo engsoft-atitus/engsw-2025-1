@@ -86,7 +86,7 @@ def community_preview(request, nome_tag):
     posts = Post.objects.filter(community=community.id).order_by("-data_post")
     if community.id in user_community_ids:
         is_participating = True
-
+    
     form = PostForm()
     context = {'community':community, 
                'is_participating': is_participating, 
@@ -103,7 +103,8 @@ def community_post(request,community_id):
     community = get_object_or_404(Community,id=community_id)
     form = PostForm(request.POST)
     if request.method == "POST" and form.is_valid():
-        body = form.cleaned_data["body"]
+
+         # O usuário já da like no seu próprio post
         nome = form.cleaned_data["musica_nome"] 
         artista = form.cleaned_data["musica_artista"]
         link = form.cleaned_data["musica_link"]
@@ -117,7 +118,14 @@ def community_post(request,community_id):
                 )
         else:
             musica = None
-        post = Post(body=body,user=request.user,community=community,musica=musica)
+        body = form.cleaned_data["body"]
+        post = Post.objects.create(
+            body=body,
+            user=request.user,
+            community=community,
+            musica=musica)
+        post.curtidores.add(request.user)   
+        post.like()
         post.save()
     return redirect(community_preview, nome_tag = community.nome_tag)
 
@@ -165,6 +173,39 @@ def edit_post(request):
             else:
                 return JsonResponse({'status':'false','message':'Body exceeded max length of 500','postBody':post.body},status=406)
     return redirect(my_communities)
+
+@login_required
+def like_post(request):
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        post_id = json_data.get('id')
+
+        try:
+            post = Post.objects.filter(id=post_id).get()
+            post.curtidores.add(request.user)
+            post.like()
+            post.save()
+            return JsonResponse({'status':'true'},status=200)
+        except:
+            return JsonResponse({'status':'false'},status=500)
+    return redirect(my_communities)
+
+@login_required
+def dislike_post(request):
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        post_id = json_data.get('id')
+
+        try:
+            post = Post.objects.filter(id=post_id).get()
+            post.curtidores.remove(request.user)
+            post.dislike()
+            post.save()
+            return JsonResponse({'status':'true'},status=200)
+        except:
+            return JsonResponse({'status':'false'},status=500)
+    return redirect(my_communities)
+
 
 @login_required # Essa view é usada para buscar as musicas do deezer
 def deezer_search(request): 

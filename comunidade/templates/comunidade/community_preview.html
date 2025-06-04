@@ -80,16 +80,29 @@
               <h4>{{post.user.username}}</h4>
             </div>
             <p class="post-body">{{post.body}}</p>
+
+            <div class="low-post-section">
             {% localtime on %}
               <p>{{post.data_post|timezone:"America/Sao_Paulo"|date:"Y m d H:i"}}</p>
             {% endlocaltime %}
+              <div id="{{post.id}}" class="like-section">
+                {% if request.user in post.curtidores.all %}
+                <button class="like-post" onclick="dislike(this.parentNode)"><img class="like" src="{% static "comunidade/dislike.png"%}" alt="Botão de descurtir"></button> 
+                {% else %}
+                <button class="like-post" onclick="like(this.parentNode)"><img class="like" src="{% static "comunidade/like.png"%}" alt="Botão de curtir"></button>
+                {% endif %}
+                <p class="curtidas">{{post.curtidas}}</p> 
+              </div>     
+            </div>
+
+
             {% if post.musica != None %}
               <a href="{% url 'player' %}?nome={{ post.musica.nome }}&nomeartista={{ post.musica.artista }}&linkmusica={{ post.musica.link }}&imagem={{ post.musica.imagem }}"><img src="{{post.musica.imagem}}"></a>
               <p>{{post.musica.nome}}</p>
               <p>{{post.musica.artista}}</p>
             {% endif %}
           </article>
-      </div>
+        </div>
         {% if post.user == request.user %}
           <button class="edit-post" onclick="setEditPost(this.parentNode)">Editar</button>
           <button class="delete-post"><a href="{% url 'delete_post' post.id %}">Deletar</a></button>    

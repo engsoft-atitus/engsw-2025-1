@@ -117,6 +117,79 @@ function getCookie(name) {
     return cookieValue;
 }
 
+async function like(element) {
+    let likeElement = element.querySelector(".like-post");
+    let curtidas = element.querySelector(".curtidas");
+    let image = likeElement.querySelector(".like");
+    let curtidasValue = parseInt(curtidas.innerText);
+
+    await setLike(element.id);
+
+    curtidasValue += 1;
+    curtidas.innerText = curtidasValue;
+    image.setAttribute("src", "/static/comunidade/dislike.png");
+    likeElement.setAttribute("onclick", "dislike(this.parentNode)");
+}
+
+async function dislike(element) {
+    let likeElement = element.querySelector(".like-post");
+    let curtidas = element.querySelector(".curtidas");
+    let image = likeElement.querySelector(".like");
+    let curtidasValue = parseInt(curtidas.innerText);
+
+    await setDislike(element.id);
+
+    curtidasValue -= 1;
+    curtidas.innerText = curtidasValue;
+    image.setAttribute("src", "/static/comunidade/like.png");
+    likeElement.setAttribute("onclick", "like(this.parentNode)");
+}
+
+async function setLike(id) {
+    const url = "/comunidade/post/like/";
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { 'X-CSRFToken': getCookie("csrftoken") },
+            body: JSON.stringify({
+                "id": id
+            }),
+        })
+            .then(response => {
+                console.log(response.status);
+                if (!response.ok) {
+                    throw new Error("HTTP STATUS " + response.status);
+                }
+                return response.json();
+            })
+        return response;
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+async function setDislike(id) {
+    const url = "/comunidade/post/dislike/";
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { 'X-CSRFToken': getCookie("csrftoken") },
+            body: JSON.stringify({
+                "id": id
+            }),
+        })
+            .then(response => {
+                console.log(response.status);
+                if (!response.ok) {
+                    throw new Error("HTTP STATUS " + response.status);
+                }
+                return response.json();
+            })
+        return response;
+    } catch (error) {
+        console.error(error.message);
+    }
+}
 let musicaModal = document.getElementById("musica-modal");
 let musicaModalContent = document.getElementById("modal-content");
 let musicaBtn = document.getElementById("musica-btn");
@@ -143,7 +216,7 @@ async function showMusicResults() {
     Object.entries(response).forEach(([key, val]) => {
         // Adiciona cada botão (quadrado) para músicas
         let musicaDiv = document.createElement("button");
-        musicaDiv.setAttribute("type","button");
+        musicaDiv.setAttribute("type", "button");
         musicaDiv.className = "musica-div";
         musicaDiv.style.width = "100px"; // da pra tirar isso daqui dps
         musicaDiv.style.height = "100px";
@@ -167,12 +240,12 @@ async function showMusicResults() {
             .appendChild(musicaNome)
             .appendChild(musicaArtista);
         // Botão para selecionar músicas e mandar elas para o form  
-        musicaDiv.setAttribute("onclick",`setMusic('${val["nome"]}','${val["nomeartista"]}','${val["linkmusica"]}','${val["imagem"]}')`);
+        musicaDiv.setAttribute("onclick", `setMusic('${val["nome"]}','${val["nomeartista"]}','${val["linkmusica"]}','${val["imagem"]}')`);
     });
 }
 
 // Coloca os valores no form e fecha o modal
-function setMusic(musicaNome,musicaArtista,musicaLink,musicaImagem){
+function setMusic(musicaNome, musicaArtista, musicaLink, musicaImagem) {
     document.getElementById("id_musica_nome").value = musicaNome;
     document.getElementById("id_musica_artista").value = musicaArtista;
     document.getElementById("id_musica_link").value = musicaLink;
