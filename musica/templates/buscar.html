@@ -48,7 +48,7 @@
         }
 
         /* Estilização do Menu que contém as opções de escolha da barra de pesquisa */
-        
+
         .barra-pesquisa {
             border-radius: 5px;
             border: 1px solid #6545F0;
@@ -56,10 +56,13 @@
         }
 
         .dropdown-menu {
-            position: absolute;
+            position: fixed;
             top: 40px;
-            right: 700px;
+            left: 50%;
+            margin-left: 200px;
             background-color: #6545F0;
+            width: 110px;
+            transform: translateX(-50%);
             padding: 10px;
             border-radius: 8px;
             display: none;
@@ -96,7 +99,7 @@
 
         .nav-list-pesquisa {
             z-index: 3;
-            position: fixed;
+            position: relative;
             bottom: 0;
             right: 0;
             width: 100vw;
@@ -124,6 +127,7 @@
             <header>
                 <form method="GET" action="{% url 'buscar_musicas' %}">
                     <input class="barra-pesquisa" type="text" name="q" placeholder=" O que você quer ouvir ?">
+                    <input class="" type="hidden" id="tipo-pesquisa" name="type" value="musicas">
                     <button class="button" type="submit">Buscar</button>
                     <button class="seta-toggle" type="button">&#9654;</button>
                 </form>
@@ -199,6 +203,28 @@
                 if (!toggleBtn.contains(event.target) && !dropdownMenu.contains(event.target)) {
                     dropdownMenu.classList.remove('active');
                 }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchTypeInput = document.getElementById("tipo-pesquisa");
+            const musicButton = document.querySelector(".option-button:nth-child(2)");
+            const playlistButton = document.querySelector(".option-button:nth-child(1)");
+
+            musicButton.addEventListener("click", function () {
+                searchTypeInput.value = "musicas";
+                musicButton.style.backgroundColor = "#008000";
+                musicButton.style.color = "white";
+                playlistButton.style.backgroundColor = "white";
+                playlistButton.style.color = "#6545F0";
+            });
+
+            playlistButton.addEventListener("click", function () {
+                searchTypeInput.value = "playlists";
+                playlistButton.style.backgroundColor = "#008000";
+                playlistButton.style.color = "white";
+                musicButton.style.backgroundColor = "white";
+                musicButton.style.color = "#6545F0";
             });
         });
     </script>
