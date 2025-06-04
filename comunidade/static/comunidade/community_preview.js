@@ -122,25 +122,26 @@ let musicaModalContent = document.getElementById("modal-content");
 let musicaBtn = document.getElementById("musica-btn");
 let queryBtn = document.getElementById("query-btn");
 
-musicaBtn.addEventListener("click", showMusicModal);
-queryBtn.addEventListener("click", showMusicResults);
+musicaBtn.addEventListener("click", showMusicModal); //Botão para mostar modal
+queryBtn.addEventListener("click", showMusicResults); // Pesquisa as musicas e mostra elas
 
-window.onclick = function (event) {
-    if (event.target === musicaModal) {
-        musicaModal.style.display = "none";
+window.onclick = function (event) { // Quando o modal está ativo
+    if (event.target === musicaModal) { // Clicar em qualquer lugar fora dele
+        musicaModal.style.display = "none"; // Fecha ele
     }
 }
-function showMusicModal() {
+function showMusicModal() { // Mostra o modal da musica
     musicaModal.style.display = "block";
 }
 
 async function showMusicResults() {
     let musicName = document.getElementById("music-query").value;
     const response = await searchMusic(musicName);
-
+    // Remove os botoes das musicas anteriores(caso existam)
     document.querySelectorAll('.musica-div').forEach(e => e.remove());
 
     Object.entries(response).forEach(([key, val]) => {
+        // Adiciona cada botão (quadrado) para músicas
         let musicaDiv = document.createElement("button");
         musicaDiv.setAttribute("type","button");
         musicaDiv.className = "musica-div";
@@ -165,16 +166,21 @@ async function showMusicResults() {
         musicaDiv.appendChild(musicaImagem) // Adiciona as caracteristicas da musicas para o modal
             .appendChild(musicaNome)
             .appendChild(musicaArtista);
-        musicaDiv.setAttribute("onclick",`setMusic('${val["nome"]}','${val["nomeartista"]}')`);
+        // Botão para selecionar músicas e mandar elas para o form  
+        musicaDiv.setAttribute("onclick",`setMusic('${val["nome"]}','${val["nomeartista"]}','${val["linkmusica"]}','${val["imagem"]}')`);
     });
 }
 
-function setMusic(musicaNome,musicaArtista){
+// Coloca os valores no form e fecha o modal
+function setMusic(musicaNome,musicaArtista,musicaLink,musicaImagem){
     document.getElementById("id_musica_nome").value = musicaNome;
     document.getElementById("id_musica_artista").value = musicaArtista;
+    document.getElementById("id_musica_link").value = musicaLink;
+    document.getElementById("id_musica_imagem").value = musicaImagem;
     musicaModal.style.display = "none";
 }
 
+// Pesquisa as musicas e retorna os primeiros 9 resultados
 async function searchMusic(musicName) {
     const url = "/comunidade/musicas/";
     try {

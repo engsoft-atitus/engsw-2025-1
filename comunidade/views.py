@@ -106,10 +106,14 @@ def community_post(request,community_id):
         body = form.cleaned_data["body"]
         nome = form.cleaned_data["musica_nome"] 
         artista = form.cleaned_data["musica_artista"]
-        if (nome != '') and (artista != ''):
+        link = form.cleaned_data["musica_link"]
+        imagem = form.cleaned_data["musica_imagem"]
+        if (nome != '') and (artista != '') and (link != '') and (imagem != ''):
             musica, _ = MusicaSalva.objects.get_or_create(
                     nome=nome,
-                    artista=artista
+                    artista=artista,
+                    imagem=imagem,
+                    link=link
                 )
         else:
             musica = None
@@ -154,7 +158,7 @@ def edit_post(request):
         post = get_object_or_404(Post,id=post_id)
         if post.user.id == request.user.id:
             body = json_data.get('postBody')
-            if len(body) <= 500:
+            if len(body) <= 500: # Check do tamanho
                 post.body = body
                 post.save()
                 return JsonResponse({'status':'true','postBody':body},status=200)
@@ -162,8 +166,8 @@ def edit_post(request):
                 return JsonResponse({'status':'false','message':'Body exceeded max length of 500','postBody':post.body},status=406)
     return redirect(my_communities)
 
-@login_required
-def deezer_search(request):
+@login_required # Essa view é usada para buscar as musicas do deezer
+def deezer_search(request): 
     if request.method == "POST":
         json_data = json.loads(request.body)
         query = json_data.get('query')
