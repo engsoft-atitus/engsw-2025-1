@@ -94,13 +94,14 @@ def ver_playlist(request, playlist_id):
             if dados.get("data"):
                 track = dados["data"][0]
                 musica_info = {
+                    'id': musica.id,
                     'nome': track['title'],
                     'linkmusica': track['preview'],
                     'nomeartista': track['artist']['name'],
                     'imagem': track['album']['cover_medium'],
                 }
                 musicas_encontradas.append(musica_info)
-                print("JSON da música:", json.dumps(musica_info, indent=4))
+            print(musicas_encontradas)
 
         request.session['musicas'] = musicas_encontradas
 
@@ -129,11 +130,13 @@ def excluir_playlist(request, playlist_id):
     return redirect('listar_playlists')
 
 @login_required
+def remover_musica_da_playlist(request, playlist_id, musica_id):
+    playlist = get_object_or_404(Playlist, id=playlist_id)
+    musica = get_object_or_404(MusicaSalva, id=musica_id)
+    playlist.musicas.remove(musica)  # remove a música da playlist (tabela ManyToMany)
+    return redirect('ver_playlist', playlist_id=playlist_id)
+
+@login_required
 def listar_playlists(request):
     playlists = Playlist.objects.filter(user=request.user)  # Filtra pelo usuário logado
     return render(request, 'minhasPlaylists.html', {'playlists': playlists})
-    
-@login_required
-def logout_view(request):
-    logout(request)
-    return redirect('sign')
