@@ -1,15 +1,18 @@
 from django.test import TestCase
 from usuario.models import Profile
 from django.contrib.auth.models import User
-from usuario.forms import ProfileForm
+from usuario.forms import CadastroForm
 
-class ProfileFormTest(TestCase):
-    def test_salvar_formulario_profile(self):
-        user = User.objects.create_user(username='joao', password='123')
-        perfil = Profile(user=user)
+class CadastroFormTest(TestCase):
+    def test_cadastro_form_valido(self):
+        form_data = {
+            'primeiro_nome': 'Carlo',
+            'sobrenome': 'Guterres',
+            'usuario': 'carlo57',
+            'email': 'carlo@example.com',
+            'senha': 'Senha123',
+            'confirmacao': 'Senha123'
+        }
 
-        form = ProfileForm(data={'bio': 'Nova biografia'}, instance=perfil)
-        self.assertTrue(form.is_valid())
-
-        perfil_salvo = form.save()
-        self.assertEqual(perfil_salvo.bio, 'Nova biografia')
+        form = CadastroForm(data=form_data)
+        self.assertTrue(form.is_valid(), form.errors)
