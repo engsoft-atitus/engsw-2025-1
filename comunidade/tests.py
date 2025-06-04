@@ -39,7 +39,7 @@ class CommunityTests(TestCase):
                 lista_tags.add(comunidade.nome_tag)
 
         # Verifica se todas as tags foram produzidas
-        self.assertEqual(len(lista_tags),test_iterations,'Tag nao criada')
+        self.assertEqual(len(lista_tags),100,'Tag nao criada')
     
     def test_comunidade_criar_e_salvar(self):
         """Test creating and saving a Community instance"""
