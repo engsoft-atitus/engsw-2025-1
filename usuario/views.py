@@ -1,5 +1,5 @@
 # views.py
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from .forms import CadastroForm, LoginForm
 from django.contrib.auth.models import User
@@ -53,20 +53,21 @@ def login_view(request):
 
 
 @login_required
-def perfil_view(request):
+def perfil_view(request, username):
     perfil, _ = Profile.objects.get_or_create(user=request.user)
-
+    usuario = get_object_or_404(User, username=username)
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=perfil)
         if form.is_valid():
             form.save()
-            return redirect('perfil')  # volta para a mesma página, com os dados atualizados
+            return redirect('perfil', username=request.user.username)  # volta para a mesma página, com os dados atualizados
     else:
         form = ProfileForm(instance=perfil)
 
     return render(request, 'usuarios/perfil.html', {
         'form': form,
-        'perfil': perfil
+        'perfil': perfil,
+        'usuario': usuario
     })
 
 @require_POST
@@ -98,5 +99,17 @@ def genero_view(request):
 def home(request):
     return render(request, 'usuarios/home.html')
 
+@login_required
 def principal_view(request):
     return render(request, 'usuarios/principal.html')
+
+
+
+
+def buscar_usuario_view(request):
+    usuarios = []
+    busca = ''
+    if request.method == 'POST':
+        busca = request.POST.get('usuario', '')
+        usuarios = User.objects.filter(username__icontains=busca)[:10]
+    return render(request, 'usuarios/buscar-usuario.html', {'usuarios': usuarios, 'busca': busca})

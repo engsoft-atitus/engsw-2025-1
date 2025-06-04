@@ -211,7 +211,7 @@
             <div class="button-group">
 
                 <!-- Formulário para salvar perfil -->
-                <form method="post" action="{% url 'perfil' %}">
+                <form method="post" action="{% url 'perfil' request.user.username %}">
                     {% csrf_token %}
                     <!-- campos do perfil aqui -->
                     <button type="submit">Salvar Perfil</button>
@@ -230,7 +230,7 @@
         <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i>Buscar</a>
         <a href="{% url 'listar_playlists' %}"><i class="fas fa-book"></i>Biblioteca</a>
         <a href="{% url 'my_communities' %}"><i class="fas fa-users"></i>Comunidade</a>
-        <a href="{% url 'perfil' %}"><i class="fas fa-user"></i>Perfil</a>
+        <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i>Perfil</a>
     </nav>
 </body>
 </html>
