@@ -10,3 +10,15 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+class Seguidor(models.Model):
+    usuario = models.ForeignKey(User, related_name='seguidores', on_delete=models.CASCADE)
+    seguidor = models.ForeignKey(User, related_name='seguidos', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('usuario', 'seguidor')  # Impede duplicatas
+        verbose_name = 'Seguidor'
+        verbose_name_plural = 'Seguidores'
+
+    def __str__(self):
+        return f'{self.seguidor.username} segue {self.usuario.username}'

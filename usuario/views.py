@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import CadastroForm, LoginForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from usuario.models import Profile
+from usuario.models import Profile, Seguidor
 from .forms import ProfileForm
 from django.http import JsonResponse, Http404
 from django.views.decorators.http import require_POST
@@ -51,22 +51,29 @@ def login_view(request):
 
     return render(request, 'usuarios/login.html', {'form': form})
 
-
+@login_required
 def perfil_view(request, username):
     usuario = get_object_or_404(User, username=username)
+    perfil = get_object_or_404(Profile, user=usuario)
 
-    try:
-        perfil = usuario.profile
-    except:
-        perfil = None
+    is_private = perfil.privacidade  # campo que indica se é privado
 
-    is_private = perfil.privacidade and request.user != usuario
+    # Verifica se o usuário logado já segue o usuário do perfil
+    is_following = False
+    if request.user != usuario:
+        is_following = Seguidor.objects.filter(
+            usuario=usuario, 
+            seguidor=request.user
+            ).exists()
 
-    return render(request, 'usuarios/perfil.html', {
-        'perfil': perfil,
+
+    context = {
         'usuario': usuario,
+        'perfil': perfil,
         'is_private': is_private,
-    })
+        'is_following': is_following,
+    }
+    return render(request, 'usuarios/perfil.html', context)
 
 @login_required    
 def perfil_config_view(request):
@@ -84,6 +91,29 @@ def perfil_config_view(request):
         'form': form,
         'perfil': perfil,
     })
+    
+@login_required
+@require_POST
+def seguir_view(request):
+    user_id = request.POST.get('user_id')
+    try:
+        usuario = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'Usuário não encontrado'}, status=404)
+
+    # Verifica se já está seguindo
+    seguindolink = Seguidor.objects.filter(usuario=usuario, seguidor=request.user)
+
+    if seguindolink.exists():
+        # Se já segue, remove (desseguir)
+        seguindolink.delete()
+        status = 'unfollowed'
+    else:
+        # Caso contrário, cria a relação (seguir)
+        Seguidor.objects.create(usuario=usuario, seguidor=request.user)
+        status = 'followed'
+
+    return JsonResponse({'status': status})
 
 
 @require_POST

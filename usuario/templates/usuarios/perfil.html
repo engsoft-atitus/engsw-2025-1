@@ -12,7 +12,14 @@
     <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
     <style>
         body {
-            background: linear-gradient(to bottom right, #ED6827, #EF4E44, #4D1E9B, #182D34, black);
+            background: linear-gradient(
+                to bottom right,
+                 #5A005A,
+                  #620077,
+                   #7117B8,
+                    #7932DE,
+                     #8977FF,
+                      #B6B2FF);
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
@@ -59,11 +66,15 @@
         .btn-config:hover {
             background-color: #0056b3;
         }
+
+        .button-group {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-    <h2>Perfil de {{ usuario.username }}</h2>
+    <h2>{{ usuario.username }}</h2>
 
     <div class="info-bloco">
         <p><strong>Nome:</strong> {{ usuario.first_name }} {{ usuario.last_name }}</p>
@@ -91,9 +102,17 @@
 
         {% if request.user == usuario %}
             <div class="button-group" style="margin-top: 20px;">
-                <a href="{% url 'perfil_config' %}" class="btn-config">Editar Perfil</a>
+                <a href="{% url 'perfil_config' %}" class="btn-config">Configurações</a>
             </div>
-        {% endif %}
+        {% else %}
+            <div class="button-group" style="margin-top: 20px;">
+                {% if is_following %}
+                    <button id="follow-btn" class="btn btn-success">Seguindo</button>
+                {% else %}
+                    <button id="follow-btn" class="btn btn-primary">Seguir</button>
+                {% endif %}
+            </div>
+       {% endif %}
     </div>
     <nav class="navbar">
         <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i> Buscar</a>
@@ -101,5 +120,33 @@
         <a href="{% url 'my_communities' %}"><i class="fas fa-users"></i> Comunidade</a>
         <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i> Perfil</a>
     </nav>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#follow-btn').click(function() {
+                const btn = $(this);
+                $.ajax({
+                    url: "{% url 'seguir' %}",  // Você criará essa URL
+                    method: 'POST',
+                    data: {
+                        'user_id': "{{ usuario.id }}",
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.status === 'followed') {
+                            btn.text('Seguindo');
+                            btn.removeClass('btn-primary').addClass('btn-success');
+                        } else if (response.status === 'unfollowed') {
+                            btn.text('Seguir');
+                            btn.removeClass('btn-success').addClass('btn-primary');
+                        }
+                    },
+                    error: function() {
+                        alert('Erro ao tentar seguir/desseguir usuário.');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
