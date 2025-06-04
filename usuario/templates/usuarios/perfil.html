@@ -12,13 +12,7 @@
     <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
     <style>
         body {
-            background: linear-gradient(
-            to bottom right,
-            #ED6827,
-            #EF4E44,
-            #4D1E9B,
-            #182D34,
-            black);
+            background: linear-gradient(to bottom right, #ED6827, #EF4E44, #4D1E9B, #182D34, black);
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
@@ -26,211 +20,86 @@
             height: 120vh;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            }
-    
         .container {
             max-width: 600px;
-            margin: auto;
             background: rgba(255, 255, 255, 0.5);
             padding: 2rem;
             border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
-            height: 90%;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             width: 90%;
             margin-bottom: 100px;
         }
-        
-    
+
         h2 {
             text-align: center;
             margin-bottom: 1.5rem;
             font-size: 1.5rem;
             font-weight: 600;
         }
-    
+
         .info-bloco {
             background-color: #f1f3f5;
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 1rem;
         }
-    
-        .form-label {
-            font-weight: 500;
-            margin-top: 1rem;
+
+        .btn-config {
             display: block;
-        }
-    
-        input, textarea, select {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #ced4da;
-            border-radius: 8px;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-    
-        textarea {
-            resize: vertical;
-        }
-    
-        .form-error {
-            color: red;
-            font-size: 0.9rem;
-        }
-    
-        .checkbox-wrapper {
-        display: flex;
-        align-items: center;
-        margin-top: 1rem;
-        }
-        input[type="checkbox"] {
-        width: 20px;
-        height: 20px;
-        }
-
-
-
-        .checkbox-wrapper label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0;
-            font-size: 1rem;
-        }
-    
-        .button-group {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 1.5rem;
-        }
-    
-        button[type="submit"] {
+            margin: 1rem auto;
             background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.5rem 1.25rem;
-            cursor: pointer;
-        }
-    
-        .button-secondary {
-            background-color: #6c757d;
             color: white;
             padding: 0.5rem 1.25rem;
             border-radius: 8px;
             text-decoration: none;
+            text-align: center;
+            width: fit-content;
         }
-    
-        .button-secondary:hover {
-            background-color: #5a6268;
-        }
-    
-        button[type="button"] {
-            background-color: #17a2b8;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            margin-bottom: 1rem;
-        }
-    
-        button[type="button"]:hover {
-            background-color: #138496;
+
+        .btn-config:hover {
+            background-color: #0056b3;
         }
     </style>
-    
 </head>
 <body>
     <div class="container">
-        <h2>Perfil</h2>
+    <h2>Perfil de {{ usuario.username }}</h2>
 
-        <div class="info-bloco">
-            <p><strong>Nome:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</p>
-            <p><strong>Usuário:</strong> {{ request.user.username }}</p>
-            <p><strong>Email:</strong> {{ request.user.email }}</p>
-        </div>
+    <div class="info-bloco">
+        <p><strong>Nome:</strong> {{ usuario.first_name }} {{ usuario.last_name }}</p>
+    </div>
 
-        {% if perfil.nascimento or perfil.generos_musicas or perfil.biografia %}
-        <div class="info-bloco">
-            {% if perfil.nascimento %}
-                <p><strong>Nascimento:</strong> {{ perfil.nascimento }}</p>
-            {% endif %}
-            {% if perfil.generos_musicas %}
-                <p><strong>Gêneros Musicais:</strong> {{ perfil.generos_musicas }}</p>
-            {% endif %}
-            {% if perfil.biografia %}
-                <p><strong>Biografia:</strong> {{ perfil.biografia }}</p>
-            {% endif %}
-            <p><strong>Privacidade:</strong> {{ perfil.privacidade|yesno:"Privado,Público" }}</p>
-        </div>
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
-
-            <label for="{{ form.nascimento.id_for_label }}" class="form-label">Data de Nascimento:</label>
-            {{ form.nascimento }}
-
-            {% for error in form.nascimento.errors %}
-                <div class="form-error">{{ error }}</div>
-            {% endfor %}
-
-            <label class="form-label">Gêneros Musicais:</label>
-            <button type="button" onclick="window.location.href='{% url 'genero' %}'">
-                Selecionar Gêneros
-            </button>
-
-            {% for error in form.generos_musicas.errors %}
-                <div class="form-error">{{ error }}</div>
-            {% endfor %}
-
-            <label for="{{ form.biografia.id_for_label }}" class="form-label">Biografia:</label>
-            {{ form.biografia }}
-
-            {% for error in form.biografia.errors %}
-                <div class="form-error">{{ error }}</div>
-            {% endfor %}
-
-            <div class="form-check align-items-center d-flex gap-2">
-                <label class="form-check-label mb-0" for="{{ form.privacidade.id_for_label }}">
-                  Perfil Privado
-                </label>
-                {{ form.privacidade }}
-              </div>
-            
-
-            {% for error in form.privacidade.errors %}
-                <div class="form-error">{{ error }}</div>
-            {% endfor %}
-
-            <div class="button-group">
-
-                <!-- Formulário para salvar perfil -->
-                <form method="post" action="{% url 'perfil' request.user.username %}">
-                    {% csrf_token %}
-                    <!-- campos do perfil aqui -->
-                    <button type="submit">Salvar Perfil</button>
-                </form>
-            
-                <!-- Formulário para logout -->
-                <form method="post" action="{% url 'logout' %}" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="button-secondary">Sair</button>
-                </form>
-            
+        {% if is_private %}
+            <div class="info-bloco">
+                <p><em>Este perfil é privado. Nenhuma outra informação está disponível.</em></p>
             </div>
-        </form>
+        {% else %}
+            <div class="info-bloco">
+                <p><strong>Email:</strong> {{ usuario.email }}</p>
+                {% if perfil.nascimento %}
+                    <p><strong>Nascimento:</strong> {{ perfil.nascimento }}</p>
+                {% endif %}
+                {% if perfil.generos_musicas %}
+                    <p><strong>Gêneros Musicais:</strong> {{ perfil.generos_musicas }}</p>
+                {% endif %}
+                {% if perfil.biografia %}
+                    <p><strong>Biografia:</strong> {{ perfil.biografia }}</p>
+                {% endif %}
+                <p><strong>Privacidade:</strong> {{ perfil.privacidade|yesno:"Público, Privado" }}</p>
+            </div>
+        {% endif %}
+
+        {% if request.user == usuario %}
+            <div class="button-group" style="margin-top: 20px;">
+                <a href="{% url 'perfil_config' %}" class="btn-config">Editar Perfil</a>
+            </div>
+        {% endif %}
     </div>
     <nav class="navbar">
-        <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i>Buscar</a>
-        <a href="{% url 'listar_playlists' %}"><i class="fas fa-book"></i>Biblioteca</a>
-        <a href="{% url 'my_communities' %}"><i class="fas fa-users"></i>Comunidade</a>
-        <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i>Perfil</a>
+        <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i> Buscar</a>
+        <a href="{% url 'listar_playlists' %}"><i class="fas fa-book"></i> Biblioteca</a>
+        <a href="{% url 'my_communities' %}"><i class="fas fa-users"></i> Comunidade</a>
+        <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i> Perfil</a>
     </nav>
 </body>
 </html>

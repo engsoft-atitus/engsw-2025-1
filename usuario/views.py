@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from usuario.models import Profile
 from .forms import ProfileForm
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.views.decorators.http import require_POST
 
 def cadastro_view(request):
@@ -52,23 +52,39 @@ def login_view(request):
     return render(request, 'usuarios/login.html', {'form': form})
 
 
-@login_required
 def perfil_view(request, username):
-    perfil, _ = Profile.objects.get_or_create(user=request.user)
     usuario = get_object_or_404(User, username=username)
+
+    try:
+        perfil = usuario.profile
+    except:
+        perfil = None
+
+    is_private = perfil.privacidade and request.user != usuario
+
+    return render(request, 'usuarios/perfil.html', {
+        'perfil': perfil,
+        'usuario': usuario,
+        'is_private': is_private,
+    })
+
+@login_required    
+def perfil_config_view(request):
+    perfil, _ = Profile.objects.get_or_create(user=request.user)
+
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=perfil)
         if form.is_valid():
             form.save()
-            return redirect('perfil', username=request.user.username)  # volta para a mesma página, com os dados atualizados
+            return redirect('perfil', username=request.user.username)  # Redireciona para o perfil do usuário
     else:
         form = ProfileForm(instance=perfil)
 
-    return render(request, 'usuarios/perfil.html', {
+    return render(request, 'usuarios/perfil-config.html', {
         'form': form,
         'perfil': perfil,
-        'usuario': usuario
     })
+
 
 @require_POST
 def logout_view(request):
@@ -105,7 +121,7 @@ def principal_view(request):
 
 
 
-
+@login_required
 def buscar_usuario_view(request):
     usuarios = []
     busca = ''

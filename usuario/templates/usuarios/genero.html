@@ -273,7 +273,7 @@
                 errorMessage.textContent = 'Você deve selecionar exatamente 3 gêneros musicais.';
             }
         }
-
+        const redirectAfterSuccess = "{% url 'perfil_config' %}";
         // Evento de clique no botão de finalizar
         finalizarButton.addEventListener('click', () => {
             resultado.textContent = `Gêneros Musicais Selecionados: ${selectedGenres.join(', ')}`;
@@ -291,7 +291,7 @@
                     user:'{{ request.user.id }}' // Passa o ID do usuário logado
                 },
                 success: function(response) {
-                    window.location.href = '/usuario/perfil/';
+                    window.location.href = redirectAfterSuccess;
                 },
                 error: function(xhr, status, error) {
                     alert('Erro na requisição: ' + error);
