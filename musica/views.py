@@ -8,16 +8,18 @@ from .models import MusicaSalva, Playlist
 from django.contrib.auth import logout
 import json
 
-
 # Create your views here.
 
 @login_required
-def buscar_musicas(request):
+def pesquisa_musica(request):
     user = request.user
     playlists = Playlist.objects.filter(user=request.user)  # Filtra as playlists do usuário logado (Aqui também é responsável por mostrar as playlists do usuário na lista de playlists)
     musicas_encontradas = []
-    query = request.GET.get('q')  # Pega o que foi digitado
-    if query:
+
+    query = request.GET.get('q') 
+    search_type = request.GET.get("type", "musicas")
+
+    if search_type == "musicas" and query:
         url = f"https://api.deezer.com/search?q={query}&limit=9"
         r = requests.get(url)
         dados = r.json()
@@ -30,8 +32,16 @@ def buscar_musicas(request):
                 'imagem': track['album']['cover_medium'],  # imagem do álbum
             }
             musicas_encontradas.append(musica)
-    request.session['musicas'] = musicas_encontradas
-    return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists})
+            
+        request.session['musicas'] = musicas_encontradas
+        print("Musicas")
+        return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists})
+
+    elif search_type == "playlists":
+
+        return redirect("listar_playlists_todos")
+    print("Teste3")
+    return render(request, 'buscar.html', {'musicas': [], 'playlists': playlists})
 
 @login_required
 def player(request):
@@ -108,6 +118,7 @@ def ver_playlist(request, playlist_id):
             'musicas': musicas_encontradas,
             'playlist': playlist
         })
+        
 @login_required
 def criar_playlist(request):
     if request.method == 'POST':
@@ -137,3 +148,4 @@ def listar_playlists_usuario(request):
 @login_required
 def listar_playlists_todos(request):
     playlists = Playlist.objects.all()
+    return render(request, 'minhasPlaylists.html', {'playlists': playlists})
