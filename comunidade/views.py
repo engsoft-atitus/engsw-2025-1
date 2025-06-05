@@ -4,6 +4,9 @@ from comunidade.models import Community,Community_User,Post
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import json 
+import vercel_blob
+import requests
+from decouple import config
 
 @login_required
 def community_create(request):
@@ -12,9 +15,26 @@ def community_create(request):
         if form.is_valid():
             nome = form.cleaned_data['nome']
             sobre = form.cleaned_data['sobre']
-            profile_picture = form.cleaned_data['profile_picture']
-            
-            community = Community(nome=nome,sobre=sobre,profile_picture=profile_picture,criador=request.user)
+
+            profile_picture = request.FILES['profile_picture']
+
+            # Prepare o upload para o Vercel Blob
+            upload_url = 'https://blob.vercel-storage.com/upload'
+            headers = {
+                'Authorization': f'Bearer {config("VERCEL_BLOB_TOKEN")}'
+            }
+            files = {
+                'file': (profile_picture.name, profile_picture.read(), profile_picture.content_type),
+            }
+
+            response = requests.post(upload_url, headers=headers, files=files)
+            print(response)
+            if response.status_code == 200:
+                blob_data = response.json()
+                blob_url = blob_data.get('url')
+            else:
+                blob_url = None
+            community = Community(nome=nome,sobre=sobre,profile_picture=blob_url,criador=request.user)
             community.nome_tag_generator()
             community.save() # Salva no banco de dados
             return redirect(my_communities) # Redireciona para outra view 

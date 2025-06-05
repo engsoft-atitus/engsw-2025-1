@@ -11,7 +11,7 @@ class Community(models.Model):
     nome = models.CharField(max_length=100,validators=[MinLengthValidator(5)])
     nome_tag = models.CharField(max_length=105,unique=True,validators=[MinLengthValidator(10)])
     sobre = models.CharField(max_length=256)
-    profile_picture = models.ImageField()
+    profile_picture = models.URLField(blank=True,null=True)
     criador = models.ForeignKey(User,on_delete=models.CASCADE)
 
     def nome_tag_generator(self):
