@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from comunidade.models import Community,Post
 
 class CommunityForm(ModelForm):
-    profile_picture = forms.ImageField()
+    profile_picture = forms.ImageField(required=False)
     class Meta:
         model = Community
         fields = ('nome','sobre',)
@@ -12,7 +12,7 @@ class CommunityForm(ModelForm):
         }
 
 class CommunityEditForm(ModelForm):
-    #profile_picture = forms.ImageField(required=None)
+    profile_picture = forms.ImageField(required=False)
     class Meta:
         model = Community
         fields = ('nome','sobre')

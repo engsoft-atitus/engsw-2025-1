@@ -3,10 +3,9 @@ from comunidade.forms import CommunityForm,CommunityEditForm,PostForm
 from comunidade.models import Community,Community_User,Post
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django_project.settings import BLOB_READ_WRITE_TOKEN
 import json 
 import vercel_blob
-import requests
-from decouple import config
 
 @login_required
 def community_create(request):
@@ -15,29 +14,22 @@ def community_create(request):
         if form.is_valid():
             nome = form.cleaned_data['nome']
             sobre = form.cleaned_data['sobre']
-
-            profile_picture = request.FILES['profile_picture']
-
-            # Prepare o upload para o Vercel Blob
-            upload_url = 'https://blob.vercel-storage.com/upload'
-            headers = {
-                'Authorization': f'Bearer {config("VERCEL_BLOB_TOKEN")}'
-            }
-            files = {
-                'file': (profile_picture.name, profile_picture.read(), profile_picture.content_type),
-            }
-
-            response = requests.post(upload_url, headers=headers, files=files)
-            print(response)
-            if response.status_code == 200:
-                blob_data = response.json()
-                blob_url = blob_data.get('url')
+            profile_picture = form.cleaned_data['profile_picture']
+            if profile_picture != None:
+                try:
+                    response = vercel_blob.put(profile_picture.name,profile_picture.read(),options={"access":"public","token":BLOB_READ_WRITE_TOKEN})
+                    blob_url = response['url']
+                    community = Community(nome=nome, sobre=sobre, profile_picture=blob_url, criador=request.user)
+                    community.nome_tag_generator()
+                    community.save()
+                    return redirect(my_communities)
+                except:
+                    return redirect(my_communities)
             else:
-                blob_url = None
-            community = Community(nome=nome,sobre=sobre,profile_picture=blob_url,criador=request.user)
-            community.nome_tag_generator()
-            community.save() # Salva no banco de dados
-            return redirect(my_communities) # Redireciona para outra view 
+                community = Community(nome=nome,sobre=sobre,criador=request.user)
+                community.nome_tag_generator()
+                community.save() # Salva no banco de dados
+                return redirect(my_communities) # Redireciona para outra view 
     context = {"form":form, "titulo": "Criar Comunidade"}
     return render(request,"comunidade/community_create.html",context=context)
 
@@ -57,8 +49,12 @@ def community_edit(request,nome_tag):
                 community.sobre = sobre
                 #Caso enviem uma foto de perfil
                 if profile_picture != None:
-                    community.profile_picture = profile_picture
-
+                    try: # Não testei essa
+                        response = vercel_blob.put(profile_picture.name,profile_picture.read(),options={"access":"public","token":BLOB_READ_WRITE_TOKEN})
+                        blob_url = response['url']
+                        community.profile_picture = blob_url
+                    except:
+                        pass
                 community.save()
                 return redirect(community_preview, nome_tag=nome_tag)
         
