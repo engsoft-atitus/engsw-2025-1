@@ -88,6 +88,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            margin-left: 80px;
             gap: 30px;
         }
     </style>
@@ -135,7 +136,13 @@
                     <img src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856"
                         alt="">
                 </button>
+                <button style="background-color: transparent; border: none; position: relative">
+                    <img id="curtida"
+                        src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
+                        onclick="toggleFavorite()" alt="" width="30" style="cursor: pointer;">
+                </button>
             </div>
+
         </section>
         <nav>
             <a href="{% url 'buscar_musicas' %}">Buscar</a>
@@ -252,6 +259,20 @@
         currentIndex = (currentIndex + 1) % playlist.length;
         atualizarPlayer(playlist[currentIndex]);
     });
+    let isFavorited = false;
+
+    function toggleFavorite() {
+        const heart = document.getElementById('curtida');
+        const musicaAtual = playlist[currentIndex];
+
+        if (isFavorited) {
+            heart.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854";
+        } else {
+            heart.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286";
+            adicionarMusicaFavorita(musicaAtual);
+        }
+        isFavorited = !isFavorited;
+    }
 </script>
 
 </html>

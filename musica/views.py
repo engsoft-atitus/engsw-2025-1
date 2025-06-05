@@ -108,33 +108,7 @@ def ver_playlist(request, playlist_id):
             'musicas': musicas_encontradas,
             'playlist': playlist
         })
-@login_required
-def ver_playlist_curtidas(request):
-    playlist_curtidas = get_object_or_404(Playlist, nome="Músicas Curtidas", user=request.user)
-    musicas_salvas = playlist_curtidas.musicas.all()  # Obtém todas as músicas salvas na playlist "Músicas Curtidas"
-    musicas_encontradas = []
 
-    for musica in musicas_salvas:
-        url = f"https://api.deezer.com/search?q={musica.nome} {musica.artista}&limit=1"
-        r = requests.get(url)
-        dados = r.json()
-        if dados.get("data"):
-            track = dados["data"][0]
-            musica_info = {
-                'nome': track['title'],
-                'linkmusica': track['preview'],
-                'nomeartista': track['artist']['name'],
-                'imagem': track['album']['cover_medium'],
-            }
-            musicas_encontradas.append(musica_info)
-            print("JSON da música:", json.dumps(musica_info, indent=4))
-
-    request.session['musicas'] = musicas_encontradas
-
-    return render(request, 'minhasPlaylist.html', {
-        'musicas': musicas_encontradas,
-        'playlist': playlist_curtidas
-    })
 @login_required
 def criar_playlist(request):
     if request.method == 'POST':
@@ -147,6 +121,20 @@ def criar_playlist(request):
 
     return render(request, 'criar_playlist.html')
 
+@login_required
+def criar_playlist_curtidas(request):
+    nome = 'Músicas curtidas'
+    descricao = 'Suas músicas curtidas'
+    user_id = request.user.id
+    Playlist.objects.create(nome=nome, descricao=descricao, user_id=user_id)
+    return redirect('listar_playlists')
+
+@login_required
+def adicionarMusicasFavoritas(request, playlist_id):
+    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)
+    if playlist.user != request.user:
+        return HttpResponse("Você não tem permissão para adicionar músicas a esta playlist.")
+    musicas_salvas = MusicaSalva.objects.filter(playlists=playlist)
 @login_required
 def excluir_playlist(request, playlist_id):
     playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user) # Contém as playlists do usuário, as linhas abaixo são uma camada a mais de segurança
@@ -164,43 +152,3 @@ def listar_playlists(request):
 def logout_view(request):
     logout(request)
     return redirect('sign')
-
-@login_required
-def inicializar_playlist_curtidas(request):
-    # Verifica se o usuário já possui uma playlist de "Músicas Curtidas"
-    playlist_curtidas, criada = Playlist.objects.get_or_create(
-        nome="Músicas Curtidas",
-        user=request.user,
-        defaults={'descricao': 'Playlist das suas músicas'}
-    )
-    if criada:
-        print("Playlist 'Músicas Curtidas' criada para o usuário:", request.user.username)
-    return redirect('listar_playlists')
-
-@login_required
-def curtir_musica(request):
-    if request.method == "POST":
-        nome = request.POST.get('nome')
-        artista = request.POST.get('nomeartista')
-
-        # Obtém ou cria a playlist de "Músicas Curtidas" para o usuário
-        playlist_curtidas, _ = Playlist.objects.get_or_create(
-            nome="Músicas Curtidas",
-            user=request.user,
-            defaults={'descricao': 'Playlist das suas músicas'}
-        )
-
-        # Verifica se a música já existe
-        musica, criada = MusicaSalva.objects.get_or_create(
-            nome=nome,
-            artista=artista
-        )
-
-        # Adiciona à playlist de "Músicas Curtidas", se ainda não estiver
-        if not musica.playlists.filter(id=playlist_curtidas.id).exists():
-            musica.playlists.add(playlist_curtidas)
-            print("Música adicionada à playlist 'Músicas Curtidas'.")
-        else:
-            print("Música já está na playlist 'Músicas Curtidas'.")
-
-    return redirect('listar_playlists')

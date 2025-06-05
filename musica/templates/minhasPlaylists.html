@@ -55,14 +55,6 @@
                     <button type="button" class="button">Criar Nova Playlist</button>
                 </a>
                 <h1 class="section-title">Playlists</h1>
-                <li>
-                    <div class="textfield">
-                        <h1>Músicas Curtidas</h1>
-                        <p>Veja todas as músicas que você curtiu.</p>
-                    </div>
-                    <a href=""><img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt=""
-                            width="30"></a>
-                </li>
 
                 {% for playlist in playlists %}
                 <li>
@@ -72,9 +64,6 @@
                     </div>
                     <a href="{% url 'ver_playlist' playlist.id %}"><img
                             src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30"></a>
-                    <a><img id="curtida"
-                            src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
-                            onclick="toggleFavorite()" alt="" width="30"></a>
                     <a href="{% url 'excluir_playlist' playlist.id %}"
                         onclick="return confirm('Tem certeza que deseja excluir esta playlist?');">
                         <button type="button" class="button">Excluir</button>
@@ -93,18 +82,4 @@
         <a href="{% url 'perfil' %}">Perfil</a>
     </nav>
 </body>
-<script>
-    let isFavorited = false;
-
-    function toggleFavorite() {
-        const heart = document.getElementById('curtida');
-        if (isFavorited) {
-            heart.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"; // coração vazio
-        } else {
-            heart.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286"; // coração preenchido
-        }
-        isFavorited = !isFavorited;
-    }
-</script>
-
 </html>

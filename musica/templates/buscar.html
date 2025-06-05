@@ -84,9 +84,26 @@
                         target="" class="play">
                         <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30">
                     </a>
+                    <form method="POST" action="{% url 'salvar_musica' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="nome" value="{{ musica.nome }}">
+                        <input type="hidden" name="nomeartista" value="{{ musica.nomeartista }}">
+
+                        <select style="display: none;" name="playlist_id" required>
+                            {% for playlist in playlists %}
+                                {% if playlist.nome == 'Músicas curtidas' %}
+                                    <option value="{{ playlist.id }}" selected>{{ playlist.nome }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+
+                        <button type="submit" style="background-color: transparent; border: none;"><img id="curtida"
+                                src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
+                                onclick="toggleFavorite()" alt="" width="30" style="cursor: pointer;"></button>
+                    </form>
                     <div class="mobile-menu">
                         <span>&#8226;&#8226;&#8226;</span>
-                    </div>
+
                     <div class="nav-list">
                         <button class="close-menu">✕</button>
                         <form method="POST" action="{% url 'salvar_musica' %}">
@@ -117,7 +134,21 @@
     </nav>
     <script src="{% static 'musica/js/mobile-nav-bar.js' %}"></script>
 
-
 </body>
+<script>
+    let isFavorited = false;
+
+    async function toggleFavorite() {
+        const heart = document.getElementById('curtida');
+
+        if (isFavorited) {
+            heart.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854";
+        } else {
+            heart.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286";
+            await salvarMusica();
+        }
+        isFavorited = !isFavorited;
+    }
+</script>
 
 </html>
