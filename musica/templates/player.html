@@ -136,14 +136,28 @@
                     <img src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856"
                         alt="">
                 </button>
-                <button style="background-color: transparent; border: none; position: relative">
-                    <img id="curtida"
-                        src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
-                        onclick="toggleFavorite()" alt="" width="30" style="cursor: pointer;">
-                </button>
+                <form action="{% url 'salvar_musica' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="nome" value="{{ musica.titulo }}">
+                    <input type="hidden" name="nomeartista" value="{{ musica.artista }}">
+
+                    <label for="playlist_id" style="display: none;">Escolha uma playlist:</label>
+                    <select name="playlist_id" id="playlist_id" style="display: none;" required>
+                        {% for playlist in playlists %}
+                        <option value="{{ playlist.id }}">{{ playlist.nome }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" style="background-color: transparent; border: none;">
+                        <img id="curtida"
+                            src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
+                            onclick="toggleFavorite()" alt="" width="30" style="cursor: pointer;">
+                    </button>
+                </form>
             </div>
 
         </section>
+
         <nav>
             <a href="{% url 'buscar_musicas' %}">Buscar</a>
             <a href="{% url 'listar_playlists' %}">Biblioteca</a>
@@ -269,7 +283,6 @@
             heart.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854";
         } else {
             heart.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286";
-            adicionarMusicaFavorita(musicaAtual);
         }
         isFavorited = !isFavorited;
     }

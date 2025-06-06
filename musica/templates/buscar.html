@@ -133,7 +133,6 @@
         <a href="{% url 'perfil' %}">Perfil</a>
     </nav>
     <script src="{% static 'musica/js/mobile-nav-bar.js' %}"></script>
-
 </body>
 <script>
     let isFavorited = false;
@@ -145,7 +144,6 @@
             heart.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854";
         } else {
             heart.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286";
-            await salvarMusica();
         }
         isFavorited = !isFavorited;
     }
