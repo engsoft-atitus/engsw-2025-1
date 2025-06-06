@@ -83,7 +83,7 @@
           <p>{{post.data_post|timezone:"America/Sao_Paulo"|date:"Y m d H:i"}}</p>
         {% endlocaltime %}
      
-      <div id="{{post.id}}" class="like-section">
+      <div class="like-section">
         {% if request.user in post.curtidores.all %}
         <button class="like-post" onclick="dislike(this.parentNode)"><img class="like" src="{% static "comunidade/dislike.png"%}" alt="Botão de descurtir"></button> 
         {% else %}

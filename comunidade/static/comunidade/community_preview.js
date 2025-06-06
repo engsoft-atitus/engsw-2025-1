@@ -60,7 +60,7 @@ function setPost(element) {
 async function editPost(element) {
     let editPostBody = element.querySelector(".post-body-edit")
     let body = editPostBody.value;
-    let id = element.id;
+    let id = element.parentNode.id;
     const response = await sendEditPost(body, id);
 
     editPostBody.innerHTML = response['postBody'];
@@ -120,29 +120,35 @@ function getCookie(name) {
 
 async function like(element) {
     let likeElement = element.querySelector(".like-post");
+    likeElement.removeAttribute("onclick");
+    likeElement.disabled = true;
     let curtidas = element.querySelector(".curtidas");
     let image = likeElement.querySelector(".like");
     let curtidasValue = parseInt(curtidas.innerText);
 
-    await setLike(element.id);
+    await setLike(element.parentNode.parentNode.parentNode.parentNode.id);
 
     curtidasValue += 1;
     curtidas.innerText = curtidasValue;
     image.setAttribute("src", "/static/comunidade/dislike.png");
+    likeElement.disabled = false;
     likeElement.setAttribute("onclick", "dislike(this.parentNode)");
 }
 
 async function dislike(element) {
     let likeElement = element.querySelector(".like-post");
+    likeElement.removeAttribute("onclick");
+    likeElement.disabled = true;
     let curtidas = element.querySelector(".curtidas");
     let image = likeElement.querySelector(".like");
     let curtidasValue = parseInt(curtidas.innerText);
 
-    await setDislike(element.id);
+    await setDislike(element.parentNode.parentNode.parentNode.parentNode.id);
 
     curtidasValue -= 1;
     curtidas.innerText = curtidasValue;
     image.setAttribute("src", "/static/comunidade/like.png");
+    likeElement.disabled = false;
     likeElement.setAttribute("onclick", "like(this.parentNode)");
 }
 
