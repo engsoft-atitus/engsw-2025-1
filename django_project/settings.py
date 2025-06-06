@@ -13,9 +13,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from decouple import config
 import os
-from decouple import config
-
-BLOB_READ_WRITE_TOKEN = config("BLOB_READ_WRITE_TOKEN")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,13 +78,13 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "mydatabase",
-    }
+    'default': {
+        'ENGINE': 'django.db.backends.oracle',
+        'NAME': '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCPS)(HOST=' + config("DB_HOST") + ')(PORT=' + config("DB_PORT") + '))(CONNECT_DATA=(SERVICE_NAME=' + config("DB_NAME") + ')))',
+        'USER': config("DB_USER"),
+        'PASSWORD': config("DB_PASSWORD"),
+},
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -142,3 +139,5 @@ MEDIA_ROOT = (
 )
 
 LOGIN_URL = 'login'
+
+BLOB_READ_WRITE_TOKEN = config("BLOB_READ_WRITE_TOKEN")

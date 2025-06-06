@@ -4,6 +4,7 @@ from comunidade.models import Community,Community_User,Post
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django_project.settings import BLOB_READ_WRITE_TOKEN
+from django_project.utils import upload_vercel_image
 import json 
 import vercel_blob
 
@@ -16,21 +17,23 @@ def community_create(request):
             sobre = form.cleaned_data['sobre']
             profile_picture = form.cleaned_data['profile_picture']
             if profile_picture != None:
-                try:
-                    response = vercel_blob.put(profile_picture.name,profile_picture.read(),options={"access":"public","token":BLOB_READ_WRITE_TOKEN})
-                    blob_url = response['url']
-                    community = Community(nome=nome, sobre=sobre, profile_picture=blob_url, criador=request.user)
+                upload_dict = upload_vercel_image(profile_picture)
+                if upload_dict["erro"] == True:
+                    form = CommunityForm()
+                    context = {"form":form, "titulo": "Criar Comunidade","erro":True}
+                    return render(request,"comunidade/community_create.html",context=context)
+                else:
+                    community = Community(nome=nome, sobre=sobre, profile_picture=upload_dict["url"], 
+                                          criador=request.user,profile_picture_hash=upload_dict["file_hash"])
                     community.nome_tag_generator()
                     community.save()
-                    return redirect(my_communities)
-                except:
                     return redirect(my_communities)
             else:
                 community = Community(nome=nome,sobre=sobre,criador=request.user)
                 community.nome_tag_generator()
                 community.save() # Salva no banco de dados
                 return redirect(my_communities) # Redireciona para outra view 
-    context = {"form":form, "titulo": "Criar Comunidade"}
+    context = {"form":form, "titulo": "Criar Comunidade","erro":False}
     return render(request,"comunidade/community_create.html",context=context)
 
 @login_required # Edita a comunidade
@@ -49,20 +52,25 @@ def community_edit(request,nome_tag):
                 community.sobre = sobre
                 #Caso enviem uma foto de perfil
                 if profile_picture != None:
-                    try: # Não testei essa
-                        response = vercel_blob.put(profile_picture.name,profile_picture.read(),options={"access":"public","token":BLOB_READ_WRITE_TOKEN})
-                        blob_url = response['url']
-                        community.profile_picture = blob_url
-                    except:
-                        pass
+                    upload_dict = upload_vercel_image(profile_picture)
+                    if upload_dict["erro"] == True:
+                        form = CommunityEditForm(initial={'nome':community.nome,'sobre':community.sobre,
+                        'profile_picture':community.profile_picture})
+                
+                        context = {"form":form,"community":community,"titulo": "Editar Comunidade","erro":True}
+                        return render(request,"comunidade/community_edit.html",context=context)
+                    else:
+                        community.profile_picture = upload_dict["url"]
+                        community.profile_picture_hash = upload_dict["file_hash"]
+                
                 community.save()
                 return redirect(community_preview, nome_tag=nome_tag)
         
         community = get_object_or_404(Community, nome_tag=nome_tag)
         #Initial se refere aos valores padrões do formulário, nesse caso o valor normal da comunidade
         form = CommunityEditForm(initial={'nome':community.nome,'sobre':community.sobre,
-                                    'profile_picture':community.profile_picture.url})
-        context = {"form":form,"community":community,"titulo": "Editar Comunidade"}
+                                    'profile_picture':community.profile_picture})
+        context = {"form":form,"community":community,"titulo": "Editar Comunidade","erro":False}
         return render(request,"comunidade/community_edit.html",context=context)
     return redirect(my_communities)
 
