@@ -3,10 +3,8 @@ from comunidade.forms import CommunityForm,CommunityEditForm,PostForm
 from comunidade.models import Community,Community_User,Post
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django_project.settings import BLOB_READ_WRITE_TOKEN
 from django_project.utils import upload_vercel_image
 import json 
-import vercel_blob
 
 @login_required
 def community_create(request):
