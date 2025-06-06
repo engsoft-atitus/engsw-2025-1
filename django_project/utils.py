@@ -1,3 +1,4 @@
+import uuid
 import hashlib
 import vercel_blob
 from comunidade.models import Community
@@ -30,6 +31,9 @@ se o arquivo já existe no nosso banco de dados
 (hash do arquivo) e caso exista ele retorna a 
 url e hash do arquivo existente.
 
+Ele também modifica o nome do arquivo para um uuid
+junto com a extensão da imagem
+
 Caso o contrário, ele enviará a imagem para o banco.
 
 ***IMPORTANTE***
@@ -37,7 +41,7 @@ Ele só verifica se a hash existe na tabela da comunidade.
 
 Caso alguém criar uma tabela que tenha upload de arquivos
 é importante também modifcar essa função para que verifique
-se o arquivo já existe no banco (É só seguir da linha 44 até 47)
+se o arquivo já existe no banco (É só seguir da linha 48 até 51(ou linha do existe até return {existe:true}(seila)))
 """
 def upload_vercel_image(file) -> dict:
     file_hash = get_hash_file_256(file) # Pega a hash do arquivo
@@ -47,7 +51,7 @@ def upload_vercel_image(file) -> dict:
         return {"existe":True, "url":existe.profile_picture,"file_hash":file_hash,"erro":False}
     # Caso contrário ele tenta fazer um upload para o vercel
     try:
-        response = vercel_blob.put(file.name,file.read(),options={"token":BLOB_READ_WRITE_TOKEN})
+        response = vercel_blob.put(f"{uuid.uuid4()}.{file.name.split(".",-1)[-1]}",file.read(),options={"token":BLOB_READ_WRITE_TOKEN})
         file.seek(0)
         blob_url = response["url"]
         return {"existe":False,"url":blob_url,"file_hash":file_hash,"erro":False}
