@@ -1,7 +1,7 @@
 "use strict";
 
 // Muda o post para o modo edição
-function setEditPost(element) {
+function setEditPost(element, id) {
     let postBody = element.querySelector(".post-body");
     let editPostBody = document.createElement("textarea");
 
@@ -15,20 +15,20 @@ function setEditPost(element) {
 
     botaoSalvar.classList.add("post-save-edit");
     botaoSalvar.innerText = "Salvar";
-    botaoSalvar.setAttribute("onclick", "editPost(this.parentNode)")
+    botaoSalvar.setAttribute("onclick", "editPost(this.parentNode," + id + ")")
     botaoEditar.replaceWith(botaoSalvar);
 
     let botaoDeletar = element.querySelector(".delete-post");
     let botaoVoltar = document.createElement("button");
 
     botaoVoltar.classList.add("post-return-edit"); // Return???
-    botaoVoltar.setAttribute("onclick", "setPost(this.parentNode)");
+    botaoVoltar.setAttribute("onclick", "setPost(this.parentNode," + id + ")");
     botaoVoltar.innerText = "Voltar";
     botaoDeletar.replaceWith(botaoVoltar);
 }
 
 // Volta o post para o estado normal
-function setPost(element) {
+function setPost(element, id) {
     let editPostBody = element.querySelector(".post-body-edit");
     let postBody = document.createElement("p");
     postBody.classList.add("post-body");
@@ -38,7 +38,7 @@ function setPost(element) {
     let botaoSalvar = element.querySelector(".post-save-edit");
     let botaoEditar = document.createElement("button");
     botaoEditar.classList.add("edit-post");
-    botaoEditar.setAttribute("onclick", "setEditPost(this.parentNode)");
+    botaoEditar.setAttribute("onclick", "setEditPost(this.parentNode," + id + ")");
     botaoEditar.innerText = "Editar";
     botaoSalvar.replaceWith(botaoEditar);
 
@@ -47,7 +47,7 @@ function setPost(element) {
     botaoDeletar.classList.add("delete-post");
 
     let aDeletar = document.createElement("a");
-    aDeletar.setAttribute("href", "/comunidade/post/" + element.id + "/delete/");
+    aDeletar.setAttribute("href", "/comunidade/post/" + id + "/delete/");
     aDeletar.innerText = "Deletar";
     botaoDeletar.appendChild(aDeletar);
 
@@ -57,14 +57,19 @@ function setPost(element) {
 
 //Envia uma request para o server e caso receba uma response ele
 //volta o post para o estado normal e insere o novo body(Texto do post)
-async function editPost(element) {
+async function editPost(element, id) {
+    let btn = element.querySelector(".post-save-edit");
+    btn.disabled = true;
+    btn.removeAttribute("onclick");
     let editPostBody = element.querySelector(".post-body-edit")
     let body = editPostBody.value;
-    let id = element.parentNode.id;
     const response = await sendEditPost(body, id);
+    toString(id);
+    btn.setAttribute("onclick", `setEditPost(this.parentNode,${id})`);
+    btn.disabled = false;
 
     editPostBody.innerHTML = response['postBody'];
-    setPost(element);
+    setPost(element, id);
 }
 
 //Envia uma request para o server com o id e o conteudo
@@ -118,7 +123,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-async function like(element) {
+async function like(element, id) {
     let likeElement = element.querySelector(".like-post");
     likeElement.removeAttribute("onclick");
     likeElement.disabled = true;
@@ -126,16 +131,16 @@ async function like(element) {
     let image = likeElement.querySelector(".like");
     let curtidasValue = parseInt(curtidas.innerText);
 
-    await setLike(element.parentNode.parentNode.parentNode.parentNode.id);
+    await setLike(id);
 
     curtidasValue += 1;
     curtidas.innerText = curtidasValue;
     image.setAttribute("src", "/static/comunidade/dislike.png");
     likeElement.disabled = false;
-    likeElement.setAttribute("onclick", "dislike(this.parentNode)");
+    likeElement.setAttribute("onclick", "dislike(this.parentNode," + id + ")");
 }
 
-async function dislike(element) {
+async function dislike(element, id) {
     let likeElement = element.querySelector(".like-post");
     likeElement.removeAttribute("onclick");
     likeElement.disabled = true;
@@ -143,13 +148,13 @@ async function dislike(element) {
     let image = likeElement.querySelector(".like");
     let curtidasValue = parseInt(curtidas.innerText);
 
-    await setDislike(element.parentNode.parentNode.parentNode.parentNode.id);
+    await setDislike(id);
 
     curtidasValue -= 1;
     curtidas.innerText = curtidasValue;
     image.setAttribute("src", "/static/comunidade/like.png");
     likeElement.disabled = false;
-    likeElement.setAttribute("onclick", "like(this.parentNode)");
+    likeElement.setAttribute("onclick", "like(this.parentNode," + id + ")");
 }
 
 async function setLike(id) {
