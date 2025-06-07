@@ -39,8 +39,11 @@ def pesquisa_musica(request):
         print("Musicas")
         return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists})
 
-    elif search_type == "playlists" and query:
-        return redirect(f"{reverse('listar_playlists_todos')}?q={query}") # O reverse é responsável por redirecionar para a URL usando como ela foi definida no urls.py
+    elif search_type == "playlists":
+        if query:
+            return redirect(f"{reverse('listar_playlists_todos')}?q={query}")
+        else:
+            return redirect(reverse('listar_playlists_todos'))
     else:
         if search_type != "musicas" and search_type != "playlists":
             messages.error(request, "Por favor, selecione 'Músicas' ou 'Playlists'.")
