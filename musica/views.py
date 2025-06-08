@@ -108,6 +108,7 @@ def ver_playlist(request, playlist_id):
             'musicas': musicas_encontradas,
             'playlist': playlist
         })
+    
 @login_required
 def criar_playlist(request):
     if request.method == 'POST':
@@ -119,6 +120,15 @@ def criar_playlist(request):
         return redirect('listar_playlists')
 
     return render(request, 'criar_playlist.html')
+
+def editar_playlist(request, playlist_id):
+    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)
+    if request.method == 'POST':
+        playlist.nome = request.POST.get('nome')
+        playlist.descricao = request.POST.get('descricao')
+        playlist.save()
+        return redirect('listar_playlists')
+    return render(request, 'editar_playlist.html', {'playlist': playlist})
 
 @login_required
 def excluir_playlist(request, playlist_id):
