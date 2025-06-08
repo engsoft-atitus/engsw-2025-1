@@ -20,6 +20,7 @@ def cadastro_view(request):
                 first_name=form.cleaned_data['primeiro_nome'],
                 last_name=form.cleaned_data['sobrenome']
             )
+            Profile.objects.create(user=novo_usuario)
             return redirect('login')
     else:
         form = CadastroForm()
