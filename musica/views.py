@@ -123,6 +123,8 @@ def criar_playlist(request):
 
 def editar_playlist(request, playlist_id):
     playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)
+    if playlist.user != request.user:
+        return HttpResponse("Você não tem permissão para editar esta playlist.")
     if request.method == 'POST':
         playlist.nome = request.POST.get('nome')
         playlist.descricao = request.POST.get('descricao')
