@@ -101,10 +101,10 @@
         <p><strong>Nome:</strong> {{ usuario.first_name }} {{ usuario.last_name }}</p>
     </div>
 
-        {% if is_private %}
-            <div class="info-bloco">
-                <p><em>Este perfil é privado. Nenhuma outra informação está disponível.</em></p>
-            </div>
+        {% if is_private and not is_owner and not is_following %}
+        <div class="info-bloco">
+            <p><em>Este perfil é privado. Nenhuma outra informação está disponível.</em></p>
+        </div>
         {% else %}
             <div class="info-bloco">
                 <p><strong>Email:</strong> {{ usuario.email }}</p>
@@ -117,9 +117,13 @@
                 {% if perfil.biografia %}
                     <p><strong>Biografia:</strong> {{ perfil.biografia }}</p>
                 {% endif %}
-                <p><strong>Privacidade:</strong> {{ perfil.privacidade|yesno:"Público, Privado" }}</p>
+                <p><strong>Privacidade:</strong> {{ perfil.get_privacidade_display }}</p>
+                {% if seguidores_count > 0 %}
+                <p><strong>Seguidores:</strong> {{ seguidores_count }}</p>
+                {% endif %}
             </div>
         {% endif %}
+
 
         {% if request.user == usuario %}
             <div class="button-group" style="margin-top: 20px;">

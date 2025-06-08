@@ -57,24 +57,26 @@ def perfil_view(request, username):
     usuario = get_object_or_404(User, username=username)
     perfil = get_object_or_404(Profile, user=usuario)
 
-    is_private = perfil.privacidade  # campo que indica se é privado
-
-    # Verifica se o usuário logado já segue o usuário do perfil
+    is_owner = request.user == usuario
+    is_private = perfil.privacidade == 0
     is_following = False
-    if request.user != usuario:
-        is_following = Seguidor.objects.filter(
-            usuario=usuario, 
-            seguidor=request.user
-            ).exists()
 
+    if not is_owner:
+        is_following = Seguidor.objects.filter(
+            usuario=usuario,
+            seguidor=request.user
+        ).exists()
 
     context = {
         'usuario': usuario,
         'perfil': perfil,
+        'is_owner': is_owner,
         'is_private': is_private,
         'is_following': is_following,
     }
     return render(request, 'usuarios/perfil.html', context)
+
+
 
 @login_required    
 def perfil_config_view(request):
