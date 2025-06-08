@@ -9,6 +9,7 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.urls import reverse
 import json
+from django.db.models import Q
 
 # Create your views here.
 
@@ -163,7 +164,7 @@ def listar_playlists_usuario(request):
 def listar_playlists_todos(request):
     query = request.GET.get("q")
     if query:
-        playlists = Playlist.objects.filter(nome__icontains=query)
+        playlists = Playlist.objects.filter(~Q(user=request.user), nome__icontains=query) # Usado o ~Q do próprio Django para filtrar, retirando as playlists que são do usuário;
     else:
         playlists = Playlist.objects.all()
     return render(request, 'playlistsTodos.html', {'playlists': playlists})
