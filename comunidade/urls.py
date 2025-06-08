@@ -12,5 +12,7 @@ urlpatterns = [
     path('exit/<int:community_id>/', views.exit_community, name='exit_community'),
     path('post/<int:community_id>/',views.community_post, name="community_post"),
     path('post/<int:post_id>/delete/',views.delete_post, name="delete_post"),
-    path('post/edit/',views.edit_post, name="edit_post") # Isso não retorna um template
-] 
+    path('post/edit/',views.edit_post, name="edit_post"), # Isso não retorna um template
+    path('post/like/',views.like_post, name="like_post"),
+    path('post/dislike/',views.dislike_post, name="dislike_post")
+    ] 
