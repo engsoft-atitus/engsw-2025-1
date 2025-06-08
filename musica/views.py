@@ -131,7 +131,9 @@ def excluir_playlist(request, playlist_id):
 
 @login_required
 def remover_musica_da_playlist(request, playlist_id, musica_id):
-    playlist = get_object_or_404(Playlist, id=playlist_id)
+    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)
+    if playlist.user != request.user:
+        return HttpResponse("Você não tem permissão para excluir essa música.")
     musica = get_object_or_404(MusicaSalva, id=musica_id)
     playlist.musicas.remove(musica)  # remove a música da playlist (tabela ManyToMany)
     return redirect('ver_playlist', playlist_id=playlist_id)
