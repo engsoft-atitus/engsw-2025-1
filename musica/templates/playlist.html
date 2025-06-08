@@ -94,10 +94,12 @@
                         class="play">
                         <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="50">
                     </a>
+                    {% if user.id == playlist.usuario.id %}
                     <a href="{% url 'remover_musica_da_playlist' playlist.id musica.id %}"
                         onclick="return confirm('Remover esta música da playlist?');">
                         <button type="button" class="button">Remover</button>
                     </a>
+                    {% endif %}
                 </li>
                 {% empty %}
                 <p>Nenhuma música salva nesta playlist.</p>
