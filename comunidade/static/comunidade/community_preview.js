@@ -234,7 +234,7 @@ async function showMusicResults() {
 
         let musicaImagem = document.createElement("img");
         musicaImagem.setAttribute("src", val["imagem"]);
-        musicaImagem.className = "musica-div";
+
 
         modalContentMusic.appendChild(musicaDiv); //Adiciona uma das musicas para o modal
         musicaDiv.appendChild(musicaImagem) // Adiciona as caracteristicas da musicas para o modal
