@@ -14,9 +14,16 @@
             width: 90%;
         }
 
+        textarea {
+            resize: none;
+            overflow: auto;
+            height: 120px;
+        }
+
         .button {
             margin-top: 20px;
         }
+
         main {
             margin-top: 20px;
         }
@@ -26,12 +33,16 @@
 <body>
     <main>
         <section>
-            <form method="POST" action="{% url 'editar_playlist' playlist.id %}">
+            <h2>Editar Playlist</h2>
+            <form method="POST">
                 {% csrf_token %}
-                <label>Nome:</label>
-                <input type="text" name="nome" required>
-                <label>Descrição:</label>
-                <textarea name="descricao"></textarea>
+
+                <label for="{{ form.nome.id_for_label }}">Nome</label>
+                {{ form.nome }}
+
+                <label for="{{ form.descricao.id_for_label }}">Descrição</label>
+                {{ form.descricao }}
+
                 <button type="submit" class="button">Salvar</button>
             </form>
         </section>

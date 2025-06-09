@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from .models import MusicaSalva, Playlist
 from django.contrib.auth import logout
 import json
+from .forms import PlaylistForm
+from django.contrib import messages
 
 
 # Create your views here.
@@ -121,16 +123,20 @@ def criar_playlist(request):
 
     return render(request, 'criar_playlist.html')
 
+@login_required
 def editar_playlist(request, playlist_id):
     playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)
     if playlist.user != request.user:
         return HttpResponse("Você não tem permissão para editar esta playlist.")
     if request.method == 'POST':
-        playlist.nome = request.POST.get('nome')
-        playlist.descricao = request.POST.get('descricao')
-        playlist.save()
-        return redirect('listar_playlists')
-    return render(request, 'editar_playlist.html', {'playlist': playlist})
+        form = PlaylistForm(request.POST, instance=playlist)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Playlist atualizada com sucesso.")
+            return redirect('listar_playlists')
+    else:
+        form = PlaylistForm(instance=playlist)
+    return render(request, 'editar_playlist.html', {'form': form, 'playlist': playlist})
 
 @login_required
 def excluir_playlist(request, playlist_id):
