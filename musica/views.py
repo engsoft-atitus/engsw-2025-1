@@ -5,6 +5,7 @@ from django.utils.safestring import mark_safe
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import MusicaSalva, Playlist
+from comunidade.models import Community
 from django.contrib import messages
 from django.urls import reverse
 import json
@@ -44,11 +45,15 @@ def pesquisa_musica(request):
             return redirect(f"{reverse('listar_playlists_todos')}?q={query}")
         else:
             return redirect(reverse('listar_playlists_todos'))
+        
     elif search_type == "usuarios" and query:
         return redirect(f"{reverse('buscar_usuario_view')}?usuario={query}")
+    
+    elif search_type == "comunidades" and query:
+        return redirect(f"{reverse('buscar_comunidade')}?comunidade={query}")
     else:
-        if search_type != "musicas" and search_type != "playlists":
-            messages.error(request, "Por favor, selecione 'Músicas' ou 'Playlists'.")
+        if search_type != "musicas" and search_type != "playlists" and search_type != "usuarios" and search_type != "comunidades":
+            messages.error(request, "Por favor, selecione Músicas, Playlists ou Usuário.")
     return render(request, 'buscar.html', {'musicas': [], 'playlists': playlists})
 
 @login_required
@@ -177,4 +182,12 @@ def buscar_usuario_view(request):
     usuarios = []
     if query:
         usuarios = User.objects.filter(username__icontains=query)[:10]
-    return render(request, 'buscar-usuario.html', {'usuarios': usuarios })
+    return render(request, 'busca-usuario.html', {'usuarios': usuarios })
+
+@login_required
+def buscar_comunidade(request):
+    query = request.GET.get("comunidade")
+    comunidades = []
+    if query:
+        comunidades = Community.objects.filter(nome__icontains=query)[:10]
+    return render(request, 'busca-comunidade.html', {'comunidades': comunidades})
