@@ -212,6 +212,10 @@ button:disabled {
   align-items: center;
 }
 
+.post-size{
+  max-height: 30%;
+}
+
 .cards-see {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -335,6 +339,7 @@ section {
   .music-spacing{
     padding: 1rem;
     margin: 10px;
+    max-width: 72%;
   }
   
 }
@@ -412,3 +417,11 @@ nav {
   font-size: small;
 }
 
+.music-spacing{
+  max-width: 80%;
+}
+
+.musica-div{
+  gap: 8px;
+  border-radius: 8px;
+}

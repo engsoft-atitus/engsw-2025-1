@@ -232,6 +232,7 @@ async function showMusicResults() {
 
         let musicaImagem = document.createElement("img");
         musicaImagem.setAttribute("src", val["imagem"]);
+        musicaImagem.className = "musica-div";
         musicaImagem.style.width = "100px"; // da pra tirar isso daqui dps
         musicaImagem.style.height = "100px";
 

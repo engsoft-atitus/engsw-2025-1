@@ -230,3 +230,25 @@ def deezer_search(request):
         except:
             return JsonResponse({'status':'false','message':'Something went wrong'},status=500)
     return redirect(my_communities)
+
+
+@login_required
+def community_post_page(request, nome_tag):
+    community = get_object_or_404(Community, nome_tag=nome_tag)
+    is_participating = False
+    user_communities = Community_User.objects.filter(user_id=request.user.id)
+    user_community_ids = user_communities.values_list('community_id', flat=True)
+
+    posts = Post.objects.filter(community=community.id).order_by("-data_post")
+    if community.id in user_community_ids:
+        is_participating = True
+    
+    form = PostForm()
+    context = {'community':community, 
+               'is_participating': is_participating, 
+               'user_id': request.user.id,
+               "titulo": community.nome,
+               "posts":posts,
+               "form":form}
+               
+    return render(request,"comunidade/community_post_page.html",context=context)
