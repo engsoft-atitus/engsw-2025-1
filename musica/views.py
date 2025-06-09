@@ -5,7 +5,6 @@ from django.utils.safestring import mark_safe
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import MusicaSalva, Playlist
-from django.contrib.auth import logout
 from django.contrib import messages
 from django.urls import reverse
 import json
@@ -89,11 +88,11 @@ def salvar_musica(request):
         # Adiciona à playlist, se ainda não estiver
         if not musica.playlists.filter(id=playlist.id).exists():
             musica.playlists.add(playlist)
-            print("Música adicionada à playlist.")
+            messages.success(request, "Música adicionada à playlist!")
         else:
-            print("Música já está nessa playlist.")
+            messages.info(request, "Essa música já está na playlist.")
 
-    return redirect('listar_playlists')
+    return redirect('buscar_musicas')
 
 @login_required
 def ver_playlist(request, playlist_id):

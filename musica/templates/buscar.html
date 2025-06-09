@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'musica/css/base.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Document</title>
 
     <style>
@@ -120,6 +121,7 @@
     </style>
 
 </head>
+
 <body>
     <main>
         <section>
@@ -177,6 +179,7 @@
                 </li>
                 {% endfor %}
             </ul>
+
             {% endif %}
         </section>
     </main>
@@ -227,6 +230,19 @@
             });
         });
     </script>
+
+    {% if messages %}
+    {% for message in messages %}
+    <script>
+        Swal.fire({
+            title: "{{ message|escapejs }}",
+            icon: "success",
+            draggable: true
+        });
+    </script>
+    {% endfor %}
+    {% endif %}
+
 
 </body>
 
