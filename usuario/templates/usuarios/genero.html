@@ -6,15 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generos Musicais</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
     <style>
         body {
             background: linear-gradient(
                 to bottom right,
-                #ED6827,
-                #EF4E44,
-                #4D1E9B,
-                #182D34,
-                black);
+                 #5A005A,
+                  #620077,
+                   #7117B8,
+                    #7932DE,
+                     #8977FF,
+                      #B6B2FF);
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
@@ -31,7 +33,11 @@
         }
 
         .info-bloco {
-            background-color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border:0.3px solid white;
+            color: white;
+            font-weight: bold;
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 8px;
@@ -75,7 +81,7 @@
 
         /* efeito visual ao selecionar */
         .genre-box.selected .genre-background {
-            filter: blur(2px) brightness(0.5);
+            filter: blur(4px) brightness(0.5);
         }
 
         .genre-box:hover .genre-background {
@@ -272,7 +278,7 @@
                 errorMessage.textContent = 'Você deve selecionar exatamente 3 gêneros musicais.';
             }
         }
-
+        const redirectAfterSuccess = "{% url 'perfil_config' %}";
         // Evento de clique no botão de finalizar
         finalizarButton.addEventListener('click', () => {
             resultado.textContent = `Gêneros Musicais Selecionados: ${selectedGenres.join(', ')}`;
@@ -290,7 +296,7 @@
                     user:'{{ request.user.id }}' // Passa o ID do usuário logado
                 },
                 success: function(response) {
-                    window.location.href = '/usuario/perfil/';
+                    window.location.href = redirectAfterSuccess;
                 },
                 error: function(xhr, status, error) {
                     alert('Erro na requisição: ' + error);

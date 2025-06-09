@@ -175,7 +175,6 @@ def remover_musica_da_playlist(request, playlist_id, musica_id):
 def listar_playlists_usuario(request):
     playlists = Playlist.objects.filter(user=request.user)  # Filtra pelo usuário logado
     return render(request, 'minhasPlaylists.html', {'playlists': playlists})
-    
 
 @login_required
 def listar_playlists_todos(request):
