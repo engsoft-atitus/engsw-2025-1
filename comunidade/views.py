@@ -156,7 +156,7 @@ def delete_post(request,post_id):
     nome_tag = post.community.nome_tag
     if post.user.id == request.user.id:
         post.delete()
-    return redirect(community_preview, nome_tag = nome_tag)
+    return redirect(community_post_page, nome_tag = nome_tag)
 
 @login_required
 def edit_post(request):
