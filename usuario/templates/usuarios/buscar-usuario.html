@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Buscar Usuário</title>
+</head>
+<body>
+    <h1>Buscar Usuário</h1>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <label for="usuario">Nome:</label>
+        <input type="text" id="usuario" name="usuario" value="{{ busca }}">
+        <button type="submit">Buscar</button>
+    </form>
+
+    {% if usuarios %}
+        <h2>Resultados:</h2>
+        <ul>
+            {% for usuario in usuarios %}
+                <li><a href="{% url 'perfil' usuario.username %}">{{ usuario.username }}</a></li>
+            {% endfor %}
+        </ul>
+    {% elif busca %}
+        <p>Nenhum usuário encontrado para "{{ busca }}"</p>
+    {% endif %}
+</body>
+</html>
