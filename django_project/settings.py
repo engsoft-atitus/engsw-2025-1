@@ -86,7 +86,6 @@ DATABASES = {
 },
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -140,3 +139,5 @@ MEDIA_ROOT = (
 )
 
 LOGIN_URL = 'login'
+
+BLOB_READ_WRITE_TOKEN = config("BLOB_READ_WRITE_TOKEN")
