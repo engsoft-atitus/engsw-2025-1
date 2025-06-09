@@ -3,6 +3,7 @@ from comunidade.forms import CommunityForm,CommunityEditForm,PostForm
 from comunidade.models import Community,Community_User,Post
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django_project.utils import upload_vercel_image
 import json 
 
 @login_required
@@ -13,12 +14,24 @@ def community_create(request):
             nome = form.cleaned_data['nome']
             sobre = form.cleaned_data['sobre']
             profile_picture = form.cleaned_data['profile_picture']
-            
-            community = Community(nome=nome,sobre=sobre,profile_picture=profile_picture,criador=request.user)
-            community.nome_tag_generator()
-            community.save() # Salva no banco de dados
-            return redirect(my_communities) # Redireciona para outra view 
-    context = {"form":form, "titulo": "Criar Comunidade"}
+            if profile_picture != None:
+                upload_dict = upload_vercel_image(profile_picture)
+                if upload_dict["erro"] == True:
+                    form = CommunityForm()
+                    context = {"form":form, "titulo": "Criar Comunidade","erro":True}
+                    return render(request,"comunidade/community_create.html",context=context)
+                else:
+                    community = Community(nome=nome, sobre=sobre, profile_picture=upload_dict["url"], 
+                                          criador=request.user,profile_picture_hash=upload_dict["file_hash"])
+                    community.nome_tag_generator()
+                    community.save()
+                    return redirect(my_communities)
+            else:
+                community = Community(nome=nome,sobre=sobre,criador=request.user)
+                community.nome_tag_generator()
+                community.save() # Salva no banco de dados
+                return redirect(my_communities) # Redireciona para outra view 
+    context = {"form":form, "titulo": "Criar Comunidade","erro":False}
     return render(request,"comunidade/community_create.html",context=context)
 
 @login_required # Edita a comunidade
@@ -37,16 +50,25 @@ def community_edit(request,nome_tag):
                 community.sobre = sobre
                 #Caso enviem uma foto de perfil
                 if profile_picture != None:
-                    community.profile_picture = profile_picture
-
+                    upload_dict = upload_vercel_image(profile_picture)
+                    if upload_dict["erro"] == True:
+                        form = CommunityEditForm(initial={'nome':community.nome,'sobre':community.sobre,
+                        'profile_picture':community.profile_picture})
+                
+                        context = {"form":form,"community":community,"titulo": "Editar Comunidade","erro":True}
+                        return render(request,"comunidade/community_edit.html",context=context)
+                    else:
+                        community.profile_picture = upload_dict["url"]
+                        community.profile_picture_hash = upload_dict["file_hash"]
+                
                 community.save()
                 return redirect(community_preview, nome_tag=nome_tag)
         
         community = get_object_or_404(Community, nome_tag=nome_tag)
         #Initial se refere aos valores padrões do formulário, nesse caso o valor normal da comunidade
         form = CommunityEditForm(initial={'nome':community.nome,'sobre':community.sobre,
-                                    'profile_picture':community.profile_picture.url})
-        context = {"form":form,"community":community,"titulo": "Editar Comunidade"}
+                                    'profile_picture':community.profile_picture})
+        context = {"form":form,"community":community,"titulo": "Editar Comunidade","erro":False}
         return render(request,"comunidade/community_edit.html",context=context)
     return redirect(my_communities)
 
@@ -84,7 +106,7 @@ def community_preview(request, nome_tag):
     posts = Post.objects.filter(community=community.id).order_by("-data_post")
     if community.id in user_community_ids:
         is_participating = True
-
+    
     form = PostForm()
     context = {'community':community, 
                'is_participating': is_participating, 
@@ -102,7 +124,12 @@ def community_post(request,community_id):
     form = PostForm(request.POST)
     if request.method == "POST" and form.is_valid():
         body = form.cleaned_data["body"]
-        post = Post(body=body,user=request.user,community=community)
+        post = Post.objects.create(
+            body=body,
+            user=request.user,
+            community=community)
+        post.curtidores.add(request.user)
+        post.like() # O usuário já da like no seu próprio post
         post.save()
     return redirect(community_preview, nome_tag = community.nome_tag)
 
@@ -149,4 +176,36 @@ def edit_post(request):
                 return JsonResponse({'status':'true','postBody':body},status=200)
             else:
                 return JsonResponse({'status':'false','message':'Body exceeded max length of 500','postBody':post.body},status=406)
+    return redirect(my_communities)
+
+@login_required
+def like_post(request):
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        post_id = json_data.get('id')
+
+        try:
+            post = Post.objects.filter(id=post_id).get()
+            post.curtidores.add(request.user)
+            post.like()
+            post.save()
+            return JsonResponse({'status':'true'},status=200)
+        except:
+            return JsonResponse({'status':'false'},status=500)
+    return redirect(my_communities)
+
+@login_required
+def dislike_post(request):
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        post_id = json_data.get('id')
+
+        try:
+            post = Post.objects.filter(id=post_id).get()
+            post.curtidores.remove(request.user)
+            post.dislike()
+            post.save()
+            return JsonResponse({'status':'true'},status=200)
+        except:
+            return JsonResponse({'status':'false'},status=500)
     return redirect(my_communities)

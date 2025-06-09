@@ -117,3 +117,77 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+async function like(element) {
+    let likeElement = element.querySelector(".like-post");
+    let curtidas = element.querySelector(".curtidas");
+    let image = likeElement.querySelector(".like");
+    let curtidasValue = parseInt(curtidas.innerText);
+
+    await setLike(element.id);
+
+    curtidasValue += 1;
+    curtidas.innerText = curtidasValue;
+    image.setAttribute("src", "/static/comunidade/dislike.png");
+    likeElement.setAttribute("onclick", "dislike(this.parentNode)");
+}
+
+async function dislike(element) {
+    let likeElement = element.querySelector(".like-post");
+    let curtidas = element.querySelector(".curtidas");
+    let image = likeElement.querySelector(".like");
+    let curtidasValue = parseInt(curtidas.innerText);
+
+    await setDislike(element.id);
+
+    curtidasValue -= 1;
+    curtidas.innerText = curtidasValue;
+    image.setAttribute("src", "/static/comunidade/like.png");
+    likeElement.setAttribute("onclick", "like(this.parentNode)");
+}
+
+async function setLike(id) {
+    const url = "/comunidade/post/like/";
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { 'X-CSRFToken': getCookie("csrftoken") },
+            body: JSON.stringify({
+                "id": id
+            }),
+        })
+            .then(response => {
+                console.log(response.status);
+                if (!response.ok) {
+                    throw new Error("HTTP STATUS " + response.status);
+                }
+                return response.json();
+            })
+        return response;
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+async function setDislike(id) {
+    const url = "/comunidade/post/dislike/";
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { 'X-CSRFToken': getCookie("csrftoken") },
+            body: JSON.stringify({
+                "id": id
+            }),
+        })
+            .then(response => {
+                console.log(response.status);
+                if (!response.ok) {
+                    throw new Error("HTTP STATUS " + response.status);
+                }
+                return response.json();
+            })
+        return response;
+    } catch (error) {
+        console.error(error.message);
+    }
+}
