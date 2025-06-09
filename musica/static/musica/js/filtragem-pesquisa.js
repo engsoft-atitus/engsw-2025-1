@@ -1,6 +1,6 @@
 const searchTypeInput = document.getElementById("tipo-pesquisa");
-const musicButton = document.querySelector(".option-button:nth-child(1)");
-const playlistButton = document.querySelector(".option-button:nth-child(2)");
+const playlistButton = document.querySelector(".option-button:nth-child(1)");
+const musicButton = document.querySelector(".option-button:nth-child(2)");
 const usuariosButton = document.querySelector(".option-button:nth-child(3)");
 const comunidadesButton = document.querySelector(".option-button:nth-child(4)");
 
