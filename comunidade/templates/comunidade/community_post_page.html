@@ -19,6 +19,9 @@
                 <input id="music-query" type="text" placeholder="Digite o nome da música">
                 <button type="button" id="query-btn">Pesquisar</button>
                 </search>
+                <div class="modal-content-music" id="modal-content-music">
+
+                </div>
             </section>
             </modal>
             <button id="musica-btn" type="button">Inserir Música</button>
@@ -42,9 +45,11 @@
 
         {% if post.musica != None %}
         <div class="container music-spacing music-post-size">
-        <a href="{% url 'player' %}?nome={{ post.musica.nome }}&nomeartista={{ post.musica.artista }}&linkmusica={{ post.musica.link }}&imagem={{ post.musica.imagem }}"><img class="music-image-post" src="{{post.musica.imagem}}"></a>
-        <p class="post-music-name">{{post.musica.nome}}</p>
-        <p class="post-artist-name">{{post.musica.artista}}</p>
+            <a href="{% url 'player' %}?nome={{ post.musica.nome }}&nomeartista={{ post.musica.artista }}&linkmusica={{ post.musica.link }}&imagem={{ post.musica.imagem }}">
+                <img class="music-image-post" src="{{post.musica.imagem}}">
+            </a>
+            <p class="post-music-name">{{post.musica.nome}}</p>
+            <p class="post-artist-name">{{post.musica.artista}}</p>
         </div>
         {% endif %}
 

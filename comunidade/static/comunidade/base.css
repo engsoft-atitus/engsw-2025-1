@@ -424,10 +424,24 @@ nav {
 .musica-div{
   gap: 8px;
   border-radius: 8px;
+  width: 33%;
+  height: 33%;
 }
 
 .modal-content{
   border-radius: 16px;
+}
+
+.modal-content-music{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  align-content: space-around;
+}
+
+.musica-div > img {
+  width: 50%;
+  height: 100%;
 }
 
 h1, h2, h3 {

@@ -213,13 +213,13 @@ async function showMusicResults() {
     // Remove os botoes das musicas anteriores(caso existam)
     document.querySelectorAll('.musica-div').forEach(e => e.remove());
 
+    let modalContentMusic = document.getElementById("modal-content-music");
+
     Object.entries(response).forEach(([key, val]) => {
         // Adiciona cada botão (quadrado) para músicas
         let musicaDiv = document.createElement("button");
         musicaDiv.setAttribute("type", "button");
         musicaDiv.className = "musica-div";
-        musicaDiv.style.width = "100px"; // da pra tirar isso daqui dps
-        musicaDiv.style.height = "100px";
 
         let musicaNome = document.createElement("p");
         musicaNome.innerText = val["nome"];
@@ -236,10 +236,10 @@ async function showMusicResults() {
         musicaImagem.style.width = "100px"; // da pra tirar isso daqui dps
         musicaImagem.style.height = "100px";
 
-        musicaModalContent.appendChild(musicaDiv); //Adiciona uma das musicas para o modal
+        modalContentMusic.appendChild(musicaDiv); //Adiciona uma das musicas para o modal
         musicaDiv.appendChild(musicaImagem) // Adiciona as caracteristicas da musicas para o modal
-            .appendChild(musicaNome)
-            .appendChild(musicaArtista);
+        musicaDiv.appendChild(musicaNome)
+        musicaDiv.appendChild(musicaArtista);
         // Botão para selecionar músicas e mandar elas para o form  
         musicaDiv.setAttribute("onclick", `setMusic('${val["nome"]}','${val["nomeartista"]}','${val["linkmusica"]}','${val["imagem"]}')`);
     });
