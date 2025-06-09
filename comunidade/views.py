@@ -127,7 +127,7 @@ def community_post(request,community_id):
         post.curtidores.add(request.user)   
         post.like()
         post.save()
-    return redirect(community_preview, nome_tag = community.nome_tag)
+    return redirect(community_post_page, nome_tag = community.nome_tag)
 
 #Um usuário se vincula da comunidade
 @login_required

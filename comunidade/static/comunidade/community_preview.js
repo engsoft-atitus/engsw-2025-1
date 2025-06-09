@@ -209,9 +209,11 @@ function showMusicModal() { // Mostra o modal da musica
 
 async function showMusicResults() {
     let musicName = document.getElementById("music-query").value;
-    const response = await searchMusic(musicName);
+
     // Remove os botoes das musicas anteriores(caso existam)
     document.querySelectorAll('.musica-div').forEach(e => e.remove());
+
+    const response = await searchMusic(musicName);
 
     let modalContentMusic = document.getElementById("modal-content-music");
 
@@ -233,8 +235,6 @@ async function showMusicResults() {
         let musicaImagem = document.createElement("img");
         musicaImagem.setAttribute("src", val["imagem"]);
         musicaImagem.className = "musica-div";
-        musicaImagem.style.width = "100px"; // da pra tirar isso daqui dps
-        musicaImagem.style.height = "100px";
 
         modalContentMusic.appendChild(musicaDiv); //Adiciona uma das musicas para o modal
         musicaDiv.appendChild(musicaImagem) // Adiciona as caracteristicas da musicas para o modal

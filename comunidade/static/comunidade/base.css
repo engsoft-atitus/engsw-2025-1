@@ -321,29 +321,6 @@ section {
   text-align: left;
 }
 
-
-@media (max-width: 600px) {
-  .comentario {
-    padding: 15px;
-    border-radius: 8px;
-  }
-  
-  .comentario h4 {
-    font-size: 1rem;
-  }
-  
-  .post-body {
-    font-size: 0.95rem;
-  }
-
-  .music-spacing{
-    padding: 1rem;
-    margin: 10px;
-    max-width: 72%;
-  }
-  
-}
-
 nav {
   position: fixed;
   width: 100%;
@@ -422,10 +399,7 @@ nav {
 }
 
 .musica-div{
-  gap: 8px;
   border-radius: 8px;
-  width: 33%;
-  height: 33%;
 }
 
 .modal-content{
@@ -434,18 +408,57 @@ nav {
 
 .modal-content-music{
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
-  align-content: space-around;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: space-evenly;    
+  height: 90%;
+  width: 100%;
+  gap: 0.25em;
+  box-sizing: border-box;
+}
+
+.musica-div {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 100%;
+  justify-content: space-around;
+}
+
+.musica-div > p {
+  justify-self: flex-end;
+  margin: 0.2em;
 }
 
 .musica-div > img {
-  width: 50%;
-  height: 100%;
+  box-shadow: rgba(0, 0, 0, .2) 0 3px 5px -1px,rgba(0, 0, 0, .14) 0 6px 10px 0,rgba(0, 0, 0, .12) 0 1px 18px 0;
 }
 
 h1, h2, h3 {
   font-family: "Share Tech", sans-serif;
   font-weight: 700;
   font-style: normal;
+}
+
+@media (max-width: 640px) {
+  .comentario {
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .comentario h4 {
+    font-size: 1rem;
+  }
+  
+  .post-body {
+    font-size: 0.95rem;
+  }
+
+  .music-spacing{
+    padding: 1rem;
+    margin: 10px;
+    max-width: 72%;
+  }
+  .modal-content-music{
+    grid-template-columns: repeat(2, 1fr);
+  } 
 }
