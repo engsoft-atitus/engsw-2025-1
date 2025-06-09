@@ -138,7 +138,8 @@ def criar_playlist(request):
         descricao = request.POST.get('descricao')
         user_id = request.user.id
         print(user_id)
-        Playlist.objects.create(nome=nome, descricao=descricao, user_id=user_id) # Aqui não foi alterado tantas coisas, agora adiciona no banco de dados o ID do usuário logado.
+        Playlist.objects.create(nome=nome, descricao=descricao, user_id=user_id)
+        messages.success(request, "Playlist criada com sucesso!") # Aqui não foi alterado tantas coisas, agora adiciona no banco de dados o ID do usuário logado.
         return redirect('listar_playlists')
 
     return render(request, 'criar_playlist.html')
@@ -149,6 +150,7 @@ def excluir_playlist(request, playlist_id):
     if playlist.user != request.user:
         return HttpResponse("Você não tem permissão para excluir esta playlist.")
     playlist.delete()
+    messages.success(request, "Playlist excluída com sucesso!")
     return redirect('listar_playlists')
 
 @login_required

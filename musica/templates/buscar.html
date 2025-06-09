@@ -159,7 +159,7 @@
             }
         });
         Toast.fire({
-            icon: "success",
+            icon: "{{ message.tags|default:'info' }}",
             title: "{{ message|escapejs }}"
         });
     </script>

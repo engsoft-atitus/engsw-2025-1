@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'musica/css/base.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Document</title>
 
     <style>
@@ -39,6 +40,12 @@
         .section-title {
             margin-bottom: 20px;
         }
+
+        .swal-sm {
+            width: 400px !important; 
+            font-size: 14px;
+            padding: 1rem !important;
+        }
     </style>
 </head>
 
@@ -62,11 +69,11 @@
                         <h1>{{ playlist.nome }}</h1>
                         <p>{{ playlist.descricao }}</p>
                     </div>
-                    <a href="{% url 'ver_playlist' playlist.id %}"><img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30"></a>
-                    <a href="{% url 'excluir_playlist' playlist.id %}"
-                        onclick="return confirm('Tem certeza que deseja excluir esta playlist?');">
-                        <button type="button" class="button">Excluir</button>
-                    </a>
+                    <a href="{% url 'ver_playlist' playlist.id %}"><img
+                            src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30"></a>
+                    <button type="button" class="button" onclick='confirmarExclusao("{{ playlist.id }}")'>
+                        Excluir
+                    </button>
                 </li>
                 {% empty %}
                 <li>Você ainda não tem nenhuma playlist.</li>
@@ -80,6 +87,52 @@
         <a href="{% url 'my_communities' %}">Comunidade</a>
         <a href="{% url 'perfil' %}">Perfil</a>
     </nav>
+
+    <script>
+        function confirmarExclusao(playlistId) {
+            Swal.fire({
+                title: "Tem certeza?",
+                text: "Você não poderá recuperar essa playlist!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#6545F0",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sim, excluir!",
+                cancelButtonText: "Cancelar",
+                customClass: {
+                    popup: 'swal-sm'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redireciona para a URL de exclusão
+                    window.location.href = `/musica/playlist/${playlistId}/excluir/`;
+                }
+            });
+        }
+    </script>
+
+    {% if messages %}
+    {% for message in messages %}
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "center",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+
+        Toast.fire({
+            icon: "{{ message.tags|default:'info' }}",
+            title: "{{ message|escapejs }}"
+        });
+    </script>
+    {% endfor %}
+    {% endif %}
 </body>
 
 </html>
