@@ -76,6 +76,7 @@ body{
 
 .posts-admin textarea{
   width: 80%;
+  resize: none;
 }
 .community-block{
   display: flex;
@@ -217,6 +218,12 @@ button:disabled {
 
 .post-size{
   max-height: 30%;
+}
+
+.post-body-edit {
+  resize: none;
+  width: 80%;
+  height: 50%;
 }
 
 .cards-see {
@@ -513,7 +520,7 @@ h1, h2, h3 {
   min-height: 120px;
   border: 1px solid #ddd;
   border-radius: 6px;
-  resize: vertical;
+  resize: none;
   font-family: inherit;
   font-size: 0.95rem;
 }
