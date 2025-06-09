@@ -5,36 +5,19 @@ body{
   min-height: 100vh;
   background: linear-gradient(
     to bottom right,
-    #ED6827,
-    #EF4E44,
-    #4D1E9B,
-    #182D34,
-    black   
-  );
+    #5a005a,
+  #620077,
+  #7117b8,
+  #7932de,
+  #8977ff,
+  #b6b2ff 
+    );
   color: #e6e6e7;
  
   font-family: "Comfortaa", sans-serif;
   font-optical-sizing: auto;
   font-weight: 5;
   font-style: normal;
-}
-
-.container-transparente{
-  width: 90%;
-  background-color: rgba(255, 255, 255, 0.5);
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  color: black;
-  
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  margin: 20px;
-  
 }
 
 .community-image{
@@ -348,6 +331,12 @@ section {
   .post-body {
     font-size: 0.95rem;
   }
+
+  .music-spacing{
+    padding: 1rem;
+    margin: 10px;
+  }
+  
 }
 
 nav {
@@ -413,3 +402,13 @@ nav {
   height: 80%;
   overflow: auto;
 }
+
+.music-image-post{
+  max-width: 56%;
+  max-height: 56%;
+}
+
+.post-music-name{
+  font-size: small;
+}
+

@@ -81,6 +81,15 @@
             </div>
             <p class="post-body">{{post.body}}</p>
 
+
+            {% if post.musica != None %}
+            <div class="container music-spacing">
+            <a href="{% url 'player' %}?nome={{ post.musica.nome }}&nomeartista={{ post.musica.artista }}&linkmusica={{ post.musica.link }}&imagem={{ post.musica.imagem }}"><img class="music-image-post" src="{{post.musica.imagem}}"></a>
+            <p class="post-music-name">{{post.musica.nome}}</p>
+            <p class="post-artist-name">{{post.musica.artista}}</p>
+          </div>
+          {% endif %}
+
             <div class="low-post-section">
             {% localtime on %}
               <p>{{post.data_post|timezone:"America/Sao_Paulo"|date:"Y m d H:i"}}</p>
@@ -96,11 +105,7 @@
             </div>
 
 
-            {% if post.musica != None %}
-              <a href="{% url 'player' %}?nome={{ post.musica.nome }}&nomeartista={{ post.musica.artista }}&linkmusica={{ post.musica.link }}&imagem={{ post.musica.imagem }}"><img src="{{post.musica.imagem}}"></a>
-              <p>{{post.musica.nome}}</p>
-              <p>{{post.musica.artista}}</p>
-            {% endif %}
+          
           </article>
         </div>
         {% if post.user == request.user %}
