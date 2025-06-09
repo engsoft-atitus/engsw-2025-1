@@ -107,7 +107,6 @@ def community_post(request,community_id):
             user=request.user,
             community=community)
         post.curtidores.add(request.user)
-        post.like() # O usuário já da like no seu próprio post
         post.save()
     return redirect(community_preview, nome_tag = community.nome_tag)
 
@@ -165,7 +164,6 @@ def like_post(request):
         try:
             post = Post.objects.filter(id=post_id).get()
             post.curtidores.add(request.user)
-            post.like()
             post.save()
             return JsonResponse({'status':'true'},status=200)
         except:
@@ -181,7 +179,6 @@ def dislike_post(request):
         try:
             post = Post.objects.filter(id=post_id).get()
             post.curtidores.remove(request.user)
-            post.dislike()
             post.save()
             return JsonResponse({'status':'true'},status=200)
         except:
