@@ -22,9 +22,11 @@ body{
 
 .community-image{
   width: 80%;
+  max-width: 56%;
   object-fit: contain;
-
+  border-radius: 16px;
 }
+
 .container{
   width: 90%; 
   max-width: 72%;
@@ -57,6 +59,7 @@ body{
 .tag{
     color: rgb(92, 89, 89);
     word-break: break-word; 
+    margin-top: -1rem;
 }
 .botoes-admin{
   display: flex;
@@ -80,6 +83,7 @@ body{
   flex-flow: column;
   gap: 16px;
   align-items: center;
+  width: 100%;
 }
 
 .my-communities-block {
@@ -187,7 +191,7 @@ button:disabled {
   max-width: 80%;
   display: flex;
   flex-flow: column;
-  gap: 8px;
+  gap: 16px;
   padding: 8px;
   margin: 8px;
   background-color: #ffffff;
@@ -249,7 +253,7 @@ button:disabled {
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 12px;
+  padding-bottom: 12px;
   background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
   color: white;
   text-align: center;
@@ -257,16 +261,17 @@ button:disabled {
 
 .nome {
   display: block;
-  font-size: 0.95rem;
+  font-size: 1.6rem;
   font-weight: 600;
-  color: white;
+  color: black;
   text-decoration: none;
 }
 
 
 .nome:hover {
-  color: white;
+  color: black;
   text-decoration: underline;
+
 }
 
 
@@ -443,6 +448,127 @@ h1, h2, h3 {
   font-style: normal;
 }
 
+.fundo-branco{
+  background-color: white;
+  gap: 16px;
+  padding-top: 1rem;
+  max-width: 54%;
+}
+
+.nome-my-communities{
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: white;
+  text-decoration: none;
+}
+
+.sobre-community-preview{
+  word-break: break-word; 
+  margin-top: -1rem;
+}
+
+.fluxo-community-preview{
+  display: flex;
+  flex-flow: row-reverse;
+  justify-content: space-between;
+  width: 100%;
+  gap: 16px;
+}
+
+.music-post-size{
+  margin: auto;
+  width: 60%;
+  padding: 10px;
+}
+
+.posts-admin {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.posts-admin h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.posts-admin form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.posts-admin textarea {
+  width: 100%;
+  min-height: 120px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.posts-admin textarea:focus {
+  outline: none;
+  border-color: #8977ff;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.posts-admin button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.posts-admin button[type="submit"] {
+  background-color: #7117b8; 
+  color: white;
+}
+
+.posts-admin button[type="submit"]:hover {
+  background-color: white;
+  color: #7117b8;
+  border: 1px solid #7117b8;
+}
+
+#musica-btn {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+#musica-btn:hover {
+  background-color: #7117b8;
+  color: white;
+  border-color: #7117b8;
+}
+
+#query-btn {
+  background-color: #7117b8;
+  color: white;
+}
+
+#query-btn:hover {
+  background-color: white;
+  color: #7117b8;
+  border: 1px solid #7117b8;
+}
+
+#music-query {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
 @media (max-width: 640px) {
   .comentario {
     padding: 15px;
@@ -457,11 +583,6 @@ h1, h2, h3 {
     font-size: 0.95rem;
   }
 
-  .music-spacing{
-    padding: 1rem;
-    margin: 10px;
-    max-width: 72%;
-  }
   .modal-content-music{
     grid-template-columns: repeat(2, 1fr);
   } 

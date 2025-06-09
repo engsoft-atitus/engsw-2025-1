@@ -78,6 +78,11 @@
     </section>
 
 {% endfor %}
+
+    <button>
+    <a href="{% url 'community_preview' community.nome_tag %}">Voltar</a>
+  </button>
+  
 </div>
 <script src="{% static 'comunidade/community_preview.js' %}"></script>
 {% endblock %}    

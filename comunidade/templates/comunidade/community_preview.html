@@ -4,17 +4,18 @@
 {% block content %}
   <div class="container">
     <div class="community-block">
+      <div class="container fundo-branco">
       <div class="titulo-comunidade-preview">
         <p class="nome">{{community.nome}}</p>
         <p class="tag">@{{community.nome_tag}}</p>
       </div>
-      <p>{{community.sobre}}</p>
+      <p class="sobre-community-preview">{{community.sobre}}</p>
       <img
         src="{{ community.profile_picture.url }}"
         alt="Imagem de perfil"
         class="community-image"
       />
-    
+   
       {% if community.criador.id == user_id %} {# admin #}
         <div class="botoes-admin">
           <button>
@@ -24,8 +25,9 @@
             <a href="{% url 'community_delete' community.nome_tag %}">Deletar</a>
           </button>
         </div>
-
+      </div>
       {% else %} 
+     </div>
         {% if not is_participating %} {# Não participando#}
     
           <form method="post" action="{% url 'join_community' community.id %}">
@@ -43,15 +45,20 @@
         {% endif %}
     {% endif %}
 
-    
-    <button>
-      <a href="{% url 'my_communities' %}">Voltar</a>
-    </button>
+    <div class="fluxo-community-preview">
 
     <button>
       <a href="{% url 'community_post_page' community.nome_tag %}">Ver posts</a>
     </button>
     
+    
+    <button>
+      <a href="{% url 'my_communities' %}">Voltar</a>
+    </button>
+    
+  </div>
+
+
    
     </div>
     <script src="{% static 'comunidade/community_preview.js' %}"></script>
