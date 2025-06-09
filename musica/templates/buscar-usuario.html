@@ -1,0 +1,29 @@
+{% extends "musica/buscar.html" %} {% block content %}
+<body>
+    <main>
+        <section>
+            <header>
+                <h1>Resultados da busca por usuários</h1>
+            </header>
+        </section>
+        <section>
+            {% if usuarios %}
+            <ul>
+                <h1 class="section-title">Usuários</h1>
+                {% for usuario in usuarios %}
+                    <li><a href="{% url 'buscar_usuario_view' %}?usuario={{ usuario.username }}">{{ usuario.username }}</a></li>
+                {% endfor %}
+            </ul>
+            {% elif not usuarios %}
+                <p>Nenhum usuário encontrado.</p>
+            {% endif %}
+        </section>
+    </main>
+    <nav>
+        <a href="{% url 'buscar_musicas' %}">Buscar</a>
+        <a href="{% url 'listar_playlists' %}">Biblioteca</a>
+        <a href="{% url 'my_communities' %}">Comunidade</a>
+        <a href="{% url 'perfil' %}">Perfil</a>
+    </nav>
+</body>
+{% endblock %}
