@@ -208,13 +208,13 @@ function showMusicModal() { // Mostra o modal da musica
 }
 
 async function showMusicResults() {
+    queryBtn.removeEventListener("click", showMusicResults);
     let musicName = document.getElementById("music-query").value;
 
     // Remove os botoes das musicas anteriores(caso existam)
     document.querySelectorAll('.musica-div').forEach(e => e.remove());
 
     const response = await searchMusic(musicName);
-
     let modalContentMusic = document.getElementById("modal-content-music");
 
     Object.entries(response).forEach(([key, val]) => {
@@ -243,6 +243,7 @@ async function showMusicResults() {
         // Botão para selecionar músicas e mandar elas para o form  
         musicaDiv.setAttribute("onclick", `setMusic('${val["nome"]}','${val["nomeartista"]}','${val["linkmusica"]}','${val["imagem"]}')`);
     });
+    queryBtn.addEventListener("click", showMusicResults);
 }
 
 // Coloca os valores no form e fecha o modal

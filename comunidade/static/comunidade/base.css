@@ -306,7 +306,7 @@ section {
 
 .comentario h4 {
   margin: 0 0 8px 0;
-  color: #2c3e50;
+  color: black;
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -314,14 +314,14 @@ section {
 .post-body {
   text-align: left;
   margin: 12px 0;
-  color: #34495e;
+  color: black;
   line-height: 1.5;
   font-size: 1rem;
 }
 
 .comentario p:last-of-type {
   margin: 0;
-  color: #7f8c8d;
+  color: black;
   font-size: 0.85rem;
   text-align: left;
 }
@@ -381,18 +381,16 @@ nav {
 .modal-content{
   background-color: #ffffff;
   margin: auto;
-  margin-top: 5%;
-  margin-bottom: 5%;
+  margin-top: 1.5%;
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
-  height: 80%;
   overflow: auto;
-}
-
-.music-image-post{
-  max-width: 56%;
-  max-height: 56%;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 90%;
 }
 
 .post-music-name{
@@ -405,13 +403,6 @@ nav {
 
 .musica-div{
   border-radius: 8px;
-}
-
-.modal-content{
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
 }
 
 .modal-content-music{
@@ -581,6 +572,10 @@ h1, h2, h3 {
   
   .post-body {
     font-size: 0.95rem;
+  }
+
+  .modal-content{
+    height: 80%;
   }
 
   .modal-content-music{
