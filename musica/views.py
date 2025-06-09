@@ -44,6 +44,8 @@ def pesquisa_musica(request):
             return redirect(f"{reverse('listar_playlists_todos')}?q={query}")
         else:
             return redirect(reverse('listar_playlists_todos'))
+    elif search_type == "usuarios" and query:
+        return redirect(f"{reverse('buscar_usuario_view')}?usuario={query}")
     else:
         if search_type != "musicas" and search_type != "playlists":
             messages.error(request, "Por favor, selecione 'Músicas' ou 'Playlists'.")
@@ -167,3 +169,12 @@ def listar_playlists_todos(request):
     else:
         playlists = Playlist.objects.all()
     return render(request, 'playlistsTodos.html', {'playlists': playlists})
+
+@login_required
+def buscar_usuario_view(request):
+    query = request.GET.get("usuario")
+    print("Query recebida:", query)
+    usuarios = []
+    if query:
+        usuarios = User.objects.filter(username__icontains=query)[:10]
+    return render(request, 'buscar-usuario.html', {'usuarios': usuarios })
