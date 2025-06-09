@@ -141,7 +141,7 @@
             <a href="{% url 'buscar_musicas' %}">Buscar</a>
             <a href="{% url 'listar_playlists' %}">Biblioteca</a>
             <a href="{% url 'my_communities' %}">Comunidade</a>
-            <a href="{% url 'perfil' %}">Perfil</a>
+            <a href="{% url 'perfil' request.user.username %}">Perfil</a>
         </nav>
     </main>
 </body>

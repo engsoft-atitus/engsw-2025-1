@@ -93,6 +93,8 @@
                             {% csrf_token %}
                             <input type="hidden" name="nome" value="{{ musica.nome }}">
                             <input type="hidden" name="nomeartista" value="{{ musica.nomeartista }}">
+                            <input type="hidden" name="link" value="{{ musica.linkmusica }}">
+                            <input type="hidden" name="imagem" value="{{ musica.imagem }}">
 
                             <select name="playlist_id" required>
                                 {% for playlist in playlists %}

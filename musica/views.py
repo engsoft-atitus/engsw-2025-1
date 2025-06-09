@@ -59,6 +59,8 @@ def salvar_musica(request):
     if request.method == "POST":
         nome = request.POST.get('nome')
         artista = request.POST.get('nomeartista')
+        link = request.POST.get('link')
+        imagem = request.POST.get('imagem')
         playlist_id = request.POST.get('playlist_id')
 
         playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)  # Obtém a playlist do usuário logado
@@ -66,7 +68,9 @@ def salvar_musica(request):
         # Verifica se a música já existe
         musica, criada = MusicaSalva.objects.get_or_create(
             nome=nome,
-            artista=artista
+            artista=artista,
+            link=link,
+            imagem=imagem  
         )
 
         # Adiciona à playlist, se ainda não estiver
