@@ -9,6 +9,8 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.urls import reverse
 import json
+from .forms import PlaylistForm
+from django.contrib import messages
 
 # Create your views here.
 
@@ -119,11 +121,12 @@ def ver_playlist(request, playlist_id):
 
         request.session['musicas'] = musicas_encontradas
 
-    return render(request, 'playlist.html', {
-        'musicas': musicas_encontradas,
-        'playlist': playlist
-    })
-        
+        return render(request, 'playlist.html', {
+            'musicas': musicas_encontradas,
+            'playlist': playlist
+        })
+    
+
 @login_required
 def criar_playlist(request):
     if request.method == 'POST':
@@ -135,6 +138,21 @@ def criar_playlist(request):
         return redirect('listar_playlists')
 
     return render(request, 'criar_playlist.html')
+
+@login_required
+def editar_playlist(request, playlist_id):
+    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)
+    if playlist.user != request.user:
+        return HttpResponse("Você não tem permissão para editar esta playlist.")
+    if request.method == 'POST':
+        form = PlaylistForm(request.POST, instance=playlist)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Playlist atualizada com sucesso.")
+            return redirect('listar_playlists')
+    else:
+        form = PlaylistForm(instance=playlist)
+    return render(request, 'editar_playlist.html', {'form': form, 'playlist': playlist})
 
 @login_required
 def excluir_playlist(request, playlist_id):
