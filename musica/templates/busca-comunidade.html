@@ -1,0 +1,73 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'musica/css/base.css' %}">
+    <title>Document</title>
+
+    <style>
+        ul {
+            width: 90%;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .button {
+            margin-bottom: 20px;
+        }
+
+        .textfield {
+            width: 50%;
+            max-width: 50%;
+        }
+
+        p {
+            color: rgb(43, 43, 43);
+            font-size: 15px;
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <section>
+            <header>
+                <h1>Resultados da busca por comunidades</h1>
+            </header>
+        </section>
+        <section>
+            {% if comunidades %}
+            <ul>
+                <h1 class="section-title">Comunidades</h1>
+                {% for comunidade in comunidades %}
+                    <li><a href="{% url 'buscar_comunidade' %}?comunidade={{ usuario.username }}">{{ comunidade.nome }}</a></li>
+                {% endfor %}
+            </ul>
+            {% elif not comunidades %}
+                <p>Nenhuma comunidade encontrado.</p>
+            {% endif %}
+        </section>
+    </main>
+    <nav>
+        <a href="{% url 'buscar_musicas' %}">Buscar</a>
+        <a href="{% url 'listar_playlists' %}">Biblioteca</a>
+        <a href="{% url 'my_communities' %}">Comunidade</a>
+        <a href="{% url 'perfil' %}">Perfil</a>
+    </nav>
+</body>
+
+</html>
