@@ -54,7 +54,7 @@
             <ul>
                 <h1 class="section-title">Comunidades</h1>
                 {% for comunidade in comunidades %}
-                    <li><a href="{% url 'buscar_comunidade' %}?comunidade={{ usuario.username }}">{{ comunidade.nome }}</a></li>
+                    <li><a href="{% url 'community_preview' comunidade.nome_tag %}">{{ comunidade.nome }}</a></li>
                 {% endfor %}
             </ul>
             {% elif not comunidades %}
