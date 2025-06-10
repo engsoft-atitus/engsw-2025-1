@@ -1,76 +1,62 @@
 {% extends "comunidade/base.html" %}
 {% load static %}
-  {% block content %}
-  {% load tz %}
+{% load tz %}
+{% block content %}
   <div class="container">
     <div class="community-block">
-    
-    <div class="titulo-comunidade-preview">
-      <p class="nome">{{community.nome}}</p>
-      <p class="tag">@{{community.nome_tag}}</p>
+      <div class="container fundo-branco">
+      <div class="titulo-comunidade-preview">
+        <p class="nome">{{community.nome}}</p>
+        <p class="tag">@{{community.nome_tag}}</p>
       </div>
-    <p>{{community.sobre}}</p>
-    <img
-      src="{{ community.profile_picture.url }}"
-      alt="Imagem de perfil"
-      class="community-image"
-    />
+      <p class="sobre-community-preview">{{community.sobre}}</p>
+      <img
+        src="{{ community.profile_picture }}"
+        alt="Imagem de perfil"
+        class="community-image"
+      />
+   
+      {% if community.criador.id == user_id %} {# admin #}
+        <div class="botoes-admin">
+          <button>
+            <a href="{% url 'community_edit' community.nome_tag %}">Editar</a>
+          </button>
+          <button>
+            <a href="{% url 'community_delete' community.nome_tag %}">Deletar</a>
+          </button>
+        </div>
+      </div>
+      {% else %} 
+     </div>
+        {% if not is_participating %} {# Não participando#}
     
-    {% if community.criador.id == user_id %} {# admin #}
-    <div class="botoes-admin">
-      <button>
-        <a href="{% url 'community_edit' community.nome_tag %}">Editar</a>
-      </button>
-      <button>
-        <a href="{% url 'community_delete' community.nome_tag %}">Deletar</a>
-      </button>
-    </div>
-    
-    <div class="posts-admin">
-      <form action="{% url 'community_post' community.id %}" method="post">
-        {% csrf_token %}
-        {{form.body}}
-        <button type="submit">Enviar</button>
-      </form>
-    </div>
-    {% else %} 
-      {% if not is_participating %} {# Não participando #}
+          <form method="post" action="{% url 'join_community' community.id %}">
+            {% csrf_token %}
+            <button type="submit">Participar</button>
+          </form>
   
-      <form method="post" action="{% url 'join_community' community.id %}">
-        {% csrf_token %}
-        <button type="submit">Participar</button>
-      </form>
+        {% else %} {# Participando #}
   
-      {% else %} {# Participando #}
-      <div class="posts-admin">
-      <form action="{% url 'community_post' community.id %}" method="post">
-        {% csrf_token %}
-        {{form.body}}
-        <button type="submit">Enviar</button>
-      </form>
-    </div>
-  
-      <form method="post" action="{% url 'exit_community' community.id %}">
-          {% csrf_token %}
-          <button type="submit">Sair da comunidade</button>
-        </form>
+          <form method="post" action="{% url 'exit_community' community.id %}">
+              {% csrf_token %}
+              <button type="submit">Sair da comunidade</button>
+            </form>
   
         {% endif %}
     {% endif %}
-  
+
+    <div class="fluxo-community-preview">
+
+    <button>
+      <a href="{% url 'community_post_page' community.nome_tag %}">Ver posts</a>
+    </button>
+    
+    
     <button>
       <a href="{% url 'my_communities' %}">Voltar</a>
     </button>
     
-    {% for post in posts %}
-      <section id="{{post.id}}" >
-        <div class="centralizar">
-        <div  class="comentario">
-        
-          <div class="usuario-post">
-        <!--Placeholder para foto de perfil-->
-        <img src="https://placecats.com/75/75" alt="profile picture" style="border-radius: 50%;">
-
+  </div>
         <h4>{{post.user.username}}</h4>
         
         </div>
@@ -107,4 +93,4 @@
     </div>
     <script src="{% static 'comunidade/community_preview.js' %}"></script>
   </div>
-  {% endblock %}    
+{% endblock %}    
