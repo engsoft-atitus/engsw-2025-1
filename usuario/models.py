@@ -7,6 +7,8 @@ class Profile(models.Model):
     generos_musicas = models.CharField(max_length=200, null=True, blank=True)
     biografia = models.TextField(null=True, blank=True)  # CLOB no Oracle, cuidado com buscas
     privacidade = models.IntegerField(default=1, choices=[(0, 'Privado'), (1, 'Público')])  # substitui BooleanField
+    imagem_perfil = models.URLField(blank=True, null=True)
+    imagem_perfil_hash = models.CharField(max_length=64, blank=True, null=True)  # Hash da imagem para evitar duplicatas
 
     def __str__(self):
         return self.user.username

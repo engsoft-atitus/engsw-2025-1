@@ -26,6 +26,7 @@
             align-items: center;
             min-height: 100vh;
             height: auto;
+            position: relative;
         }
 
         .container {
@@ -87,25 +88,58 @@
             height: auto;
             border-radius: 100%;
         }
+
+        /* Estilo para o botão de voltar no canto superior direito */
+        .btn-back {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgb(189, 102, 240);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .btn-back:hover {
+            background-color: #c94e30;
+        }
+
+        .user-profile-picture{
+        width: 100px; 
+        height: 100px; 
+        object-fit: cover; 
+        border-radius: 50%;
+        }
     </style>
 </head>
 <body>
     
+    <!-- Botão de voltar para a página principal -->
+    <button class="btn-back" onclick="window.location.href='{% url 'principal' %}'">
+        <i class="fa-solid fa-arrow-left"></i>
+    </button>
+    
     <div class="container">
         <div class="top-section">
-            <img class="logo" src="{% static 'app/imagens/luan.png' %}" alt="Logo">
-          </div>
-    <h2>{{ usuario.username }}</h2>
-
-    <div class="info-bloco">
-        <p><strong>Nome:</strong> {{ usuario.first_name }} {{ usuario.last_name }}</p>
-    </div>
-
-        {% if is_private and not is_owner and not is_following %}
-        <div class="info-bloco">
-            <p><em>Este perfil é privado. Nenhuma outra informação está disponível.</em></p>
+            {% if perfil.imagem_perfil %}
+                <img class=" user-profile-picture" src="{{ perfil.imagem_perfil }}?v={{ now|date:'U' }}" alt="Foto de Perfil">
+            {% else %}
+                <img class=" user-profile-picture" src="{% static 'app/imagens/foto-padrao.jpg' %}" alt="Foto Padrão">
+            {% endif %}
         </div>
-        {% else %}
+
+        <h2>{{ usuario.username }}</h2>
+
+        <div class="info-bloco">
+            <p><strong>Nome:</strong> {{ usuario.first_name }} {{ usuario.last_name }}</p>
+        </div>
+
+        {% if is_owner %}
+            <!-- O perfil do próprio usuário está sempre visível -->
             <div class="info-bloco">
                 <p><strong>Email:</strong> {{ usuario.email }}</p>
                 {% if perfil.nascimento %}
@@ -118,8 +152,49 @@
                     <p><strong>Biografia:</strong> {{ perfil.biografia }}</p>
                 {% endif %}
                 <p><strong>Privacidade:</strong> {{ perfil.get_privacidade_display }}</p>
+
                 {% if seguidores_count > 0 %}
-                <p><strong>Seguidores:</strong> {{ seguidores_count }}</p>
+                    <p><strong>Seguidores:</strong> {{ seguidores_count }}</p>
+                {% else %}
+                    <p><strong>Seguidores:</strong> Nenhum seguidor</p>
+                {% endif %}
+
+                {% if seguindo_count > 0 %}
+                    <p><strong>Seguindo:</strong> {{ seguindo_count }}</p>
+                {% else %}
+                    <p><strong>Seguindo:</strong> Não está seguindo ninguém</p>
+                {% endif %}
+            </div>
+        {% elif is_private and not is_following or not is_followed_by_user %}
+            <!-- Caso o perfil seja privado e o usuário não se siga com a pessoa -->
+            <div class="info-bloco">
+                <p><em>Este perfil é privado. Ambos os usuários precisam se seguir para visualizar as informações completas.</em></p>
+            </div>
+        {% else %}
+            <!-- Exibe as informações completas caso ambos se sigam ou o perfil seja público -->
+            <div class="info-bloco">
+                <p><strong>Email:</strong> {{ usuario.email }}</p>
+                {% if perfil.nascimento %}
+                    <p><strong>Nascimento:</strong> {{ perfil.nascimento }}</p>
+                {% endif %}
+                {% if perfil.generos_musicas %}
+                    <p><strong>Gêneros Musicais:</strong> {{ perfil.generos_musicas }}</p>
+                {% endif %}
+                {% if perfil.biografia %}
+                    <p><strong>Biografia:</strong> {{ perfil.biografia }}</p>
+                {% endif %}
+                <p><strong>Privacidade:</strong> {{ perfil.get_privacidade_display }}</p>
+
+                {% if seguidores_count > 0 %}
+                    <p><strong>Seguidores:</strong> {{ seguidores_count }}</p>
+                {% else %}
+                    <p><strong>Seguidores:</strong> Nenhum seguidor</p>
+                {% endif %}
+
+                {% if seguindo_count > 0 %}
+                    <p><strong>Seguindo:</strong> {{ seguindo_count }}</p>
+                {% else %}
+                    <p><strong>Seguindo:</strong> Não está seguindo ninguém</p>
                 {% endif %}
             </div>
         {% endif %}
@@ -137,21 +212,23 @@
                     <button id="follow-btn" class="btn btn-primary">Seguir</button>
                 {% endif %}
             </div>
-       {% endif %}
+        {% endif %}
     </div>
+
     <nav class="navbar">
         <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i> Buscar</a>
         <a href="{% url 'listar_playlists' %}"><i class="fas fa-book"></i> Biblioteca</a>
         <a href="{% url 'my_communities' %}"><i class="fas fa-users"></i> Comunidade</a>
         <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i> Perfil</a>
     </nav>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#follow-btn').click(function() {
                 const btn = $(this);
                 $.ajax({
-                    url: "{% url 'seguir' %}",  // Você criará essa URL
+                    url: "{% url 'seguir' %}",
                     method: 'POST',
                     data: {
                         'user_id': "{{ usuario.id }}",

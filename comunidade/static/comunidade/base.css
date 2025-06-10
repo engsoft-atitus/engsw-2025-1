@@ -364,6 +364,13 @@ section {
   align-items: center;
 }
 
+.user-profile-picture{
+  width: 100px; 
+  height: 100px; 
+  object-fit: cover; 
+  border-radius: 50%;
+}
+
 .low-post-section{
   width: 100%;
   display: flex;
@@ -601,5 +608,16 @@ h1, h2, h3 {
 
   .modal-content-music{
     grid-template-columns: repeat(2, 1fr);
-  } 
+  }
+  .user-profile-picture{
+    width: 50px; 
+    height: 50px; 
+    object-fit: cover; 
+    border-radius: 50%;
+  }
+
+  .music-image-post{
+    width: 200px;
+    height: 200px;
+  }
 }

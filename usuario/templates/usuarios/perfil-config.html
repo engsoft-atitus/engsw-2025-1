@@ -3,7 +3,7 @@
 <head>
     {% load static %}
     <meta charset="UTF-8">  
-    <title>Perfil</title>
+    <title>Configuração do Perfil</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Bootstrap CSS -->
@@ -32,8 +32,8 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            }
-    
+        }
+
         .container {
             max-width: 600px;
             margin: auto;
@@ -47,7 +47,6 @@
             border:0.3px solid white
         }
         
-    
         h2 {
             text-align: center;
             margin-bottom: 1.5rem;
@@ -61,7 +60,7 @@
             border-radius: 8px;
             margin-bottom: 1rem;
         }
-    
+
         .form-label {
             font-weight: 500;
             margin-top: 1rem;
@@ -77,43 +76,20 @@
             margin-bottom: 1rem;
             display: block;
         }
-    
-        textarea {
-            resize: vertical;
-        }
-    
+
         .form-error {
             color: red;
             font-size: 0.9rem;
         }
-    
-        .checkbox-wrapper {
-        display: flex;
-        align-items: center;
-        margin-top: 1rem;
-        }
-        input[type="checkbox"] {
-        width: 20px;
-        height: 20px;
-        }
 
-
-
-        .checkbox-wrapper label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0;
-            font-size: 1rem;
-        }
-    
         .button-group {
             display: flex;
             justify-content: space-between;
             margin-top: 1.5rem;
         }
-    
+
         button[type="submit"] {
+            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 8px;
@@ -145,12 +121,30 @@
         button[type="button"]:hover {
             background-color: #138496;
         }
+
+        .top-section {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: 100%; 
+            margin-bottom: 1rem;
+        }
     </style>
-    
 </head>
 <body>
     <div class="container">
-        <h2>Perfil</h2>
+        <h2>Editar Perfil</h2>
+
+        <!-- Exibição da Imagem de Perfil -->
+        <div class="top-section">
+            {% if perfil.imagem_perfil %}
+                <!-- Adiciona um parâmetro de cache para evitar problemas de cache -->
+                <img class="logo" src="{{ perfil.imagem_perfil }}?v={{ now|date:'U' }}" alt="Foto de Perfil" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
+            {% else %}
+                <img class="logo" src="{% static 'app/imagens/foto-padrao.jpg' %}" alt="Foto Padrão" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
+            {% endif %}
+        </div>
 
         <div class="info-bloco">
             <p><strong>Nome:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</p>
@@ -172,62 +166,41 @@
             <p><strong>Privacidade:</strong> {{ perfil.privacidade|yesno:"Público, Privado" }}</p>
         </div>
         {% endif %}
-        <form method="post">
-            {% csrf_token %}
 
+        <!-- Formulário de Atualização do Perfil -->
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+                
+            <!-- Campo de Upload da Imagem de Perfil -->
+            <label for="{{ form.profile_picture.id_for_label }}" class="form-label">Alterar imagem de perfil:</label><br>
+            {{form.profile_picture}}
+            
+            <!-- Campos do Formulário -->
             <label for="{{ form.nascimento.id_for_label }}" class="form-label">Data de Nascimento:</label>
             {{ form.nascimento }}
 
-            {% for error in form.nascimento.errors %}
-                <div class="form-error">{{ error }}</div>
-            {% endfor %}
-
             <label class="form-label">Gêneros Musicais:</label>
-            <button type="button" onclick="window.location.href='{% url 'genero' %}'">
-                Selecionar Gêneros
-            </button>
-
-            {% for error in form.generos_musicas.errors %}
-                <div class="form-error">{{ error }}</div>
-            {% endfor %}
+            <button type="button" onclick="window.location.href='{% url 'genero' %}'">Selecionar Gêneros</button>
+            <br>
 
             <label for="{{ form.biografia.id_for_label }}" class="form-label">Biografia:</label>
             {{ form.biografia }}
 
-            {% for error in form.biografia.errors %}
-                <div class="form-error">{{ error }}</div>
-            {% endfor %}
+            <label for="{{ form.privacidade.id_for_label }}" class="form-label">Privacidade:</label>
+            {{ form.privacidade }}
 
-            <div class="form-check align-items-center d-flex gap-2">
-                <label class="form-check-label mb-0" for="{{ form.privacidade.id_for_label }}">
-                  Privacidade:
-                </label>
-                {{ form.privacidade }}
-              </div>
-            
+            <button type="submit" class="btn btn-primary">Salvar Perfil</button>
+        </form>
 
-            {% for error in form.privacidade.errors %}
-                <div class="form-error">{{ error }}</div>
-            {% endfor %}
-
-            <div class="button-group">
-
-                <!-- Formulário para salvar perfil -->
-                <form method="post" action="{% url 'perfil' request.user.username %}">
-                    {% csrf_token %}
-                    <!-- campos do perfil aqui -->
-                    <button type="submit" style="background-color: #007bff;">Salvar Perfil</button>
-                </form>
-            
-                <!-- Formulário para logout -->
-                <form method="post" action="{% url 'logout' %}" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="button-secondary" style="background-color:rgb(163, 0, 0);">Sair</button>
-                </form>
-            
-            </div>
+        <!-- Botão de Logout -->
+        <form method="post" action="{% url 'logout' %}" style="margin-top: 1rem;">
+            {% csrf_token %}
+            <button type="submit" class="button-secondary" style="background-color: #dc3545; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 8px;">
+                Sair
+            </button>
         </form>
     </div>
+    
     <nav class="navbar">
         <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i>Buscar</a>
         <a href="{% url 'listar_playlists' %}"><i class="fas fa-book"></i>Biblioteca</a>

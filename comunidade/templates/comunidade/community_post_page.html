@@ -37,7 +37,7 @@
         <article  class="comentario">
         <div class="usuario-post">
             <!--Placeholder para foto de perfil-->
-            <img src="https://placecats.com/75/75" alt="profile picture" style="border-radius: 50%;">
+            <img src="{{ post.user.profile.imagem_perfil }}" alt="profile picture" class="user-profile-picture">
             <h4>{{post.user.username}}</h4>
         </div>
         <p class="post-body">{{post.body}}</p>
