@@ -17,6 +17,7 @@
         .button {
             margin-top: 20px;
         }
+
         main {
             margin-top: 20px;
         }
@@ -26,12 +27,16 @@
 <body>
     <main>
         <section>
-            <form method="POST" action="{% url 'criar_playlist' %}">
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-                <label>Nome:</label>
-                <input type="text" name="nome" required>
-                <label>Descrição:</label>
-                <textarea name="descricao"></textarea>
+                <p>{{ form.nome.label_tag }}</p>
+                <p>{{ form.nome }}</p>
+
+                <p>{{ form.descricao.label_tag }}</p>
+                <p>{{ form.descricao }}</p>
+
+                <p>{{ form.imagem.label_tag }}</p>
+                <p>{{ form.imagem }}</p>
                 <button type="submit" class="button">Criar</button>
             </form>
         </section>

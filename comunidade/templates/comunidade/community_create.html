@@ -3,30 +3,33 @@
 <div class="formulario">
   <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %} {# Token pra evitar ataques csrf #}
-    <p>{{ form.nome.label }}</p>
-    <p>{{ form.nome }}</p>
+      <p>{{ form.nome.label }}</p>
+      <p>{{ form.nome }}</p>
 
     {% if form.errors %} {% for error in form.nome.errors %}
-    <p>{{error}}</p>
+      <p>{{error}}</p>
     {% endfor %} {% endif %}
 
-    <p>{{ form.sobre.label }}</p>
-    <p>{{ form.sobre }}</p>
+      <p>{{ form.sobre.label }}</p>
+      <p>{{ form.sobre }}</p>
 
     {% if form.errors %} {% for error in form.sobre.errors %}
-    <p>{{error}}</p>
+      <p>{{error}}</p>
     {% endfor %} {% endif %}
+
+    {% if erro %} {#Erro referente ao upload #}
+      <p>Houve um erro no upload de imagem. Por favor tente novamente.</p>
+    {% endif %}
 
     <p>{{ form.profile_picture.label }}</p>
     <p>{{ form.profile_picture }}</p>
 
     {% if form.errors %} {% for error in form.profile_picture.errors %}
-    <p>{{error}}</p>
+      <p>{{error}}</p>
     {% endfor %} {% endif %}
 
-
     <a href="{% url 'my_communities' %}"><button type="button">Voltar</button></a>
-    <button type="submit">Submit</button>
+    <button type="submit">Criar</button>
   </form>
 </div>
 </div>

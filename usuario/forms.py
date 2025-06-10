@@ -54,6 +54,8 @@ class LoginForm(forms.Form):
     senha = forms.CharField(widget=forms.PasswordInput, label="Senha")
     
 class ProfileForm(forms.ModelForm):
+    profile_picture = forms.ImageField(required=False)
+
     class Meta:
         model = Profile
         fields = ['nascimento', 'biografia', 'privacidade']
@@ -61,3 +63,4 @@ class ProfileForm(forms.ModelForm):
             'nascimento': forms.DateInput(attrs={'type': 'date'}),
             'biografia': forms.Textarea(attrs={'rows': 4}),
         }
+

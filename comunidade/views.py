@@ -1,9 +1,13 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from comunidade.forms import CommunityForm,CommunityEditForm,PostForm
 from comunidade.models import Community,Community_User,Post
+from musica.models import MusicaSalva
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-import json 
+import json
+import requests
+from django_project.utils import upload_vercel_image
+
 
 @login_required
 def community_create(request):
@@ -13,12 +17,24 @@ def community_create(request):
             nome = form.cleaned_data['nome']
             sobre = form.cleaned_data['sobre']
             profile_picture = form.cleaned_data['profile_picture']
-            
-            community = Community(nome=nome,sobre=sobre,profile_picture=profile_picture,criador=request.user)
-            community.nome_tag_generator()
-            community.save() # Salva no banco de dados
-            return redirect(my_communities) # Redireciona para outra view 
-    context = {"form":form, "titulo": "Criar Comunidade"}
+            if profile_picture != None:
+                upload_dict = upload_vercel_image(profile_picture)
+                if upload_dict["erro"] == True:
+                    form = CommunityForm()
+                    context = {"form":form, "titulo": "Criar Comunidade","erro":True}
+                    return render(request,"comunidade/community_create.html",context=context)
+                else:
+                    community = Community(nome=nome, sobre=sobre, profile_picture=upload_dict["url"], 
+                                          criador=request.user,profile_picture_hash=upload_dict["file_hash"])
+                    community.nome_tag_generator()
+                    community.save()
+                    return redirect(my_communities)
+            else:
+                community = Community(nome=nome,sobre=sobre,criador=request.user)
+                community.nome_tag_generator()
+                community.save() # Salva no banco de dados
+                return redirect(my_communities) # Redireciona para outra view 
+    context = {"form":form, "titulo": "Criar Comunidade","erro":False}
     return render(request,"comunidade/community_create.html",context=context)
 
 @login_required # Edita a comunidade
@@ -37,16 +53,25 @@ def community_edit(request,nome_tag):
                 community.sobre = sobre
                 #Caso enviem uma foto de perfil
                 if profile_picture != None:
-                    community.profile_picture = profile_picture
-
+                    upload_dict = upload_vercel_image(profile_picture)
+                    if upload_dict["erro"] == True:
+                        form = CommunityEditForm(initial={'nome':community.nome,'sobre':community.sobre,
+                        'profile_picture':community.profile_picture})
+                
+                        context = {"form":form,"community":community,"titulo": "Editar Comunidade","erro":True}
+                        return render(request,"comunidade/community_edit.html",context=context)
+                    else:
+                        community.profile_picture = upload_dict["url"]
+                        community.profile_picture_hash = upload_dict["file_hash"]
+                
                 community.save()
                 return redirect(community_preview, nome_tag=nome_tag)
         
         community = get_object_or_404(Community, nome_tag=nome_tag)
         #Initial se refere aos valores padrões do formulário, nesse caso o valor normal da comunidade
         form = CommunityEditForm(initial={'nome':community.nome,'sobre':community.sobre,
-                                    'profile_picture':community.profile_picture.url})
-        context = {"form":form,"community":community,"titulo": "Editar Comunidade"}
+                                    'profile_picture':community.profile_picture})
+        context = {"form":form,"community":community,"titulo": "Editar Comunidade","erro":False}
         return render(request,"comunidade/community_edit.html",context=context)
     return redirect(my_communities)
 
@@ -101,15 +126,30 @@ def community_post(request,community_id):
     community = get_object_or_404(Community,id=community_id)
     form = PostForm(request.POST)
     if request.method == "POST" and form.is_valid():
+
+         # O usuário já da like no seu próprio post
+        nome = form.cleaned_data["musica_nome"] 
+        artista = form.cleaned_data["musica_artista"]
+        link = form.cleaned_data["musica_link"]
+        imagem = form.cleaned_data["musica_imagem"]
+        if (nome != '') and (artista != '') and (link != '') and (imagem != ''):
+            musica, _ = MusicaSalva.objects.get_or_create(
+                    nome=nome,
+                    artista=artista,
+                    imagem=imagem,
+                    link=link
+                )
+        else:
+            musica = None
         body = form.cleaned_data["body"]
         post = Post.objects.create(
             body=body,
             user=request.user,
-            community=community)
-        post.curtidores.add(request.user)
-        post.like() # O usuário já da like no seu próprio post
+            community=community,
+            musica=musica)
+        post.curtidores.add(request.user)   
         post.save()
-    return redirect(community_preview, nome_tag = community.nome_tag)
+    return redirect(community_post_page, nome_tag = community.nome_tag)
 
 #Um usuário se vincula da comunidade
 @login_required
@@ -138,7 +178,7 @@ def delete_post(request,post_id):
     nome_tag = post.community.nome_tag
     if post.user.id == request.user.id:
         post.delete()
-    return redirect(community_preview, nome_tag = nome_tag)
+    return redirect(community_post_page, nome_tag = nome_tag)
 
 @login_required
 def edit_post(request):
@@ -148,7 +188,7 @@ def edit_post(request):
         post = get_object_or_404(Post,id=post_id)
         if post.user.id == request.user.id:
             body = json_data.get('postBody')
-            if len(body) <= 500:
+            if len(body) <= 500: # Check do tamanho
                 post.body = body
                 post.save()
                 return JsonResponse({'status':'true','postBody':body},status=200)
@@ -165,10 +205,10 @@ def like_post(request):
         try:
             post = Post.objects.filter(id=post_id).get()
             post.curtidores.add(request.user)
-            post.like()
             post.save()
             return JsonResponse({'status':'true'},status=200)
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({'status':'false'},status=500)
     return redirect(my_communities)
 
@@ -181,9 +221,56 @@ def dislike_post(request):
         try:
             post = Post.objects.filter(id=post_id).get()
             post.curtidores.remove(request.user)
-            post.dislike()
             post.save()
             return JsonResponse({'status':'true'},status=200)
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({'status':'false'},status=500)
     return redirect(my_communities)
+
+
+@login_required # Essa view é usada para buscar as musicas do deezer
+def deezer_search(request): 
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        query = json_data.get('query')
+        url = f"https://api.deezer.com/search?q={query}&limit=9"
+        req = requests.get(url)
+        dados = req.json()
+        musicas = []
+        try:
+            for musica in dados.get('data',[]):
+                musicaDados = {
+                'nome': musica['title'],  # o nome da música
+                'linkmusica': musica['preview'],  # link de prévia da música
+                'nomeartista': musica['artist']['name'],  # nome do artista
+                'imagem': musica['album']['cover_medium'],  # imagem do álbum
+                }
+                json.dumps(musicaDados)
+                musicas.append(musicaDados)
+            return JsonResponse({'musicas':musicas},status=200)
+        except:
+            return JsonResponse({'status':'false','message':'Something went wrong'},status=500)
+    return redirect(my_communities)
+
+
+@login_required
+def community_post_page(request, nome_tag):
+    community = get_object_or_404(Community, nome_tag=nome_tag)
+    is_participating = False
+    user_communities = Community_User.objects.filter(user_id=request.user.id)
+    user_community_ids = user_communities.values_list('community_id', flat=True)
+
+    posts = Post.objects.filter(community=community.id).order_by("-data_post")
+    if community.id in user_community_ids:
+        is_participating = True
+    
+    form = PostForm()
+    context = {'community':community, 
+               'is_participating': is_participating, 
+               'user_id': request.user.id,
+               "titulo": community.nome,
+               "posts":posts,
+               "form":form}
+               
+    return render(request,"comunidade/community_post_page.html",context=context)

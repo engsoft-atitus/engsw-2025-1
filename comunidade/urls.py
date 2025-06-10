@@ -14,5 +14,7 @@ urlpatterns = [
     path('post/<int:post_id>/delete/',views.delete_post, name="delete_post"),
     path('post/edit/',views.edit_post, name="edit_post"), # Isso não retorna um template
     path('post/like/',views.like_post, name="like_post"),
-    path('post/dislike/',views.dislike_post, name="dislike_post")
-    ] 
+    path('post/dislike/',views.dislike_post, name="dislike_post"),
+    path('musicas/',views.deezer_search,name="deezer_search"),
+    path('<str:nome_tag>/community_post_page', views.community_post_page, name="community_post_page")
+] 
