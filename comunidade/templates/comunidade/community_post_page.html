@@ -59,11 +59,11 @@
         {% endlocaltime %}
             <div id="{{post.id}}" class="like-section">
             {% if request.user in post.curtidores.all %}
-            <button class="like-post" onclick="dislike(this.parentNode)"><img class="like" src="{% static "comunidade/dislike.png"%}" alt="Botão de descurtir"></button> 
+            <button class="like-post" onclick="dislike(this.parentNode,{{post.id}})"><img class="like" src="{% static "comunidade/dislike.png"%}" alt="Botão de descurtir"></button> 
             {% else %}
-            <button class="like-post" onclick="like(this.parentNode)"><img class="like" src="{% static "comunidade/like.png"%}" alt="Botão de curtir"></button>
+            <button class="like-post" onclick="like(this.parentNode,{{post.id}})"><img class="like" src="{% static "comunidade/like.png"%}" alt="Botão de curtir"></button>
             {% endif %}
-            <p class="curtidas">{{post.curtidas}}</p> 
+            <p class="curtidas">{{post.curtidores.count}}</p> 
             </div>     
         </div>
 
@@ -72,7 +72,7 @@
         </article>
     </div>
     {% if post.user == request.user %}
-        <button class="edit-post" onclick="setEditPost(this.parentNode)">Editar</button>
+        <button class="edit-post" onclick="setEditPost(this.parentNode,{{post.id}})">Editar</button>
         <button class="delete-post"><a href="{% url 'delete_post' post.id %}">Deletar</a></button>    
     {% endif %}
     </section>

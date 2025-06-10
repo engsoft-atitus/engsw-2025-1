@@ -148,7 +148,6 @@ def community_post(request,community_id):
             community=community,
             musica=musica)
         post.curtidores.add(request.user)   
-        post.like()
         post.save()
     return redirect(community_post_page, nome_tag = community.nome_tag)
 
@@ -206,10 +205,10 @@ def like_post(request):
         try:
             post = Post.objects.filter(id=post_id).get()
             post.curtidores.add(request.user)
-            post.like()
             post.save()
             return JsonResponse({'status':'true'},status=200)
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({'status':'false'},status=500)
     return redirect(my_communities)
 
@@ -222,10 +221,10 @@ def dislike_post(request):
         try:
             post = Post.objects.filter(id=post_id).get()
             post.curtidores.remove(request.user)
-            post.dislike()
             post.save()
             return JsonResponse({'status':'true'},status=200)
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({'status':'false'},status=500)
     return redirect(my_communities)
 
