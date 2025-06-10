@@ -11,6 +11,7 @@ from django.urls import reverse
 import json
 from .forms import PlaylistForm
 from django.contrib import messages
+from django_project.utils import upload_vercel_image
 
 # Create your views here.
 
@@ -181,14 +182,25 @@ def ver_playlist(request, playlist_id):
 @login_required
 def criar_playlist(request):
     if request.method == 'POST':
-        nome = request.POST.get('nome')
-        descricao = request.POST.get('descricao')
-        user_id = request.user.id
-        print(user_id)
-        Playlist.objects.create(nome=nome, descricao=descricao, user_id=user_id) # Aqui não foi alterado tantas coisas, agora adiciona no banco de dados o ID do usuário logado.
-        return redirect('listar_playlists')
-
-    return render(request, 'criar_playlist.html')
+        form = PlaylistForm(request.POST, request.FILES)
+        if form.is_valid():
+            playlist = form.save(commit=False)
+            playlist.user = request.user
+            
+            imagem = request.FILES.get('imagem')
+            if imagem:
+                resultado = upload_vercel_image(imagem)
+                if resultado["erro"]:
+                    messages.error(request, "Erro ao enviar imagem para o Vercel Blob.")
+                else:
+                    playlist.imagem = resultado["url"]
+                    playlist.imagem_hash = resultado["file_hash"]
+            playlist.save()
+            return redirect('listar_playlists')
+    else:
+        form = PlaylistForm()
+    return render(request, 'criar_playlist.html', {'form': form})
+        
 
 @login_required
 def adicionarMusicasFavoritas(request):
