@@ -88,6 +88,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            margin-left: 80px;
             gap: 30px;
         }
     </style>
@@ -116,7 +117,6 @@
             <audio id="player" controls="controls">
                 <source id="audio-source" src="{{ musica.link }}" type="audio/mp3" />
             </audio>
-
             <div class="progress-container" onclick="seek(event)">
                 <div class="progress-bar" id="progress-bar"></div>
                 <div class="progress-thumb" id="progress-thumb"></div>
@@ -135,18 +135,46 @@
                     <img src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856"
                         alt="">
                 </button>
+                <form action="{% url 'salvar_musica' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="nome" value="{{ musica.titulo }}">
+                    <input type="hidden" name="nomeartista" value="{{ musica.artista }}">
+
+                    <label for="playlist_id" style="display: none;">Escolha uma playlist:</label>
+                    <select name="playlist_id" id="playlist_id" style="display: none;" required>
+                        {% for playlist in playlists %}
+                        <option value="{{ playlist.id }}">{{ playlist.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+                {% if playlist_curtir != True %}
+                    {% if request.user in musica_obj.curtida.all %}
+                        <button type="submit" style="background-color: transparent; border: none;"><img class="curtida dislike-status"
+                                src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286"
+                                onclick="dislikeMusic(this,'{{musica_obj.nome}}','{{musica_obj.artista}}')" alt="" width="30"
+                                style="cursor: pointer;"></button>
+                    {% else %}
+                        <button type="submit" style="background-color: transparent; border: none;"><img class="curtida like-status"
+                                src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
+                                onclick="likeMusic(this,'{{musica_obj.nome}}','{{musica_obj.artista}}')" alt="" width="30"
+                                style="cursor: pointer;"></button>
+                    {% endif %}
+                {% endif %}
             </div>
+
         </section>
+
         <nav>
             <a href="{% url 'buscar_musicas' %}">Buscar</a>
             <a href="{% url 'listar_playlists' %}">Biblioteca</a>
             <a href="{% url 'my_communities' %}">Comunidade</a>
-            <a href="{% url 'perfil' %}">Perfil</a>
+            <a href="{% url 'perfil' request.user.username %}">Perfil</a>
         </nav>
     </main>
+    <script src="{% static 'musica/js/like-scripts.js' %}"></script>
 </body>
 <script>
-    const playlist = {{ playlist }} // django + js para pegar a playlist de musicas em "musicas_encontradas" CONSIDERE Q FUNCIONA
+    const playlist = {{playlist}} // django + js para pegar a playlist de musicas em "musicas_encontradas" CONSIDERE Q FUNCIONA
     let currentIndex = playlist.findIndex(m => m.linkmusica === "{{ musica.link }}");
     const player = document.getElementById('player');
     const audioSource = document.getElementById('audio-source');
@@ -155,7 +183,9 @@
     const progressBar = document.getElementById('progress-bar');
     const progressContainer = document.querySelector('.progress-container');
     const thumb = document.getElementById('progress-thumb');
+    
     let isDragging = false;
+    let btnLike = document.querySelector(".curtida");
 
     function playAudio() {
         player.play();
@@ -172,7 +202,15 @@
     function nextSong() {
         currentIndex = (currentIndex + 1) % playlist.length;
         const musica = playlist[currentIndex];
-
+        {% if playlist_curtir != True %}
+        if (currentIndex === -1){
+            let newIndex = {{ current_index_equal }};
+            let musica_minus_one = playlist[newIndex];
+            changeLike(musica_minus_one.curtida,musica_minus_one.nome,musica_minus_one.nomeartista);
+        } else {
+            changeLike(musica.curtida,musica.nome,musica.nomeartista);
+        }
+        {% endif %}
         audioSource.src = musica.linkmusica;
         player.load();
         player.currentTime = 0;
@@ -186,7 +224,15 @@
     function returnSong() {
         currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
         const musica = playlist[currentIndex];
-
+        {% if playlist_curtir != True %}
+            if (currentIndex === -1){
+                let newIndex = {{ current_index_equal }};
+                let musica_minus_one = playlist[newIndex];
+                changeLike(musica_minus_one.curtida,musica_minus_one.nome,musica_minus_one.nomeartista);
+            } else {
+                changeLike(musica.curtida,musica.nome,musica.nomeartista);
+            }
+        {% endif %}
         audioSource.src = musica.linkmusica;
         player.load();
         player.currentTime = 0;
@@ -237,6 +283,9 @@
         audioSource.src = musica.linkmusica;
         player.load();
         player.currentTime = 0;
+        {% if playlist_curtir != True %}
+            changeLike(musica.curtida,musica.nome,musica.nomeartista);
+        {% endif %}
         player.play();
 
         // Atualiza capa e texto
@@ -252,6 +301,35 @@
         currentIndex = (currentIndex + 1) % playlist.length;
         atualizarPlayer(playlist[currentIndex]);
     });
+
+    function changeLike(curtida,nome,artista){
+        let btn = document.querySelector(".curtida");
+        if (curtida === false){
+            btn.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854";
+            btn.setAttribute("onclick", `likeMusic(this,'${nome}','${artista}')`);
+        } else {
+            btn.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286";
+            btn.setAttribute("onclick", `dislikeMusic(this,'${nome}','${artista}')`)
+        }
+    }
+    {% if playlist_curtir != True %}
+        btnLike.addEventListener('click', () => {
+            let classLike = btnLike.classList;
+            if (currentIndex === -1){
+                if ('like-status' == classLike[1]) {
+                    playlist[{{current_index_equal}}].curtida = true;
+                } else if ('dislike-status' == classLike[1]) {
+                    playlist[{{current_index_equal}}].curtida = false;
+                }
+            }
+            if ('like-status' == classLike[1]) {
+                playlist[currentIndex].curtida = true;
+            } else if ('dislike-status' == classLike[1]) {
+                playlist[currentIndex].curtida = false;
+            }
+    });
+    {% endif %}
+
 </script>
 
 </html>

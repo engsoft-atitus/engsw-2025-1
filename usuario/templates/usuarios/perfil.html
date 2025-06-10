@@ -107,6 +107,13 @@
         .btn-back:hover {
             background-color: #c94e30;
         }
+
+        .user-profile-picture{
+        width: 100px; 
+        height: 100px; 
+        object-fit: cover; 
+        border-radius: 50%;
+        }
     </style>
 </head>
 <body>
@@ -119,9 +126,9 @@
     <div class="container">
         <div class="top-section">
             {% if perfil.imagem_perfil %}
-                <img class="logo" src="{{ perfil.imagem_perfil }}?v={{ now|date:'U' }}" alt="Foto de Perfil">
+                <img class=" user-profile-picture" src="{{ perfil.imagem_perfil }}?v={{ now|date:'U' }}" alt="Foto de Perfil">
             {% else %}
-                <img class="logo" src="{% static 'app/imagens/foto-padrao.jpg' %}" alt="Foto Padrão">
+                <img class=" user-profile-picture" src="{% static 'app/imagens/foto-padrao.jpg' %}" alt="Foto Padrão">
             {% endif %}
         </div>
 

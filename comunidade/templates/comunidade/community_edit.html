@@ -19,7 +19,11 @@
       <p>{{error}}</p>
       {% endfor %}
   {% endif %}
-  
+
+  {% if erro %} {#Erro referente ao upload #}
+    <p>Houve um erro no upload de imagem. Por favor tente novamente.</p>
+  {% endif %}
+
   <p>{{ form.profile_picture.label }} </p>
   <p>{{ form.profile_picture }}</p>
 
@@ -29,7 +33,7 @@
     {% endfor %}
   {% endif %}
 
-  <button type="submit">submit</button>
+  <button type="submit">Enviar</button>
   <button>
     <a href="{% url 'community_preview' community.nome_tag %}">Voltar</a>
   </button>

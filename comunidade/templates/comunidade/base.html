@@ -10,17 +10,18 @@
       type="text/css"
       href="{% static 'comunidade/base.css' %}"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   </head>
   <body>
     <div class = "main">
       {% block content %} {% endblock %}
      </div>
 
-     <nav>
-      <a href="{% url 'buscar_musicas' %}">Buscar</a>
-      <a href="{% url 'listar_playlists' %}">Biblioteca</a>
-      <a href="{% url 'my_communities' %}">Comunidade</a>
-      <a href="{% url 'perfil' %}">Perfil</a>
+     <nav class="navbar">
+      <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i>Buscar</a>
+      <a href="{% url 'listar_playlists' %}"><i class="fas fa-book"></i>Biblioteca</a>
+      <a href="{% url 'my_communities' %}"><i class="fas fa-users"></i>Comunidade</a>
+      <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i>Perfil</a>
   </nav>
   </body>
 </html>

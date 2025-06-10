@@ -172,8 +172,8 @@
             {% csrf_token %}
                 
             <!-- Campo de Upload da Imagem de Perfil -->
-            <label for="imagem-perfil" class="form-label">Alterar imagem de perfil:</label><br>
-            <input type="file" name="imagem_perfil" id="imagem-perfil" accept="image/*">
+            <label for="{{ form.profile_picture.id_for_label }}" class="form-label">Alterar imagem de perfil:</label><br>
+            {{form.profile_picture}}
             
             <!-- Campos do Formulário -->
             <label for="{{ form.nascimento.id_for_label }}" class="form-label">Data de Nascimento:</label>

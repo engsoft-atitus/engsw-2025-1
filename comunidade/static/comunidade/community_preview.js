@@ -1,7 +1,6 @@
 "use strict";
-
 // Muda o post para o modo edição
-function setEditPost(element) {
+function setEditPost(element, id) {
     let postBody = element.querySelector(".post-body");
     let editPostBody = document.createElement("textarea");
 
@@ -15,20 +14,20 @@ function setEditPost(element) {
 
     botaoSalvar.classList.add("post-save-edit");
     botaoSalvar.innerText = "Salvar";
-    botaoSalvar.setAttribute("onclick", "editPost(this.parentNode)")
+    botaoSalvar.setAttribute("onclick", "editPost(this.parentNode," + id + ")")
     botaoEditar.replaceWith(botaoSalvar);
 
     let botaoDeletar = element.querySelector(".delete-post");
     let botaoVoltar = document.createElement("button");
 
     botaoVoltar.classList.add("post-return-edit"); // Return???
-    botaoVoltar.setAttribute("onclick", "setPost(this.parentNode)");
+    botaoVoltar.setAttribute("onclick", "setPost(this.parentNode," + id + ")");
     botaoVoltar.innerText = "Voltar";
     botaoDeletar.replaceWith(botaoVoltar);
 }
 
 // Volta o post para o estado normal
-function setPost(element) {
+function setPost(element, id) {
     let editPostBody = element.querySelector(".post-body-edit");
     let postBody = document.createElement("p");
     postBody.classList.add("post-body");
@@ -38,7 +37,7 @@ function setPost(element) {
     let botaoSalvar = element.querySelector(".post-save-edit");
     let botaoEditar = document.createElement("button");
     botaoEditar.classList.add("edit-post");
-    botaoEditar.setAttribute("onclick", "setEditPost(this.parentNode)");
+    botaoEditar.setAttribute("onclick", "setEditPost(this.parentNode," + id + ")");
     botaoEditar.innerText = "Editar";
     botaoSalvar.replaceWith(botaoEditar);
 
@@ -47,7 +46,7 @@ function setPost(element) {
     botaoDeletar.classList.add("delete-post");
 
     let aDeletar = document.createElement("a");
-    aDeletar.setAttribute("href", "/comunidade/post/" + element.id + "/delete/");
+    aDeletar.setAttribute("href", "/comunidade/post/" + id + "/delete/");
     aDeletar.innerText = "Deletar";
     botaoDeletar.appendChild(aDeletar);
 
@@ -57,14 +56,19 @@ function setPost(element) {
 
 //Envia uma request para o server e caso receba uma response ele
 //volta o post para o estado normal e insere o novo body(Texto do post)
-async function editPost(element) {
+async function editPost(element, id) {
+    let btn = element.querySelector(".post-save-edit");
+    btn.disabled = true;
+    btn.removeAttribute("onclick");
     let editPostBody = element.querySelector(".post-body-edit")
     let body = editPostBody.value;
-    let id = element.id;
     const response = await sendEditPost(body, id);
+    toString(id);
+    btn.setAttribute("onclick", `setEditPost(this.parentNode,${id})`);
+    btn.disabled = false;
 
     editPostBody.innerHTML = response['postBody'];
-    setPost(element);
+    setPost(element, id);
 }
 
 //Envia uma request para o server com o id e o conteudo
@@ -116,4 +120,175 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+async function like(element, id) {
+    let likeElement = element.querySelector(".like-post");
+    likeElement.removeAttribute("onclick");
+    likeElement.disabled = true;
+    let curtidas = element.querySelector(".curtidas");
+    let image = likeElement.querySelector(".like");
+    let curtidasValue = parseInt(curtidas.innerText);
+
+    await setLike(id);
+
+    curtidasValue += 1;
+    curtidas.innerText = curtidasValue;
+    image.setAttribute("src", "/static/comunidade/dislike.png");
+    likeElement.disabled = false;
+    likeElement.setAttribute("onclick", "dislike(this.parentNode," + id + ")");
+}
+
+async function dislike(element, id) {
+    let likeElement = element.querySelector(".like-post");
+    likeElement.removeAttribute("onclick");
+    likeElement.disabled = true;
+    let curtidas = element.querySelector(".curtidas");
+    let image = likeElement.querySelector(".like");
+    let curtidasValue = parseInt(curtidas.innerText);
+
+    await setDislike(id);
+
+    curtidasValue -= 1;
+    curtidas.innerText = curtidasValue;
+    image.setAttribute("src", "/static/comunidade/like.png");
+    likeElement.disabled = false;
+    likeElement.setAttribute("onclick", "like(this.parentNode," + id + ")");
+}
+
+async function setLike(id) {
+    const url = "/comunidade/post/like/";
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { 'X-CSRFToken': getCookie("csrftoken") },
+            body: JSON.stringify({
+                "id": id
+            }),
+        })
+            .then(response => {
+                console.log(response.status);
+                if (!response.ok) {
+                    throw new Error("HTTP STATUS " + response.status);
+                }
+                return response.json();
+            })
+        return response;
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+async function setDislike(id) {
+    const url = "/comunidade/post/dislike/";
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { 'X-CSRFToken': getCookie("csrftoken") },
+            body: JSON.stringify({
+                "id": id
+            }),
+        })
+            .then(response => {
+                console.log(response.status);
+                if (!response.ok) {
+                    throw new Error("HTTP STATUS " + response.status);
+                }
+                return response.json();
+            })
+        return response;
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+let musicaModal = document.getElementById("musica-modal");
+let musicaModalContent = document.getElementById("modal-content");
+let musicaBtn = document.getElementById("musica-btn");
+let queryBtn = document.getElementById("query-btn");
+
+musicaBtn.addEventListener("click", showMusicModal); //Botão para mostar modal
+queryBtn.addEventListener("click", showMusicResults); // Pesquisa as musicas e mostra elas
+
+window.onclick = function (event) { // Quando o modal está ativo
+    if (event.target === musicaModal) { // Clicar em qualquer lugar fora dele
+        musicaModal.style.display = "none"; // Fecha ele
+    }
+}
+function showMusicModal() { // Mostra o modal da musica
+    musicaModal.style.display = "block";
+}
+
+async function showMusicResults() {
+    queryBtn.removeEventListener("click", showMusicResults);
+    let musicName = document.getElementById("music-query").value;
+
+    // Remove os botoes das musicas anteriores(caso existam)
+    document.querySelectorAll('.musica-div').forEach(e => e.remove());
+
+    const response = await searchMusic(musicName);
+    let modalContentMusic = document.getElementById("modal-content-music");
+
+    Object.entries(response).forEach(([key, val]) => {
+        // Adiciona cada botão (quadrado) para músicas
+        let musicaDiv = document.createElement("button");
+        musicaDiv.setAttribute("type", "button");
+        musicaDiv.className = "musica-div";
+
+        let musicaNome = document.createElement("p");
+        musicaNome.innerText = val["nome"];
+
+        let musicaLink = document.createElement("p");
+        musicaLink.innerText = val["linkmusica"];
+
+        let musicaArtista = document.createElement("p");
+        musicaArtista.innerText = val["nomeartista"];
+
+        let musicaImagem = document.createElement("img");
+        musicaImagem.setAttribute("src", val["imagem"]);
+
+
+        modalContentMusic.appendChild(musicaDiv); //Adiciona uma das musicas para o modal
+        musicaDiv.appendChild(musicaImagem) // Adiciona as caracteristicas da musicas para o modal
+        musicaDiv.appendChild(musicaNome)
+        musicaDiv.appendChild(musicaArtista);
+        // Botão para selecionar músicas e mandar elas para o form  
+        musicaDiv.setAttribute("onclick", `setMusic('${val["nome"]}','${val["nomeartista"]}','${val["linkmusica"]}','${val["imagem"]}')`);
+    });
+    queryBtn.addEventListener("click", showMusicResults);
+}
+
+// Coloca os valores no form e fecha o modal
+function setMusic(musicaNome, musicaArtista, musicaLink, musicaImagem) {
+    document.getElementById("id_musica_nome").value = musicaNome;
+    document.getElementById("id_musica_artista").value = musicaArtista;
+    document.getElementById("id_musica_link").value = musicaLink;
+    document.getElementById("id_musica_imagem").value = musicaImagem;
+    musicaModal.style.display = "none";
+}
+
+// Pesquisa as musicas e retorna os primeiros 9 resultados
+async function searchMusic(musicName) {
+    const url = "/comunidade/musicas/";
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { 'X-CSRFToken': getCookie("csrftoken") },
+            body: JSON.stringify({
+                "query": musicName
+            }),
+        })
+            .then(response => {
+                console.log(response.status);
+                if (!response.ok) {
+                    throw new Error("HTTP STATUS " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                return data['musicas'];
+            })
+        return response;
+    } catch (error) {
+        console.error(error.message);
+    }
 }
