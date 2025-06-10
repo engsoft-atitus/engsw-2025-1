@@ -43,6 +43,7 @@ def buscar_musicas(request):
 
 @login_required
 def player(request):
+    playlists = Playlist.objects.filter(user=request.user)
     nome = request.GET.get('nome')
     nomeartista = request.GET.get('nomeartista')
     linkmusica = request.GET.get('linkmusica')
@@ -60,6 +61,7 @@ def player(request):
     return render(request, 'player.html', {
         'musica': musica,
         'playlist': mark_safe(json.dumps(musicas)),
+        'playlists': playlists,
     })
     
 @login_required
