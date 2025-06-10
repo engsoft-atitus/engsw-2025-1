@@ -51,32 +51,16 @@ def upload_vercel_image(file) -> dict:
     if existe != None: # Caso exista, exista, ele retorna a url que conseguiu
         return {"existe":True, "url":existe.profile_picture,"file_hash":file_hash,"erro":False}
     # Caso contrário ele tenta fazer um upload para o vercel
-    try:
-        response = vercel_blob.put(f"{uuid.uuid4()}.{file.name.split(".",-1)[-1]}",file.read(),options={"token":BLOB_READ_WRITE_TOKEN})
-        file.seek(0)
-        blob_url = response["url"]
-        return {"existe":False,"url":blob_url,"file_hash":file_hash,"erro":False}
-    except Exception:
-        file.seek(0)
-        return {"existe":False,"erro":True}
-
-def upload_vercel_image_playlist(file) -> dict:
-    file_hash = get_hash_file_256(file)
-    existe = Playlist.objects.filter(imagem_hash=file_hash).first() 
-    file.seek(0)
-    if existe:
-        return {
-            "existe": True,
-            "url": existe.imagem,
-            "file_hash": file_hash,
-            "erro": False
-        }
-    try:
-        response = vercel_blob.put(f"{uuid.uuid4()}.{file.name.split(".",-1)[-1]}",file.read(),options={"token":BLOB_READ_WRITE_TOKEN})
-        file.seek(0)
-        blob_url = response["url"]
-        return {"existe":False,"url":blob_url,"file_hash":file_hash,"erro":False}
-    except Exception:
-        file.seek(0)
-        return {"existe":False,"erro":True}
     
+    existe_playlist_imagem = Playlist.objects.filter(imagem_hash=file_hash).first()
+    if existe_playlist_imagem:
+        return {"existe":True, "url":existe_playlist_imagem.imagem,"file_hash":file_hash,"erro":False}
+    
+    try:
+        response = vercel_blob.put(f"{uuid.uuid4()}.{file.name.split(".",-1)[-1]}",file.read(),options={"token":BLOB_READ_WRITE_TOKEN})
+        file.seek(0)
+        blob_url = response["url"]
+        return {"existe":False,"url":blob_url,"file_hash":file_hash,"erro":False}
+    except Exception:
+        file.seek(0)
+        return {"existe":False,"erro":True}
