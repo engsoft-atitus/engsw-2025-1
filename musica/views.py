@@ -271,9 +271,21 @@ def editar_playlist(request, playlist_id):
     if playlist.user != request.user:
         return HttpResponse("Você não tem permissão para editar esta playlist.")
     if request.method == 'POST':
-        form = PlaylistForm(request.POST, instance=playlist)
+        form = PlaylistForm(request.POST, request.FILES, instance=playlist)
         if form.is_valid():
-            form.save()
+            playlist = form.save(commit=False)
+            
+            if 'imagem' in request.FILES:
+                imagem = request.FILES['imagem']
+                upload_result = upload_vercel_image(imagem)
+
+                if not upload_result["erro"]:
+                    playlist.imagem = upload_result["url"]
+                    playlist.imagem_hash = upload_result["file_hash"]
+                else:
+                    messages.error(request, "Erro no upload da imagem. Tente novamente.")
+                    return render(request, 'editar_playlist.html', {'form': form, 'playlist': playlist})
+            playlist.save()
             messages.success(request, "Playlist atualizada com sucesso.")
             return redirect('listar_playlists')
     else:
