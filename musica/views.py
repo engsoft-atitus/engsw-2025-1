@@ -142,12 +142,26 @@ def ver_playlist(request, playlist_id):
         dados = r.json()
         if dados.get("data"):
             track = dados["data"][0]
+            
+            musica_obj,_ = MusicaSalva.objects.get_or_create(
+                nome=track['title'],
+                artista=track['artist']['name'],
+                imagem=track['album']['cover_medium'],
+                defaults={'link':track['preview']}
+            )
+
+            if request.user in musica_obj.curtida.all():
+                curtida = True
+            else:
+                curtida = False
+            
             musica_info = {
                 'id': musica.id,
                 'nome': track['title'],
                 'linkmusica': track['preview'],
                 'nomeartista': track['artist']['name'],
                 'imagem': track['album']['cover_medium'],
+                'curtida': curtida
             }
             musicas_encontradas.append(musica_info)
 
@@ -282,5 +296,5 @@ def listar_playlists_todos(request):
     if query:
         playlists = Playlist.objects.filter(nome__icontains=query)
     else:
-        playlists = Playlist.objects.all()
+        playlists = Playlist.objects.all().exclude(playlist_curtir=1)
     return render(request, 'playlistsTodos.html', {'playlists': playlists})

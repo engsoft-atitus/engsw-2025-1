@@ -183,8 +183,7 @@
     const progressBar = document.getElementById('progress-bar');
     const progressContainer = document.querySelector('.progress-container');
     const thumb = document.getElementById('progress-thumb');
-    console.log(currentIndex);
-    console.log(playlist[{{current_index_equal}}].curtida);
+    
     let isDragging = false;
     let btnLike = document.querySelector(".curtida");
 
@@ -203,14 +202,15 @@
     function nextSong() {
         currentIndex = (currentIndex + 1) % playlist.length;
         const musica = playlist[currentIndex];
+        {% if playlist_curtir != True %}
         if (currentIndex === -1){
             let newIndex = {{ current_index_equal }};
             let musica_minus_one = playlist[newIndex];
             changeLike(musica_minus_one.curtida,musica_minus_one.nome,musica_minus_one.nomeartista);
         } else {
             changeLike(musica.curtida,musica.nome,musica.nomeartista);
-            console.log(playlist); 
         }
+        {% endif %}
         audioSource.src = musica.linkmusica;
         player.load();
         player.currentTime = 0;
@@ -224,14 +224,15 @@
     function returnSong() {
         currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
         const musica = playlist[currentIndex];
-        if (currentIndex === -1){
-            let newIndex = {{ current_index_equal }};
-            let musica_minus_one = playlist[newIndex];
-            changeLike(musica_minus_one.curtida,musica_minus_one.nome,musica_minus_one.nomeartista);
-        } else {
-            changeLike(musica.curtida,musica.nome,musica.nomeartista);
-            console.log(playlist); 
-        }
+        {% if playlist_curtir != True %}
+            if (currentIndex === -1){
+                let newIndex = {{ current_index_equal }};
+                let musica_minus_one = playlist[newIndex];
+                changeLike(musica_minus_one.curtida,musica_minus_one.nome,musica_minus_one.nomeartista);
+            } else {
+                changeLike(musica.curtida,musica.nome,musica.nomeartista);
+            }
+        {% endif %}
         audioSource.src = musica.linkmusica;
         player.load();
         player.currentTime = 0;
@@ -282,7 +283,9 @@
         audioSource.src = musica.linkmusica;
         player.load();
         player.currentTime = 0;
-        changeLike(musica.curtida,musica.nome,musica.nomeartista);
+        {% if playlist_curtir != True %}
+            changeLike(musica.curtida,musica.nome,musica.nomeartista);
+        {% endif %}
         player.play();
 
         // Atualiza capa e texto
@@ -309,26 +312,23 @@
             btn.setAttribute("onclick", `dislikeMusic(this,'${nome}','${artista}')`)
         }
     }
-
-    btnLike.addEventListener('click', () => {
-        let classLike = btnLike.classList;
-        if (currentIndex === -1){
-            if ('like-status' == classLike[1]) {
-                playlist[{{current_index_equal}}].curtida = true;
-                console.log(playlist[{{current_index_equal}}].curtida);
-                console.log(playlist);
-            } else if ('dislike-status' == classLike[1]) {
-                playlist[{{current_index_equal}}].curtida = false;
-                console.log(playlist[{{current_index_equal}}].curtida);
-                console.log(playlist);
+    {% if playlist_curtir != True %}
+        btnLike.addEventListener('click', () => {
+            let classLike = btnLike.classList;
+            if (currentIndex === -1){
+                if ('like-status' == classLike[1]) {
+                    playlist[{{current_index_equal}}].curtida = true;
+                } else if ('dislike-status' == classLike[1]) {
+                    playlist[{{current_index_equal}}].curtida = false;
+                }
             }
-        }
-        if ('like-status' == classLike[1]) {
-            playlist[currentIndex].curtida = true;
-        } else if ('dislike-status' == classLike[1]) {
-            playlist[currentIndex].curtida = false;
-        }
+            if ('like-status' == classLike[1]) {
+                playlist[currentIndex].curtida = true;
+            } else if ('dislike-status' == classLike[1]) {
+                playlist[currentIndex].curtida = false;
+            }
     });
+    {% endif %}
 
 </script>
 
