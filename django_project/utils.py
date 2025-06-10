@@ -3,6 +3,7 @@ import hashlib
 import vercel_blob
 from comunidade.models import Community
 from usuario.models import Profile
+from musica.models import Playlist
 from django_project.settings import BLOB_READ_WRITE_TOKEN
 
 
@@ -58,6 +59,16 @@ def upload_vercel_image(file) -> dict:
         return {"existe": True, "url": existe_profile.imagem_perfil, "file_hash": file_hash, "erro": False, "source": "profile"}
 
     # Caso contrário, tenta fazer o upload para o Vercel
+    file_hash = get_hash_file_256(file) # Pega a hash do arquivo
+    existe = Community.objects.filter(profile_picture_hash=file_hash).first() # Pega o primeiro resultado
+    file.seek(0) # Eu não sei se esse seek é necessário
+    if existe != None: # Caso exista, exista, ele retorna a url que conseguiu
+        return {"existe":True, "url":existe.profile_picture,"file_hash":file_hash,"erro":False}
+    # Caso contrário ele tenta fazer um upload para o vercel
+    
+    existe_playlist_imagem = Playlist.objects.filter(imagem_hash=file_hash).first()
+    if existe_playlist_imagem:
+        return {"existe":True, "url":existe_playlist_imagem.imagem,"file_hash":file_hash,"erro":False}
     try:
         # Realiza o upload para o Vercel Blob
         response = vercel_blob.put(f"{uuid.uuid4()}.{file.name.split('.')[-1]}", file.read(), options={"token": BLOB_READ_WRITE_TOKEN})
@@ -74,3 +85,7 @@ def upload_vercel_image(file) -> dict:
         # Retorna um erro caso o upload falhe
         return {"existe": False, "erro": True, "message": str(e)}
     
+        return {"existe":False,"url":blob_url,"file_hash":file_hash,"erro":False}
+    except Exception:
+        file.seek(0)
+        return {"existe":False,"erro":True}
