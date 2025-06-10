@@ -57,11 +57,13 @@ def player(request):
         'imagem': imagem,
     }
     print("JSON da playlist:", json.dumps(musicas))
-
+    musica_obj = MusicaSalva.objects.filter(nome=nome, artista=nomeartista)
+    print(musica_obj)
     return render(request, 'player.html', {
         'musica': musica,
         'playlist': mark_safe(json.dumps(musicas)),
         'playlists': playlists,
+        'musica_obj':musica_obj
     })
     
 @login_required
