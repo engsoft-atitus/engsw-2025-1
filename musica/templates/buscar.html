@@ -71,55 +71,51 @@
             {% if musicas %}
             <h2>Resultados:</h2>
             <ul class="musica-grid">
-                {% for musica in musicas %}
+                {% for musica in musicas_obj %}
                 <li>
                     <div class="capa">
                         <img src="{{ musica.imagem }}" alt="Capa do Álbum" width="100">
                     </div>
                     <div class="textfield">
                         <h1>{{ musica.nome }}</h1>
-                        <h2>{{ musica.nomeartista }}</h2>
+                        <h2>{{ musica.artista }}</h2>
                     </div>
-                    <a href="{% url 'player' %}?nome={{ musica.nome }}&nomeartista={{ musica.nomeartista }}&linkmusica={{ musica.linkmusica }}&imagem={{ musica.imagem }}"
+                    <a href="{% url 'player' %}?nome={{ musica.nome }}&nomeartista={{ musica.artista }}&linkmusica={{ musica.linkmusica }}&imagem={{ musica.imagem }}"
                         target="" class="play">
                         <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30">
                     </a>
-                    <form method="POST" action="{% url 'salvar_musica' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="nome" value="{{ musica.nome }}">
-                        <input type="hidden" name="nomeartista" value="{{ musica.nomeartista }}">
-
-                        <select style="display: none;" name="playlist_id" required>
-                            {% for playlist in playlists %}
-                                {% if playlist.nome == 'Músicas curtidas' %}
-                                    <option value="{{ playlist.id }}" selected>{{ playlist.nome }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-
-                        <button type="submit" style="background-color: transparent; border: none;"><img id="curtida"
+                    <p>{{musica}}</p>
+                    <p>{{musica.nome}}</p>
+                    {% if request.user in musica.curtida.all %}
+                        <button type="submit" style="background-color: transparent; border: none;"><img class="curtida"
+                            src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286"
+                            onclick="dislikeMusic(this,'{{musica.nome}}','{{musica.artista}}')" alt="" width="30"
+                            style="cursor: pointer;"></button>
+                    {% else %}
+                        <button type="submit" style="background-color: transparent; border: none;"><img class="curtida"
                                 src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
-                                onclick="toggleFavorite()" alt="" width="30" style="cursor: pointer;"></button>
-                    </form>
+                                onclick="likeMusic(this,'{{musica.nome}}','{{musica.artista}}')" alt="" width="30"
+                                style="cursor: pointer;"></button>
+                    {% endif %}
                     <div class="mobile-menu">
                         <span>&#8226;&#8226;&#8226;</span>
 
-                    <div class="nav-list">
-                        <button class="close-menu">✕</button>
-                        <form method="POST" action="{% url 'salvar_musica' %}">
+                        <div class="nav-list">
+                            <button class="close-menu">✕</button>
                             {% csrf_token %}
-                            <input type="hidden" name="nome" value="{{ musica.nome }}">
-                            <input type="hidden" name="nomeartista" value="{{ musica.nomeartista }}">
+                            <form method="POST" action="{% url 'salvar_musica' %}">
+                                <input type="hidden" name="nome" value="{{ musica.nome }}">
+                                <input type="hidden" name="nomeartista" value="{{ musica.nomeartista }}">
 
-                            <select name="playlist_id" required>
-                                {% for playlist in playlists %}
-                                <option value="{{ playlist.id }}">{{ playlist.nome }}</option>
-                                {% endfor %}
-                            </select>
+                                <select name="playlist_id" required>
+                                    {% for playlist in playlists %}
+                                    <option value="{{ playlist.id }}">{{ playlist.nome }}</option>
+                                    {% endfor %}
+                                </select>
 
-                            <button type="submit">Salvar na Playlist</button>
-                        </form>
-                    </div>
+                                <button type="submit">Salvar na Playlist</button>
+                            </form>
+                        </div>
                 </li>
                 {% endfor %}
             </ul>
@@ -136,18 +132,90 @@
 
 </body>
 <script>
-    let isFavorited = false;
+    // Element é a imagem e o src o atritbuto que tem o link
+    async function likeMusic(element, nome, artista) {
+        element.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286";
+        element.removeAttribute("onclick"); // Remove o onclick para impedir que o usuario execute mais curtidas
+        // enquanto o sistema não retorna a curtida
+        await like(nome, artista);
+        // esse `` é tipo um f do python em uma string e usa ${} pra formatar, é importante que nas strings
+        //tenham '' pro html reconhecer
+        element.setAttribute("onclick", `dislikeMusic(this,'${nome}','${artista}')`);
+    }
+    async function dislikeMusic(element, nome, artista) {
+        element.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854";
+        element.removeAttribute("onclick");
+        await dislike(nome, artista); // Não tem ainda dislikeMusic, tenta ver se tu conseguir fazer com base no like
+        element.setAttribute("onclick", `likeMusic(this,'${nome}','${artista}')`);
+    }
 
-    async function toggleFavorite() {
-        const heart = document.getElementById('curtida');
-
-        if (isFavorited) {
-            heart.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854";
-        } else {
-            heart.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286";
-            await salvarMusica();
+    //Eu não entendo essa função
+    //Ela retorna um cookie
+    //Eu copiei da documentação do django para pegar o csrftoken
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                // Seilá django, tu que escreveu isso dai
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
         }
-        isFavorited = !isFavorited;
+        return cookieValue;
+    }
+
+    async function like(nome, artista) {
+        const url = 'playlist/curtidas/';
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { 'X-CSRFToken': getCookie("csrftoken") }, // precisa do token
+                body: JSON.stringify({
+                    "nome": nome,
+                    "artista": artista
+                })
+            })
+                .then(
+                    response => {
+                        console.log(response.status);
+                        if (!response.ok) {
+                            throw Error("HTTP STATUS " + response.status);
+                        }
+                        return response.json();
+                    }
+                )
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+    async function dislike(nome, artista) {
+        const url = 'playlist/descurtir/';
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { 'X-CSRFToken': getCookie("csrftoken") }, // precisa do token
+                body: JSON.stringify({
+                    "nome": nome,
+                    "artista": artista
+                })
+            })
+                .then(
+                    response => {
+                        console.log(response.status);
+                        if (!response.ok) {
+                            throw Error("HTTP STATUS " + response.status);
+                        }
+                        return response.json();
+                    }
+                )
+        } catch (error) {
+            console.error(error.message);
+        }
     }
 </script>
 

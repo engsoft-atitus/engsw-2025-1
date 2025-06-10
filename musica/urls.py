@@ -7,9 +7,9 @@ urlpatterns = [
     path('salvar/', views.salvar_musica, name='salvar_musica'),
     path('playlists/', views.listar_playlists, name='listar_playlists'),
     path('playlist/<int:playlist_id>/', views.ver_playlist, name='ver_playlist'),
-    path('playlist/curtidas/', views.criar_playlist_curtidas, name='criar_playlist_curtidas'),
     path('playlist/<int:playlist_id>/excluir/', views.excluir_playlist, name='excluir_playlist'),
     path('criar_playlist/', views.criar_playlist, name='criar_playlist'),
     path('logout/', views.logout_view, name='logout'),
-
+    path('playlist/curtidas/', views.adicionarMusicasFavoritas, name='adicionarMusicasFavoritas'),
+    path('playlist/descurtir/', views.excluirMusicasFavoritas, name='excluirMusicasFavoritas'),
 ]

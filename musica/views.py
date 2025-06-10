@@ -1,6 +1,6 @@
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.utils.safestring import mark_safe
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -16,12 +16,12 @@ def buscar_musicas(request):
     user = request.user
     playlists = Playlist.objects.filter(user=request.user)  # Filtra as playlists do usuário logado (Aqui também é responsável por mostrar as playlists do usuário na lista de playlists)
     musicas_encontradas = []
+    musicas_obj = []
     query = request.GET.get('q')  # Pega o que foi digitado
     if query:
         url = f"https://api.deezer.com/search?q={query}&limit=9"
         r = requests.get(url)
         dados = r.json()
-
         for track in dados.get("data", []):
             musica = {
                 'nome': track['title'],  # o nome da música
@@ -29,9 +29,17 @@ def buscar_musicas(request):
                 'nomeartista': track['artist']['name'],  # nome do artista
                 'imagem': track['album']['cover_medium'],  # imagem do álbum
             }
+            
+            musica_obj,_ = MusicaSalva.objects.get_or_create(
+                nome=track['title'],
+                artista=track['artist']['name']
+            )
+            
             musicas_encontradas.append(musica)
+            musicas_obj.append(musica_obj)
     request.session['musicas'] = musicas_encontradas
-    return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists})
+    print(musicas_obj)
+    return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists,"musicas_obj": musicas_obj})
 
 @login_required
 def player(request):
@@ -122,19 +130,67 @@ def criar_playlist(request):
     return render(request, 'criar_playlist.html')
 
 @login_required
-def criar_playlist_curtidas(request):
-    nome = 'Músicas curtidas'
-    descricao = 'Suas músicas curtidas'
-    user_id = request.user.id
-    Playlist.objects.create(nome=nome, descricao=descricao, user_id=user_id)
-    return redirect('listar_playlists')
+def adicionarMusicasFavoritas(request):
+    # Verifica se o method da requisição é post
+    if request.method == "POST":
+        #Pega os dados do ajax
+        json_data = json.loads(request.body)
+        #Pega ou cria a playlist
+        try:
+            playlist_curtidas, _ = Playlist.objects.get_or_create(
+                nome = 'Músicas curtidas',
+                descricao = 'Suas músicas curtidas',
+                #O usuário nos models recebe o modelo inteiro do User e não só o id
+                user = request.user,
+                playlist_curtir = 1
+            )
+           
+            nome = json_data.get('nome')
+            artista = json_data.get('artista')
+            #Pega ou cria a musica
+            if nome != None and artista != None:
+                musicaCurtida, _ = MusicaSalva.objects.get_or_create(
+                        nome=nome,
+                        artista=artista
+                )
+
+                musicaCurtida.curtida.add(request.user)
+                musicaCurtida.playlists.add(playlist_curtidas)
+                musicaCurtida.save()
+                return JsonResponse({'status':'true'},status=200)
+            else:
+                return JsonResponse({'status':'false','message':'Body is missing parameters'},status=400)
+        except:
+            return JsonResponse({'status':'false','message':'Something went wrong'},status=500)
+    return redirect(buscar_musicas)
 
 @login_required
-def adicionarMusicasFavoritas(request, playlist_id):
-    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)
-    if playlist.user != request.user:
-        return HttpResponse("Você não tem permissão para adicionar músicas a esta playlist.")
-    musicas_salvas = MusicaSalva.objects.filter(playlists=playlist)
+def excluirMusicasFavoritas(request):
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        try:
+            nome = json_data.get('nome')
+            artista = json_data.get('artista')
+            if nome is not None and artista is not None:
+                musicaCurtida = get_object_or_404(MusicaSalva, nome=nome, artista=artista)
+                playlist_curtidas = get_object_or_404(
+                    Playlist,
+                    nome='Músicas curtidas',
+                    descricao='Suas músicas curtidas',
+                    user=request.user,
+                    playlist_curtir=1
+                )
+                if musicaCurtida.playlists.filter(id=playlist_curtidas.id).exists():
+                    musicaCurtida.playlists.remove(playlist_curtidas)
+                    musicaCurtida.curtida.remove(request.user)
+                    musicaCurtida.save()
+                    return JsonResponse({'status': 'true'}, status=200)
+                else:
+                    return JsonResponse({'status': 'false', 'message': 'Music not in playlist'}, status=400)
+            else:
+                return JsonResponse({'status': 'false', 'message': 'Body is missing parameters'}, status=400)
+        except:
+            return JsonResponse({'status': 'false', 'message': 'Something went wrong'}, status=500)
 @login_required
 def excluir_playlist(request, playlist_id):
     playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user) # Contém as playlists do usuário, as linhas abaixo são uma camada a mais de segurança
