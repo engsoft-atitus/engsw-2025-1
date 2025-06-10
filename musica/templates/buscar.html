@@ -151,7 +151,7 @@
                         <h1>{{ musica.nome }}</h1>
                         <h2>{{ musica.artista }}</h2>
                     </div>
-                    <a href="{% url 'player' %}?nome={{ musica.nome }}&nomeartista={{ musica.artista }}&linkmusica={{ musica.linkmusica }}&imagem={{ musica.imagem }}"
+                    <a href="{% url 'player' %}?nome={{ musica.nome }}&nomeartista={{ musica.artista }}&linkmusica={{ musica.link }}&imagem={{ musica.imagem }}"
                         target="" class="play">
                         <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30">
                     </a>
@@ -174,7 +174,7 @@
                         <form method="POST" action="{% url 'salvar_musica' %}">
                             {% csrf_token %}
                             <input type="hidden" name="nome" value="{{ musica.nome }}">
-                            <input type="hidden" name="nomeartista" value="{{ musica.nomeartista }}">
+                            <input type="hidden" name="nomeartista" value="{{ musica.artista }}">
                             <input type="hidden" name="link" value="{{ musica.link }}">
                             <input type="hidden" name="imagem" value="{{ musica.imagem }}">
 

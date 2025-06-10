@@ -65,9 +65,11 @@ def player(request):
     nomeartista = request.GET.get('nomeartista')
     linkmusica = request.GET.get('linkmusica')
     imagem = request.GET.get('imagem')
+
     playlist_curtir = False
     if request.GET.get('playlist_curtir') == 'True':
         playlist_curtir = True
+    
     musicas = request.session.get('musicas', [])
     musica = {
         'titulo': nome,
