@@ -88,6 +88,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            margin-left: 80px;
             gap: 30px;
         }
     </style>
@@ -135,8 +136,35 @@
                     <img src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/next%20(1).png?v=1745883833856"
                         alt="">
                 </button>
+                <form action="{% url 'salvar_musica' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="nome" value="{{ musica.titulo }}">
+                    <input type="hidden" name="nomeartista" value="{{ musica.artista }}">
+
+                    <label for="playlist_id" style="display: none;">Escolha uma playlist:</label>
+                    <select name="playlist_id" id="playlist_id" style="display: none;" required>
+                        {% for playlist in playlists %}
+                        <option value="{{ playlist.id }}">{{ playlist.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+                {% if playlist_curtir != True %}
+                    {% if request.user in musica_obj.curtida.all %}
+                        <button type="submit" style="background-color: transparent; border: none;"><img class="curtida"
+                                src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286"
+                                onclick="dislikeMusic(this,'{{musica_obj.nome}}','{{musica_obj.artista}}')" alt="" width="30"
+                                style="cursor: pointer;"></button>
+                    {% else %}
+                        <button type="submit" style="background-color: transparent; border: none;"><img class="curtida"
+                                src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
+                                onclick="likeMusic(this,'{{musica_obj.nome}}','{{musica_obj.artista}}')" alt="" width="30"
+                                style="cursor: pointer;"></button>
+                    {% endif %}
+                {% endif %}
             </div>
+
         </section>
+
         <nav>
             <a href="{% url 'buscar_musicas' %}">Buscar</a>
             <a href="{% url 'listar_playlists' %}">Biblioteca</a>
@@ -144,6 +172,7 @@
             <a href="{% url 'perfil' request.user.username %}">Perfil</a>
         </nav>
     </main>
+    <script src="{% static 'musica/js/like-scripts.js' %}"></script>
 </body>
 <script>
     const playlist = {{playlist}} // django + js para pegar a playlist de musicas em "musicas_encontradas" CONSIDERE Q FUNCIONA
@@ -252,6 +281,7 @@
         currentIndex = (currentIndex + 1) % playlist.length;
         atualizarPlayer(playlist[currentIndex]);
     });
+
 </script>
 
 </html>

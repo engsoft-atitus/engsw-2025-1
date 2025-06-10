@@ -142,19 +142,30 @@
             {% if musicas %}
             <h2>Resultados:</h2>
             <ul class="musica-grid">
-                {% for musica in musicas %}
+                {% for musica in musicas_obj %}
                 <li>
                     <div class="capa">
                         <img src="{{ musica.imagem }}" alt="Capa do Álbum" width="100">
                     </div>
                     <div class="textfield">
                         <h1>{{ musica.nome }}</h1>
-                        <h2>{{ musica.nomeartista }}</h2>
+                        <h2>{{ musica.artista }}</h2>
                     </div>
-                    <a href="{% url 'player' %}?nome={{ musica.nome }}&nomeartista={{ musica.nomeartista }}&linkmusica={{ musica.linkmusica }}&imagem={{ musica.imagem }}"
+                    <a href="{% url 'player' %}?nome={{ musica.nome }}&nomeartista={{ musica.artista }}&linkmusica={{ musica.linkmusica }}&imagem={{ musica.imagem }}"
                         target="" class="play">
                         <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30">
                     </a>
+                    {% if request.user in musica.curtida.all %}
+                        <button style="background-color: transparent; border: none;"><img class="curtida"
+                            src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286"
+                            onclick="dislikeMusic(this,'{{musica.nome}}','{{musica.artista}}')" alt="" width="30"
+                            style="cursor: pointer;"></button>
+                    {% else %}
+                        <button style="background-color: transparent; border: none;"><img class="curtida"
+                                src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
+                                onclick="likeMusic(this,'{{musica.nome}}','{{musica.artista}}')" alt="" width="30"
+                                style="cursor: pointer;"></button>
+                    {% endif %}
                     <div class="mobile-menu">
                         <span>&#8226;&#8226;&#8226;</span>
                     </div>
@@ -164,7 +175,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="nome" value="{{ musica.nome }}">
                             <input type="hidden" name="nomeartista" value="{{ musica.nomeartista }}">
-                            <input type="hidden" name="link" value="{{ musica.linkmusica }}">
+                            <input type="hidden" name="link" value="{{ musica.link }}">
                             <input type="hidden" name="imagem" value="{{ musica.imagem }}">
 
                             <select name="playlist_id" required>
@@ -190,9 +201,10 @@
     </nav>
 
     <script src="{% static 'musica/js/mobile-nav-bar.js' %}"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
+    <script src="{% static 'musica/js/like-scripts.js' %}"></script>
+</body>
+<script>
+            document.addEventListener("DOMContentLoaded", function () {
             const toggleBtn = document.querySelector('.seta-toggle');
             const dropdownMenu = document.getElementById('searchDropdown');
 
@@ -228,8 +240,6 @@
                 musicButton.style.color = "#6545F0";
             });
         });
-    </script>
-
-</body>
+</script>
 
 </html>
