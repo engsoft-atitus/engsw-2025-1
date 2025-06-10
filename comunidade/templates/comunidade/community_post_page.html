@@ -1,0 +1,88 @@
+{% extends "comunidade/base.html" %}
+{% load static %}
+{% load tz %}
+{% block content %}
+<div class="container">
+    {% if is_participating or community.criador.id == user_id %}
+    <div class="posts-admin">
+        <h2>Criar um post</h2>
+        <form action="{% url 'community_post' community.id %}" method="post">
+            {% csrf_token %}
+            {{form.body}}
+            {{form.musica_nome.as_hidden}}
+            {{form.musica_artista.as_hidden}}
+            {{form.musica_link.as_hidden}}
+            {{form.musica_imagem.as_hidden}}
+            <modal class="post-modal-music" id="musica-modal">
+            <section class="modal-content" id="modal-content">
+                <search class="search-music">            
+                <input id="music-query" type="text" placeholder="Digite o nome da música">
+                <button type="button" id="query-btn">Pesquisar</button>
+                </search>
+                <div class="modal-content-music" id="modal-content-music">
+
+                </div>
+            </section>
+            </modal>
+            <button id="musica-btn" type="button">Inserir Música</button>
+            <button type="submit">Enviar</button>
+        </form>
+        </div>
+    {% endif %}
+
+    <h2>Posts</h2>
+    {% for post in posts %}
+    <section id="{{post.id}}" >
+    <div class="centralizar">
+        <article  class="comentario">
+        <div class="usuario-post">
+            <!--Placeholder para foto de perfil-->
+            <img src="https://placecats.com/75/75" alt="profile picture" style="border-radius: 50%;">
+            <h4>{{post.user.username}}</h4>
+        </div>
+        <p class="post-body">{{post.body}}</p>
+
+
+        {% if post.musica != None %}
+        <div class="container music-spacing music-post-size">
+            <a href="{% url 'player' %}?nome={{ post.musica.nome }}&nomeartista={{ post.musica.artista }}&linkmusica={{ post.musica.link }}&imagem={{ post.musica.imagem }}">
+                <img class="music-image-post" src="{{post.musica.imagem}}">
+            </a>
+            <p class="post-music-name">{{post.musica.nome}}</p>
+            <p class="post-artist-name">{{post.musica.artista}}</p>
+        </div>
+        {% endif %}
+
+        <div class="low-post-section">
+        {% localtime on %}
+            <p>{{post.data_post|timezone:"America/Sao_Paulo"|date:"Y m d H:i"}}</p>
+        {% endlocaltime %}
+            <div id="{{post.id}}" class="like-section">
+            {% if request.user in post.curtidores.all %}
+            <button class="like-post" onclick="dislike(this.parentNode)"><img class="like" src="{% static "comunidade/dislike.png"%}" alt="Botão de descurtir"></button> 
+            {% else %}
+            <button class="like-post" onclick="like(this.parentNode)"><img class="like" src="{% static "comunidade/like.png"%}" alt="Botão de curtir"></button>
+            {% endif %}
+            <p class="curtidas">{{post.curtidas}}</p> 
+            </div>     
+        </div>
+
+
+        
+        </article>
+    </div>
+    {% if post.user == request.user %}
+        <button class="edit-post" onclick="setEditPost(this.parentNode)">Editar</button>
+        <button class="delete-post"><a href="{% url 'delete_post' post.id %}">Deletar</a></button>    
+    {% endif %}
+    </section>
+
+{% endfor %}
+
+    <button>
+    <a href="{% url 'community_preview' community.nome_tag %}">Voltar</a>
+  </button>
+  
+</div>
+<script src="{% static 'comunidade/community_preview.js' %}"></script>
+{% endblock %}    

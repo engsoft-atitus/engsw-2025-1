@@ -109,7 +109,7 @@
         <a href="{% url 'buscar_musicas' %}"><i class="fa-duotone fa-solid fa-magnifying-glass"></i></a>
         <a href="{% url 'listar_playlists' %}"><i class="fa-solid fa-list"></i></a>
         <a href="{% url 'my_communities' %}"><i class="fa-duotone fa-solid fa-users"></i></a>
-        <a href="{% url 'perfil' %}"><i class="fa-duotone fa-solid fa-user"></i></a>
+        <a href="{% url 'perfil' request.user.username %}"><i class="fa-duotone fa-solid fa-user"></i></a>
     </nav>
 </body>
 

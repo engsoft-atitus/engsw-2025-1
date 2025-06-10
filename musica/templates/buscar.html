@@ -164,6 +164,8 @@
                             {% csrf_token %}
                             <input type="hidden" name="nome" value="{{ musica.nome }}">
                             <input type="hidden" name="nomeartista" value="{{ musica.nomeartista }}">
+                            <input type="hidden" name="link" value="{{ musica.linkmusica }}">
+                            <input type="hidden" name="imagem" value="{{ musica.imagem }}">
 
                             <select name="playlist_id" required>
                                 {% for playlist in playlists %}
@@ -180,11 +182,11 @@
             {% endif %}
         </section>
     </main>
-    <nav>
-        <a href="{% url 'buscar_musicas' %}">Buscar</a>
-        <a href="{% url 'listar_playlists' %}">Biblioteca</a>
-        <a href="{% url 'my_communities' %}">Comunidade</a>
-        <a href="{% url 'perfil' %}">Perfil</a>
+    <nav class="navbar">
+        <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i>Buscar</a>
+        <a href="{% url 'listar_playlists' %}"><i class="fas fa-book"></i>Biblioteca</a>
+        <a href="{% url 'my_communities' %}"><i class="fas fa-users"></i>Comunidade</a>
+        <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i>Perfil</a>
     </nav>
 
     <script src="{% static 'musica/js/mobile-nav-bar.js' %}"></script>
