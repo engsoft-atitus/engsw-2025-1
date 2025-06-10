@@ -20,7 +20,6 @@ def pesquisa_musica(request):
     playlists = Playlist.objects.filter(user=request.user).filter(playlist_curtir = False)  # Filtra as playlists do usuário logado (Aqui também é responsável por mostrar as playlists do usuário na lista de playlists)
     musicas_encontradas = []
     musicas_obj = []
-
     query = request.GET.get('q') 
     search_type = request.GET.get("type", "musicas")
 
@@ -61,11 +60,14 @@ def pesquisa_musica(request):
 @login_required
 def player(request):
     playlists = Playlist.objects.filter(user=request.user)
+
     nome = request.GET.get('nome')
     nomeartista = request.GET.get('nomeartista')
     linkmusica = request.GET.get('linkmusica')
     imagem = request.GET.get('imagem')
-
+    playlist_curtir = False
+    if request.GET.get('playlist_curtir') == 'True':
+        playlist_curtir = True
     musicas = request.session.get('musicas', [])
     musica = {
         'titulo': nome,
@@ -79,7 +81,8 @@ def player(request):
         'musica': musica,
         'playlist': mark_safe(json.dumps(musicas)),
         'playlists': playlists,
-        'musica_obj':musica_obj
+        'musica_obj':musica_obj,
+        "playlist_curtir": playlist_curtir
     })
     
 @login_required
@@ -131,14 +134,19 @@ def ver_playlist(request, playlist_id):
                 'imagem': track['album']['cover_medium'],
             }
             musicas_encontradas.append(musica_info)
-            print("JSON da música:", json.dumps(musica_info, indent=4))
 
         request.session['musicas'] = musicas_encontradas
-
-    return render(request, 'playlist.html', {
-        'musicas': musicas_encontradas,
-        'playlist': playlist
-    })
+    if playlist.playlist_curtir == False:
+        return render(request, 'playlist.html', {
+            'musicas': musicas_encontradas,
+            'playlist': playlist,
+        })
+    else:
+        return render(request, 'playlist.html', {
+            'musicas': musicas_encontradas,
+            'playlist': playlist,
+            'playlist_curtir': True
+        })
 
 @login_required
 def criar_playlist(request):

@@ -4,6 +4,7 @@ from musica import views
 urlpatterns = [
     path('', views.pesquisa_musica, name='buscar_musicas'),
     path('player/', views.player, name='player'),
+    path('playerCurtir/', views.player, name='playerCurtir'),
     path('salvar/', views.salvar_musica, name='salvar_musica'),
     path('playlists/', views.listar_playlists_usuario, name='listar_playlists'),
     path('playlists/', views.listar_playlists_todos, name='listar_playlists_todos'),

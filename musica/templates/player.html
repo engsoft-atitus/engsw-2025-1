@@ -148,16 +148,18 @@
                         {% endfor %}
                     </select>
                 </form>
-                {% if request.user in musica_obj.curtida.all %}
-                    <button type="submit" style="background-color: transparent; border: none;"><img class="curtida"
-                            src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286"
-                            onclick="dislikeMusic(this,'{{musica_obj.nome}}','{{musica_obj.artista}}')" alt="" width="30"
-                            style="cursor: pointer;"></button>
-                {% else %}
-                    <button type="submit" style="background-color: transparent; border: none;"><img class="curtida"
-                            src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
-                            onclick="likeMusic(this,'{{musica_obj.nome}}','{{musica_obj.artista}}')" alt="" width="30"
-                            style="cursor: pointer;"></button>
+                {% if playlist_curtir != True %}
+                    {% if request.user in musica_obj.curtida.all %}
+                        <button type="submit" style="background-color: transparent; border: none;"><img class="curtida"
+                                src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286"
+                                onclick="dislikeMusic(this,'{{musica_obj.nome}}','{{musica_obj.artista}}')" alt="" width="30"
+                                style="cursor: pointer;"></button>
+                    {% else %}
+                        <button type="submit" style="background-color: transparent; border: none;"><img class="curtida"
+                                src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
+                                onclick="likeMusic(this,'{{musica_obj.nome}}','{{musica_obj.artista}}')" alt="" width="30"
+                                style="cursor: pointer;"></button>
+                    {% endif %}
                 {% endif %}
             </div>
 
