@@ -61,3 +61,5 @@ class ProfileForm(forms.ModelForm):
             'nascimento': forms.DateInput(attrs={'type': 'date'}),
             'biografia': forms.Textarea(attrs={'rows': 4}),
         }
+
+

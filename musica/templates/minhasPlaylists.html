@@ -68,6 +68,9 @@
                         onclick="return confirm('Tem certeza que deseja excluir esta playlist?');">
                         <button type="button" class="button">Excluir</button>
                     </a>
+                <a href="{% url 'editar_playlist' playlist.id %}">
+                    <button type="button" class="button">Editar</button>
+                </a>
                 </li>
                 {% empty %}
                 <li>Você ainda não tem nenhuma playlist.</li>
@@ -75,11 +78,11 @@
             </ul>
         </section>
     </main>
-    <nav>
-        <a href="{% url 'buscar_musicas' %}">Buscar</a>
-        <a href="{% url 'listar_playlists' %}">Biblioteca</a>
-        <a href="{% url 'my_communities' %}">Comunidade</a>
-        <a href="{% url 'perfil' %}">Perfil</a>
-    </nav>
+        <nav class="navbar">
+            <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i>Buscar</a>
+            <a href="{% url 'listar_playlists' %}"><i class="fas fa-book"></i>Biblioteca</a>
+            <a href="{% url 'my_communities' %}"><i class="fas fa-users"></i>Comunidade</a>
+            <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i>Perfil</a>
+        </nav>
 </body>
 </html>

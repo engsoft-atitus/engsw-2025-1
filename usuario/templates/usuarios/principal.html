@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Início</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
+    <style>
+        body {
+            background: linear-gradient(
+                to bottom right,
+                 #5A005A,
+                  #620077,
+                   #7117B8,
+                    #7932DE,
+                     #8977FF,
+                      #B6B2FF);
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+            height: 100vh;
+        }
+    
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            margin-top: 10px;
+            color:white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Página Inicial</h1>
+
+    <nav class="navbar">
+        <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i>Buscar</a>
+        <a href="{% url 'listar_playlists' %}"><i class="fas fa-book"></i>Biblioteca</a>
+        <a href="{% url 'my_communities' %}"><i class="fas fa-users"></i>Comunidade</a>
+        <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i>Perfil</a>
+    </nav>
+</body>
+</html>

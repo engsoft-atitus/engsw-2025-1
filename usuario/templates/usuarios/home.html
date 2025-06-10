@@ -4,92 +4,99 @@
   {% load static %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Harmonia</title>
+  <title>Synth</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
     body {
-      background: linear-gradient(
-            to bottom right,
-            #ED6827,
-            #EF4E44,
-            #4D1E9B,
-            #182D34,
-            black); 
+      background: linear-gradient(to bottom right, #5A005A, #620077, #7117B8, #7932DE, #8977FF, #B6B2FF);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       height: 100vh;
       margin: 0;
       font-family: Arial, sans-serif;
     }
 
-    .top-section {
-      background-color: rgba(0, 0, 0, 0.7);
-      width: 100%;
-      height: 50%;
-      border-bottom-left-radius: 50% 20%;
-      border-bottom-right-radius: 50% 20%;
+    .logo-circle {
+      width: 250px;
+      height: 250px;   
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    
+    .logo-circle img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 50%;
+    }
 
-    .text-section {
-      margin-top: 2rem;
-      text-align: center;
+    h5 {
       color: white;
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    h6 {
+      color: white;
+      text-align: center;
+      font-weight: bold;
+      font-family: "Rajdhani", sans-serif;
+      font-size: 3rem;
     }
 
     .btn-section {
-      margin-top: 2rem;
       display: flex;
+      flex-direction: column;
       gap: 1rem;
+      width: 80%;
+      max-width: 300px;
     }
 
     .btn-custom {
-      background-color:#C71585;
-      color: white;
-      box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2);
+      background-color: white;
+      color: #5A005A;
       border: none;
-      width: 100px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      padding: 0.6rem;
+      font-size: 1.3rem;
+    }
+    .btn-custom1 {
+      background-color: #5A005A;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      padding: 0.6rem;
+      font-size: 1.3rem;
     }
 
     .btn-custom:hover {
-      background-color: #40002b;
-      color: #C71585;
-    }
-
-    .top-section .logo {
-      width: 350px;
-      height: auto;
-      
-    }
-
-    @media (max-width: 768px) {
-      .top-section .logo {
-        width: 300px;
-      }
-      
+      background-color: #5A005A;
+      color: white;
     }
   </style>
 </head>
 <body>
-
-  <div class="top-section">
-    <img class="logo" src="{% static 'app/imagens/logo.png' %}" alt="Logo">
+  <div class="logo-circle">
+    <img src="{% static 'app/imagens/logo-branco.png' %}" alt="Logo">
   </div>
 
-  <div class="text-section">
-    <h5>Welcome to the sound of connection</h5>
-    <hr style="width: 30px; margin: 0.5rem auto;">
-    <h6>Harmonia.</h6>
+  <div style="margin-bottom: 11rem;">
+  <h5>Welcome to</h5>
+  <h6>Synth</h6>
   </div>
 
   <div class="btn-section">
-    <a href="/usuario/login" class="btn btn-custom">Sign in</a>
+    <a href="/usuario/login" class="btn btn-custom1">Sign in</a>
     <a href="/usuario/cadastro/" class="btn btn-custom">Sign up</a>
   </div>
 

@@ -167,12 +167,12 @@
             <a href="{% url 'buscar_musicas' %}">Buscar</a>
             <a href="{% url 'listar_playlists' %}">Biblioteca</a>
             <a href="{% url 'my_communities' %}">Comunidade</a>
-            <a href="{% url 'perfil' %}">Perfil</a>
+            <a href="{% url 'perfil' request.user.username %}">Perfil</a>
         </nav>
     </main>
 </body>
 <script>
-    const playlist = {{ playlist }} // django + js para pegar a playlist de musicas em "musicas_encontradas" CONSIDERE Q FUNCIONA
+    const playlist = {{playlist}} // django + js para pegar a playlist de musicas em "musicas_encontradas" CONSIDERE Q FUNCIONA
     let currentIndex = playlist.findIndex(m => m.linkmusica === "{{ musica.link }}");
     const player = document.getElementById('player');
     const audioSource = document.getElementById('audio-source');

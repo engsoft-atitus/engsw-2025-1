@@ -15,6 +15,8 @@ class Playlist(models.Model):
 class MusicaSalva(models.Model):
     nome = models.CharField(max_length=255)
     artista = models.CharField(max_length=255)
+    link = models.CharField(null=True,max_length=400)
+    imagem = models.CharField(null=True,max_length=300)
     playlists = models.ManyToManyField(Playlist, related_name='musicas')
     curtida = models.ManyToManyField(User,related_name='curtida')
 

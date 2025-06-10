@@ -6,19 +6,25 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import MusicaSalva, Playlist
 from django.contrib.auth import logout
+from django.contrib import messages
+from django.urls import reverse
 import json
-
+from .forms import PlaylistForm
+from django.contrib import messages
 
 # Create your views here.
 
 @login_required
-def buscar_musicas(request):
+def pesquisa_musica(request):
     user = request.user
     playlists = Playlist.objects.filter(user=request.user)  # Filtra as playlists do usuário logado (Aqui também é responsável por mostrar as playlists do usuário na lista de playlists)
     musicas_encontradas = []
     musicas_obj = []
-    query = request.GET.get('q')  # Pega o que foi digitado
-    if query:
+
+    query = request.GET.get('q') 
+    search_type = request.GET.get("type", "musicas")
+
+    if search_type == "musicas" and query:
         url = f"https://api.deezer.com/search?q={query}&limit=9"
         r = requests.get(url)
         dados = r.json()
@@ -37,9 +43,22 @@ def buscar_musicas(request):
             
             musicas_encontradas.append(musica)
             musicas_obj.append(musica_obj)
-    request.session['musicas'] = musicas_encontradas
-    print(musicas_obj)
-    return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists,"musicas_obj": musicas_obj})
+            request.session['musicas'] = musicas_encontradas
+            return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists,"musicas_obj": musicas_obj})
+            
+        request.session['musicas'] = musicas_encontradas
+        print("Musicas")
+        return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists})
+
+    elif search_type == "playlists":
+        if query:
+            return redirect(f"{reverse('listar_playlists_todos')}?q={query}")
+        else:
+            return redirect(reverse('listar_playlists_todos'))
+    else:
+        if search_type != "musicas" and search_type != "playlists":
+            messages.error(request, "Por favor, selecione 'Músicas' ou 'Playlists'.")
+    return render(request, 'buscar.html', {'musicas': [], 'playlists': playlists})
 
 @login_required
 def player(request):
@@ -71,6 +90,8 @@ def salvar_musica(request):
     if request.method == "POST":
         nome = request.POST.get('nome')
         artista = request.POST.get('nomeartista')
+        link = request.POST.get('link')
+        imagem = request.POST.get('imagem')
         playlist_id = request.POST.get('playlist_id')
 
         playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)  # Obtém a playlist do usuário logado
@@ -78,7 +99,9 @@ def salvar_musica(request):
         # Verifica se a música já existe
         musica, criada = MusicaSalva.objects.get_or_create(
             nome=nome,
-            artista=artista
+            artista=artista,
+            link=link,
+            imagem=imagem  
         )
 
         # Adiciona à playlist, se ainda não estiver
@@ -92,27 +115,26 @@ def salvar_musica(request):
 
 @login_required
 def ver_playlist(request, playlist_id):
-    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)
-    if playlist.user != request.user:
-        return HttpResponse("Você não tem permissão para ver esta playlist.")
-    else:
-        musicas_salvas = playlist.musicas.all()  # Obtém todas as músicas salvas na playlist
-        musicas_encontradas = []
+    playlist = get_object_or_404(Playlist, id=playlist_id)
+    
+    musicas_salvas = playlist.musicas.all()  # Obtém todas as músicas salvas na playlist
+    musicas_encontradas = []
 
-        for musica in musicas_salvas:
-            url = f"https://api.deezer.com/search?q={musica.nome} {musica.artista}&limit=1"
-            r = requests.get(url)
-            dados = r.json()
-            if dados.get("data"):
-                track = dados["data"][0]
-                musica_info = {
-                    'nome': track['title'],
-                    'linkmusica': track['preview'],
-                    'nomeartista': track['artist']['name'],
-                    'imagem': track['album']['cover_medium'],
-                }
-                musicas_encontradas.append(musica_info)
-                print("JSON da música:", json.dumps(musica_info, indent=4))
+    for musica in musicas_salvas:
+        url = f"https://api.deezer.com/search?q={musica.nome} {musica.artista}&limit=1"
+        r = requests.get(url)
+        dados = r.json()
+        if dados.get("data"):
+            track = dados["data"][0]
+            musica_info = {
+                'id': musica.id,
+                'nome': track['title'],
+                'linkmusica': track['preview'],
+                'nomeartista': track['artist']['name'],
+                'imagem': track['album']['cover_medium'],
+            }
+            musicas_encontradas.append(musica_info)
+            print("JSON da música:", json.dumps(musica_info, indent=4))
 
         request.session['musicas'] = musicas_encontradas
 
@@ -195,6 +217,22 @@ def excluirMusicasFavoritas(request):
                 return JsonResponse({'status': 'false', 'message': 'Body is missing parameters'}, status=400)
         except:
             return JsonResponse({'status': 'false', 'message': 'Something went wrong'}, status=500)
+
+@login_required
+def editar_playlist(request, playlist_id):
+    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)
+    if playlist.user != request.user:
+        return HttpResponse("Você não tem permissão para editar esta playlist.")
+    if request.method == 'POST':
+        form = PlaylistForm(request.POST, instance=playlist)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Playlist atualizada com sucesso.")
+            return redirect('listar_playlists')
+    else:
+        form = PlaylistForm(instance=playlist)
+    return render(request, 'editar_playlist.html', {'form': form, 'playlist': playlist})
+
 @login_required
 def excluir_playlist(request, playlist_id):
     playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user) # Contém as playlists do usuário, as linhas abaixo são uma camada a mais de segurança
@@ -204,11 +242,24 @@ def excluir_playlist(request, playlist_id):
     return redirect('listar_playlists')
 
 @login_required
-def listar_playlists(request):
+def remover_musica_da_playlist(request, playlist_id, musica_id):
+    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)
+    if playlist.user != request.user:
+        return HttpResponse("Você não tem permissão para excluir essa música.")
+    musica = get_object_or_404(MusicaSalva, id=musica_id)
+    playlist.musicas.remove(musica)  # remove a música da playlist (tabela ManyToMany)
+    return redirect('ver_playlist', playlist_id=playlist_id)
+
+
+def listar_playlists_usuario(request):
     playlists = Playlist.objects.filter(user=request.user)  # Filtra pelo usuário logado
     return render(request, 'minhasPlaylists.html', {'playlists': playlists})
-    
+
 @login_required
-def logout_view(request):
-    logout(request)
-    return redirect('sign')
+def listar_playlists_todos(request):
+    query = request.GET.get("q")
+    if query:
+        playlists = Playlist.objects.filter(nome__icontains=query)
+    else:
+        playlists = Playlist.objects.all()
+    return render(request, 'playlistsTodos.html', {'playlists': playlists})
