@@ -94,10 +94,12 @@
                         class="play">
                         <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="50">
                     </a>
+                    {% if playlist.playlist_curtir == False %}
                     <a href="{% url 'remover_musica_da_playlist' playlist.id musica.id %}"
                         onclick="return confirm('Remover esta música da playlist?');">
                         <button type="button" class="button">Remover</button>
                     </a>
+                    {% endif %}
                 </li>
                 {% empty %}
                 <p>Nenhuma música salva nesta playlist.</p>
@@ -111,6 +113,7 @@
         <a href="{% url 'my_communities' %}"><i class="fa-duotone fa-solid fa-users"></i></a>
         <a href="{% url 'perfil' request.user.username %}"><i class="fa-duotone fa-solid fa-user"></i></a>
     </nav>
+    <script src="{% static "musica/js/like-scripts.js" %}"></script>
 </body>
 
 </html>

@@ -13,6 +13,8 @@ urlpatterns = [
     path('criar_playlist/', views.criar_playlist, name='criar_playlist'),
     path('playlist/curtidas/', views.adicionarMusicasFavoritas, name='adicionarMusicasFavoritas'),
     path('playlist/descurtir/', views.excluirMusicasFavoritas, name='excluirMusicasFavoritas'),
+    path('player/playlist/descurtir/', views.excluirMusicasFavoritas, name='excluirMusicasFavoritasPlayer'),
+    path('player/playlist/curtidas/', views.adicionarMusicasFavoritas, name='adicionarMusicasFavoritasPlayer'),
     path('editar_playlist/<int:playlist_id>/editar/', views.editar_playlist, name='editar_playlist'),
     path('playlist/<int:playlist_id>/remover_musica/<int:musica_id>/', views.remover_musica_da_playlist, name='remover_musica_da_playlist'),
 ]

@@ -64,14 +64,17 @@
                     </div>
                     <a href="{% url 'ver_playlist' playlist.id %}"><img
                             src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30"></a>
-                    <a href="{% url 'excluir_playlist' playlist.id %}"
+                {% if playlist.playlist_curtir == False %}
+                        <a href="{% url 'excluir_playlist' playlist.id %}"
                         onclick="return confirm('Tem certeza que deseja excluir esta playlist?');">
                         <button type="button" class="button">Excluir</button>
                     </a>
+                
                 <a href="{% url 'editar_playlist' playlist.id %}">
                     <button type="button" class="button">Editar</button>
                 </a>
                 </li>
+                {% endif %}
                 {% empty %}
                 <li>Você ainda não tem nenhuma playlist.</li>
                 {% endfor %}

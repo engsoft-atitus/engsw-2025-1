@@ -17,7 +17,7 @@ from django.contrib import messages
 @login_required
 def pesquisa_musica(request):
     user = request.user
-    playlists = Playlist.objects.filter(user=request.user)  # Filtra as playlists do usuário logado (Aqui também é responsável por mostrar as playlists do usuário na lista de playlists)
+    playlists = Playlist.objects.filter(user=request.user).filter(playlist_curtir = False)  # Filtra as playlists do usuário logado (Aqui também é responsável por mostrar as playlists do usuário na lista de playlists)
     musicas_encontradas = []
     musicas_obj = []
 
@@ -38,17 +38,15 @@ def pesquisa_musica(request):
             
             musica_obj,_ = MusicaSalva.objects.get_or_create(
                 nome=track['title'],
-                artista=track['artist']['name']
+                artista=track['artist']['name'],
+                imagem=track['album']['cover_medium'],
+                defaults={'link':track['preview']}
             )
             
             musicas_encontradas.append(musica)
             musicas_obj.append(musica_obj)
             request.session['musicas'] = musicas_encontradas
-            return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists,"musicas_obj": musicas_obj})
-            
-        request.session['musicas'] = musicas_encontradas
-        print("Musicas")
-        return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists})
+        return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists,"musicas_obj": musicas_obj})
 
     elif search_type == "playlists":
         if query:
@@ -75,9 +73,8 @@ def player(request):
         'link': linkmusica,
         'imagem': imagem,
     }
-    print("JSON da playlist:", json.dumps(musicas))
-    musica_obj = MusicaSalva.objects.filter(nome=nome, artista=nomeartista)
-    print(musica_obj)
+
+    musica_obj = MusicaSalva.objects.filter(nome=nome, artista=nomeartista).get()
     return render(request, 'player.html', {
         'musica': musica,
         'playlist': mark_safe(json.dumps(musicas)),
@@ -94,7 +91,7 @@ def salvar_musica(request):
         imagem = request.POST.get('imagem')
         playlist_id = request.POST.get('playlist_id')
 
-        playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)  # Obtém a playlist do usuário logado
+        playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user,playlist_curtir=False)  # Obtém a playlist do usuário logado
 
         # Verifica se a música já existe
         musica, criada = MusicaSalva.objects.get_or_create(
@@ -116,10 +113,10 @@ def salvar_musica(request):
 @login_required
 def ver_playlist(request, playlist_id):
     playlist = get_object_or_404(Playlist, id=playlist_id)
-    
+
     musicas_salvas = playlist.musicas.all()  # Obtém todas as músicas salvas na playlist
     musicas_encontradas = []
-
+ 
     for musica in musicas_salvas:
         url = f"https://api.deezer.com/search?q={musica.nome} {musica.artista}&limit=1"
         r = requests.get(url)
@@ -138,10 +135,10 @@ def ver_playlist(request, playlist_id):
 
         request.session['musicas'] = musicas_encontradas
 
-        return render(request, 'playlist.html', {
-            'musicas': musicas_encontradas,
-            'playlist': playlist
-        })
+    return render(request, 'playlist.html', {
+        'musicas': musicas_encontradas,
+        'playlist': playlist
+    })
 
 @login_required
 def criar_playlist(request):
@@ -175,29 +172,28 @@ def adicionarMusicasFavoritas(request):
             artista = json_data.get('artista')
             #Pega ou cria a musica
             if nome != None and artista != None:
-                musicaCurtida, _ = MusicaSalva.objects.get_or_create(
-                        nome=nome,
-                        artista=artista
-                )
-
+                musicaCurtida = MusicaSalva.objects.filter(nome=nome,artista=artista).get()
                 musicaCurtida.curtida.add(request.user)
                 musicaCurtida.playlists.add(playlist_curtidas)
                 musicaCurtida.save()
                 return JsonResponse({'status':'true'},status=200)
             else:
                 return JsonResponse({'status':'false','message':'Body is missing parameters'},status=400)
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({'status':'false','message':'Something went wrong'},status=500)
-    return redirect(buscar_musicas)
+    return redirect(pesquisa_musica)
 
 @login_required
 def excluirMusicasFavoritas(request):
     if request.method == "POST":
         json_data = json.loads(request.body)
+        print(json_data)
         try:
             nome = json_data.get('nome')
             artista = json_data.get('artista')
             if nome is not None and artista is not None:
+                print(nome,artista)
                 musicaCurtida = get_object_or_404(MusicaSalva, nome=nome, artista=artista)
                 playlist_curtidas = get_object_or_404(
                     Playlist,
@@ -215,12 +211,13 @@ def excluirMusicasFavoritas(request):
                     return JsonResponse({'status': 'false', 'message': 'Music not in playlist'}, status=400)
             else:
                 return JsonResponse({'status': 'false', 'message': 'Body is missing parameters'}, status=400)
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({'status': 'false', 'message': 'Something went wrong'}, status=500)
 
 @login_required
 def editar_playlist(request, playlist_id):
-    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)
+    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user,playlist_curtir=False)
     if playlist.user != request.user:
         return HttpResponse("Você não tem permissão para editar esta playlist.")
     if request.method == 'POST':
@@ -235,7 +232,7 @@ def editar_playlist(request, playlist_id):
 
 @login_required
 def excluir_playlist(request, playlist_id):
-    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user) # Contém as playlists do usuário, as linhas abaixo são uma camada a mais de segurança
+    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user,playlist_curtir=False) # Contém as playlists do usuário, as linhas abaixo são uma camada a mais de segurança
     if playlist.user != request.user:
         return HttpResponse("Você não tem permissão para excluir esta playlist.")
     playlist.delete()
@@ -243,7 +240,7 @@ def excluir_playlist(request, playlist_id):
 
 @login_required
 def remover_musica_da_playlist(request, playlist_id, musica_id):
-    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)
+    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user,playlist_curtir=False)
     if playlist.user != request.user:
         return HttpResponse("Você não tem permissão para excluir essa música.")
     musica = get_object_or_404(MusicaSalva, id=musica_id)
