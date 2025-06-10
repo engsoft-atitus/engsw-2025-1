@@ -8,6 +8,8 @@ class Playlist(models.Model):
     descricao = models.TextField(blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='playlists', null=True)
     playlist_curtir = models.BooleanField(default=False)
+    imagem = models.URLField(blank=True, null=True)
+    imagem_hash = models.CharField(max_length=64, blank=True, null=True)
 
     def __str__(self):
         return f"{self.nome}"

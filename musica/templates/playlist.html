@@ -72,6 +72,11 @@
                 <div class="menu">
                 </div>
             </header>
+        {% if playlist.imagem %}
+            <img src="{{ playlist.imagem }}" alt="Imagem da playlist" width="300" style="border-radius: 5%;"/>
+            {% else %}
+            <p style="color: gray;">Sem imagem de capa</p>
+            {% endif %}
         </section>
         <section>
             <div class="title">
@@ -96,10 +101,10 @@
                         <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="50">
                     </a>
                     {% else %}
-                        <a href="{% url 'playerCurtir' %}?nome={{ musica.nome }}&nomeartista={{ musica.nomeartista }}&linkmusica={{ musica.linkmusica }}&imagem={{ musica.imagem }}&playlist_curtir=True"
-                            class="play">
-                            <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="50">
-                        </a>
+                    <a href="{% url 'playerCurtir' %}?nome={{ musica.nome }}&nomeartista={{ musica.nomeartista }}&linkmusica={{ musica.linkmusica }}&imagem={{ musica.imagem }}&playlist_curtir=True"
+                        class="play">
+                        <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="50">
+                    </a>
                     {% endif %}
                     {% if playlist.playlist_curtir == False %}
                     <a href="{% url 'remover_musica_da_playlist' playlist.id musica.id %}"
@@ -120,7 +125,7 @@
         <a href="{% url 'my_communities' %}"><i class="fa-duotone fa-solid fa-users"></i></a>
         <a href="{% url 'perfil' request.user.username %}"><i class="fa-duotone fa-solid fa-user"></i></a>
     </nav>
-    <script src="{% static "musica/js/like-scripts.js" %}"></script>
+    <script src="{% static " musica/js/like-scripts.js" %}"></script>
 </body>
 
 </html>

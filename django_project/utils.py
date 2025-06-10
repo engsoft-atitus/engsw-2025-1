@@ -2,6 +2,7 @@ import uuid
 import hashlib
 import vercel_blob
 from comunidade.models import Community
+from musica.models import Playlist
 from django_project.settings import BLOB_READ_WRITE_TOKEN
 
 
@@ -50,6 +51,11 @@ def upload_vercel_image(file) -> dict:
     if existe != None: # Caso exista, exista, ele retorna a url que conseguiu
         return {"existe":True, "url":existe.profile_picture,"file_hash":file_hash,"erro":False}
     # Caso contrário ele tenta fazer um upload para o vercel
+    
+    existe_playlist_imagem = Playlist.objects.filter(imagem_hash=file_hash).first()
+    if existe_playlist_imagem:
+        return {"existe":True, "url":existe_playlist_imagem.imagem,"file_hash":file_hash,"erro":False}
+    
     try:
         response = vercel_blob.put(f"{uuid.uuid4()}.{file.name.split(".",-1)[-1]}",file.read(),options={"token":BLOB_READ_WRITE_TOKEN})
         file.seek(0)
@@ -58,4 +64,3 @@ def upload_vercel_image(file) -> dict:
     except Exception:
         file.seek(0)
         return {"existe":False,"erro":True}
-    
