@@ -41,8 +41,6 @@ class Post(models.Model):
     data_post = models.DateTimeField(auto_now_add=True)
     community = models.ForeignKey(Community,on_delete=models.CASCADE)
     musica = models.ForeignKey(MusicaSalva,null=True,on_delete=models.CASCADE)
-    curtidas = models.IntegerField(validators=[MinValueValidator(0)],default=0)
-
     curtidores = models.ManyToManyField(User,related_name='curtidores')
 
     def __str__(self):

@@ -207,7 +207,8 @@ def like_post(request):
             post.curtidores.add(request.user)
             post.save()
             return JsonResponse({'status':'true'},status=200)
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({'status':'false'},status=500)
     return redirect(my_communities)
 
@@ -222,7 +223,8 @@ def dislike_post(request):
             post.curtidores.remove(request.user)
             post.save()
             return JsonResponse({'status':'true'},status=200)
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({'status':'false'},status=500)
     return redirect(my_communities)
 
