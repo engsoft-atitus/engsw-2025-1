@@ -4,6 +4,8 @@ async function likeMusic(element, nome, artista) {
     element.removeAttribute("onclick"); // Remove o onclick para impedir que o usuario execute mais curtidas
     // enquanto o sistema não retorna a curtida
     await like(nome, artista);
+    element.classList.remove("like-status");
+    element.classList.add("dislike-status");
     // esse `` é tipo um f do python em uma string e usa ${} pra formatar, é importante que nas strings
     //tenham '' pro html reconhecer
     element.setAttribute("onclick", `dislikeMusic(this,'${nome}','${artista}')`);
@@ -12,6 +14,8 @@ async function dislikeMusic(element, nome, artista) {
     element.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854";
     element.removeAttribute("onclick");
     await dislike(nome, artista); // Não tem ainda dislikeMusic, tenta ver se tu conseguir fazer com base no like
+    element.classList.remove("dislike-status");
+    element.classList.add("like-status");
     element.setAttribute("onclick", `likeMusic(this,'${nome}','${artista}')`);
 }
 

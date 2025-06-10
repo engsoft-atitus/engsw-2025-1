@@ -28,23 +28,30 @@ def pesquisa_musica(request):
         r = requests.get(url)
         dados = r.json()
         for track in dados.get("data", []):
-            musica = {
-                'nome': track['title'],  # o nome da música
-                'linkmusica': track['preview'],  # link de prévia da música
-                'nomeartista': track['artist']['name'],  # nome do artista
-                'imagem': track['album']['cover_medium'],  # imagem do álbum
-            }
-            
             musica_obj,_ = MusicaSalva.objects.get_or_create(
                 nome=track['title'],
                 artista=track['artist']['name'],
                 imagem=track['album']['cover_medium'],
                 defaults={'link':track['preview']}
             )
+
+            if request.user in musica_obj.curtida.all():
+                curtida = True
+            else:
+                curtida = False
+
+            musica = {
+                'nome': track['title'],  # o nome da música
+                'linkmusica': track['preview'],  # link de prévia da música
+                'nomeartista': track['artist']['name'],  # nome do artista
+                'imagem': track['album']['cover_medium'],  # imagem do álbum
+                'curtida': curtida
+            }
             
             musicas_encontradas.append(musica)
             musicas_obj.append(musica_obj)
             request.session['musicas'] = musicas_encontradas
+            
         return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists,"musicas_obj": musicas_obj})
 
     elif search_type == "playlists":
@@ -66,6 +73,8 @@ def player(request):
     linkmusica = request.GET.get('linkmusica')
     imagem = request.GET.get('imagem')
 
+    current_index = 0
+
     playlist_curtir = False
     if request.GET.get('playlist_curtir') == 'True':
         playlist_curtir = True
@@ -79,12 +88,17 @@ def player(request):
     }
 
     musica_obj = MusicaSalva.objects.filter(nome=nome, artista=nomeartista).get()
+    for iteration in musicas:
+        if iteration["nome"] == musica["titulo"] and iteration['nomeartista'] == musica['artista']:
+            current_index = musicas.index(iteration)
+    
     return render(request, 'player.html', {
         'musica': musica,
         'playlist': mark_safe(json.dumps(musicas)),
         'playlists': playlists,
         'musica_obj':musica_obj,
-        "playlist_curtir": playlist_curtir
+        'playlist_curtir': playlist_curtir,
+        'current_index_equal': current_index
     })
     
 @login_required
