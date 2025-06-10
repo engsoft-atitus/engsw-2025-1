@@ -34,15 +34,9 @@
     <main>
         <section>
             <h2>Editar Playlist</h2>
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-
-                <label for="{{ form.nome.id_for_label }}">Nome</label>
-                {{ form.nome }}
-
-                <label for="{{ form.descricao.id_for_label }}">Descrição</label>
-                {{ form.descricao }}
-
+                {{ form.as_p }}
                 <button type="submit" class="button">Salvar</button>
             </form>
         </section>
