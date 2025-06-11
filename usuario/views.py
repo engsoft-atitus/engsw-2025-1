@@ -94,6 +94,9 @@ def perfil_view(request, username):
         'is_followed_by_user': is_followed_by_user,
         'now': now(),  # Passa a data e hora para o template, se necessário
     }
+    context['bloquear_acesso'] = context['is_private'] and (
+    not context['is_following'] or not context['is_followed_by_user']
+    )
     return render(request, 'usuarios/perfil.html', context)
 
 

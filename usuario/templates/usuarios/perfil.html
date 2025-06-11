@@ -165,7 +165,7 @@
                     <p><strong>Seguindo:</strong> Não está seguindo ninguém</p>
                 {% endif %}
             </div>
-        {% elif is_private and not is_following or not is_followed_by_user %}
+        {% elif bloquear_acesso %}
             <!-- Caso o perfil seja privado e o usuário não se siga com a pessoa -->
             <div class="info-bloco">
                 <p><em>Este perfil é privado. Ambos os usuários precisam se seguir para visualizar as informações completas.</em></p>
