@@ -79,10 +79,10 @@
                 <h1>Buscar</h1>
             </header>
             <form method="GET" action="{% url 'buscar_musicas' %}" class="pesquisa">
-                    <input class="barra-pesquisa" type="text" name="q" placeholder=" O que você quer ouvir ?">
-                    <input class="" type="hidden" id="tipo-pesquisa" name="type" value="musicas">
-                    <button class="button" type="submit">Buscar</button>
-                </form>
+                <input class="barra-pesquisa" type="text" name="q" placeholder=" O que você quer ouvir ?">
+                <input class="" type="hidden" id="tipo-pesquisa" name="type" value="musicas">
+                <button class="button" type="submit">Buscar</button>
+            </form>
             <div class="nav-busca">
                 <button class="option-button">Playlists</button>
                 <button class="option-button">Músicas</button>
@@ -109,15 +109,15 @@
                         <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30">
                     </a>
                     {% if request.user in musica.curtida.all %}
-                        <button style="background-color: transparent; border: none;"><img class="curtida"
+                    <button style="background-color: transparent; border: none;"><img class="curtida"
                             src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286"
                             onclick="dislikeMusic(this,'{{musica.nome}}','{{musica.artista}}')" alt="" width="30"
                             style="cursor: pointer;"></button>
                     {% else %}
-                        <button style="background-color: transparent; border: none;"><img class="curtida"
-                                src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
-                                onclick="likeMusic(this,'{{musica.nome}}','{{musica.artista}}')" alt="" width="30"
-                                style="cursor: pointer;"></button>
+                    <button style="background-color: transparent; border: none;"><img class="curtida"
+                            src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
+                            onclick="likeMusic(this,'{{musica.nome}}','{{musica.artista}}')" alt="" width="30"
+                            style="cursor: pointer;"></button>
                     {% endif %}
                     <div class="mobile-menu">
                         <span>&#8226;&#8226;&#8226;</span>
@@ -170,10 +170,13 @@
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;
             }
+        })
+    </script>
+
     <script src="{% static 'musica/js/like-scripts.js' %}"></script>
-</body>
-<script>
-            document.addEventListener("DOMContentLoaded", function () {
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
             const toggleBtn = document.querySelector('.seta-toggle');
             const dropdownMenu = document.getElementById('searchDropdown');
 
@@ -195,8 +198,6 @@
     </script>
     {% endfor %}
     {% endif %}
-
-
 </body>
-</script>
+
 </html>
