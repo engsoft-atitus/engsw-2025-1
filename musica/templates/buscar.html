@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'musica/css/base.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Document</title>
 
     <style>
@@ -30,10 +31,6 @@
             max-width: 50%;
         }
 
-        .play {
-            width: 20%;
-        }
-
         h1 {
             color: black;
         }
@@ -47,94 +44,50 @@
             border-radius: 10px;
         }
 
-        /* Estilização do Menu que contém as opções de escolha da barra de pesquisa */
+        .nav-busca {
+            margin-bottom: 20px;
+            width: 90%;
+        }
+
+        .pesquisa {
+            width: 100%;
+            text-align: center;
+        }
 
         .barra-pesquisa {
-            border-radius: 5px;
-            border: 1px solid #6545F0;
-            padding: 2px 10px;
-        }
-
-        .dropdown-menu {
-            position: fixed;
-            top: 40px;
-            left: 50%;
-            margin-left: 200px;
-            background-color: #6545F0;
-            width: 110px;
-            transform: translateX(-50%);
-            padding: 10px;
-            border-radius: 8px;
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 10;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .dropdown-menu.active {
-            display: flex;
+            width: 75%;
+            background-color: rgba(0, 0, 0, 0.092);
+            border: none;
+            border-radius: 10px;
+            padding: 3px 20px;
         }
 
         .option-button {
-            background-color: white;
-            border: none;
-            padding: 8px 16px;
-            font-size: 14px;
-            border-radius: 4px;
             cursor: pointer;
-            color: #6545F0;
-            font-weight: bold;
-        }
-
-        .seta-toggle {
-            background: none;
+            padding: 5px 15px;
+            border-radius: 40px;
             border: none;
-            font-size: 20px;
-            cursor: pointer;
-            margin-left: 10px;
-            color: #6545F0;
-            position: relative;
-        }
-
-        .nav-list-pesquisa {
-            z-index: 3;
-            position: relative;
-            bottom: 0;
-            right: 0;
-            width: 100vw;
-            height: 30vh;
-            background-color: #6545F0;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            transform: translateY(100%);
-            transition: transform 0.3s ease-in;
-            padding: 20px 30px;
-            gap: 20px;
-        }
-
-        .nav-list-pesquisa.active {
-            transform: translateY(0);
         }
     </style>
 
 </head>
+
 <body>
     <main>
         <section>
             <header>
-                <form method="GET" action="{% url 'buscar_musicas' %}">
-                    <input class="barra-pesquisa" type="text" name="q" placeholder=" O que você quer ouvir ?">
-                    <input class="" type="hidden" id="tipo-pesquisa" name="type" value="musicas">
-                    <button class="button" type="submit">Buscar</button>
-                    <button class="seta-toggle" type="button">&#9654;</button>
-                </form>
+                <h1>Buscar</h1>
             </header>
-
-            <div class="dropdown-menu" id="searchDropdown">
+            <form method="GET" action="{% url 'buscar_musicas' %}" class="pesquisa">
+                <input class="barra-pesquisa" type="text" name="q" placeholder=" O que você quer ouvir ?">
+                <input class="" type="hidden" id="tipo-pesquisa" name="type" value="musicas">
+                <button class="button" type="submit">Buscar</button>
+            </form>
+            <div class="nav-busca">
                 <button class="option-button">Playlists</button>
                 <button class="option-button">Músicas</button>
+                <button class="option-button">Usuário</button>
+                <button class="option-button">Comunidade</button>
             </div>
         </section>
 
@@ -156,15 +109,15 @@
                         <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30">
                     </a>
                     {% if request.user in musica.curtida.all %}
-                        <button style="background-color: transparent; border: none;"><img class="curtida"
+                    <button style="background-color: transparent; border: none;"><img class="curtida"
                             src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286"
                             onclick="dislikeMusic(this,'{{musica.nome}}','{{musica.artista}}')" alt="" width="30"
                             style="cursor: pointer;"></button>
                     {% else %}
-                        <button style="background-color: transparent; border: none;"><img class="curtida"
-                                src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
-                                onclick="likeMusic(this,'{{musica.nome}}','{{musica.artista}}')" alt="" width="30"
-                                style="cursor: pointer;"></button>
+                    <button style="background-color: transparent; border: none;"><img class="curtida"
+                            src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
+                            onclick="likeMusic(this,'{{musica.nome}}','{{musica.artista}}')" alt="" width="30"
+                            style="cursor: pointer;"></button>
                     {% endif %}
                     <div class="mobile-menu">
                         <span>&#8226;&#8226;&#8226;</span>
@@ -190,6 +143,7 @@
                 </li>
                 {% endfor %}
             </ul>
+
             {% endif %}
         </section>
     </main>
@@ -201,10 +155,28 @@
     </nav>
 
     <script src="{% static 'musica/js/mobile-nav-bar.js' %}"></script>
+    <script src="{% static 'musica/js/filtragem-pesquisa.js' %}"></script>
+
+    {% if messages %}
+    {% for message in messages %}
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "center",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        })
+    </script>
+
     <script src="{% static 'musica/js/like-scripts.js' %}"></script>
-</body>
-<script>
-            document.addEventListener("DOMContentLoaded", function () {
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
             const toggleBtn = document.querySelector('.seta-toggle');
             const dropdownMenu = document.getElementById('searchDropdown');
 
@@ -218,28 +190,14 @@
                 }
             });
         });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const searchTypeInput = document.getElementById("tipo-pesquisa");
-            const musicButton = document.querySelector(".option-button:nth-child(2)");
-            const playlistButton = document.querySelector(".option-button:nth-child(1)");
-
-            musicButton.addEventListener("click", function () {
-                searchTypeInput.value = "musicas";
-                musicButton.style.backgroundColor = "#008000";
-                musicButton.style.color = "white";
-                playlistButton.style.backgroundColor = "white";
-                playlistButton.style.color = "#6545F0";
-            });
-
-            playlistButton.addEventListener("click", function () {
-                searchTypeInput.value = "playlists";
-                playlistButton.style.backgroundColor = "#008000";
-                playlistButton.style.color = "white";
-                musicButton.style.backgroundColor = "white";
-                musicButton.style.color = "#6545F0";
-            });
+        Toast.fire({
+            icon: "{{ message.tags|default:'info' }}",
+            title: "{{ message|escapejs }}"
         });
-</script>
+
+    </script>
+    {% endfor %}
+    {% endif %}
+</body>
 
 </html>

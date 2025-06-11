@@ -1,0 +1,73 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'musica/css/base.css' %}">
+    <title>Document</title>
+
+    <style>
+        ul {
+            width: 90%;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .button {
+            margin-bottom: 20px;
+        }
+
+        .textfield {
+            width: 50%;
+            max-width: 50%;
+        }
+
+        p {
+            color: rgb(43, 43, 43);
+            font-size: 15px;
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <section>
+            <header>
+                <h1>Resultados da busca por usuários</h1>
+            </header>
+        </section>
+        <section>
+            {% if usuarios %}
+            <ul>
+                <h1 class="section-title">Usuários</h1>
+                {% for usuario in usuarios %}
+                    <li><a href="{% url 'buscar_usuario_view' %}?usuario={{ usuario.username }}">{{ usuario.username }}</a></li>
+                {% endfor %}
+            </ul>
+            {% elif not usuarios %}
+                <p>Nenhum usuário encontrado.</p>
+            {% endif %}
+        </section>
+    </main>
+    <nav>
+        <a href="{% url 'buscar_musicas' %}">Buscar</a>
+        <a href="{% url 'listar_playlists' %}">Biblioteca</a>
+        <a href="{% url 'my_communities' %}">Comunidade</a>
+        <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i>Perfil</a>
+    </nav>
+</body>
+
+</html>

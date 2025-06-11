@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'musica/css/base.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Document</title>
 
     <style>
@@ -39,6 +40,12 @@
         .section-title {
             margin-bottom: 20px;
         }
+
+        .swal-sm {
+            width: 400px !important;
+            font-size: 14px;
+            padding: 1rem !important;
+        }
     </style>
 </head>
 
@@ -64,15 +71,20 @@
                     </div>
                     <a href="{% url 'ver_playlist' playlist.id %}"><img
                             src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30"></a>
-                {% if playlist.playlist_curtir == False %}
-                        <a href="{% url 'excluir_playlist' playlist.id %}"
+                    <!-- <button type="button" class="button" onclick='confirmarExclusao("{{ playlist.id }}")'>
+                        Excluir
+                    </button> -->
+
+                    {% if playlist.playlist_curtir == False %}
+                    <a href="{% url 'excluir_playlist' playlist.id %}"
                         onclick="return confirm('Tem certeza que deseja excluir esta playlist?');">
                         <button type="button" class="button">Excluir</button>
                     </a>
-                
-                <a href="{% url 'editar_playlist' playlist.id %}">
-                    <button type="button" class="button">Editar</button>
-                </a>
+
+                    <a href="{% url 'editar_playlist' playlist.id %}">
+                        <button type="button" class="button">Editar</button>
+                    </a>
+
                 </li>
                 {% endif %}
                 {% empty %}
@@ -81,11 +93,58 @@
             </ul>
         </section>
     </main>
-        <nav class="navbar">
-            <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i>Buscar</a>
-            <a href="{% url 'listar_playlists' %}"><i class="fas fa-book"></i>Biblioteca</a>
-            <a href="{% url 'my_communities' %}"><i class="fas fa-users"></i>Comunidade</a>
-            <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i>Perfil</a>
-        </nav>
+    <nav>
+        <a href="{% url 'buscar_musicas' %}">Buscar</a>
+        <a href="{% url 'listar_playlists' %}">Biblioteca</a>
+        <a href="{% url 'my_communities' %}">Comunidade</a>
+        <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i>Perfil</a>
+    </nav>
+
+    <script>
+        function confirmarExclusao(playlistId) {
+            Swal.fire({
+                title: "Tem certeza?",
+                text: "Você não poderá recuperar essa playlist!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#6545F0",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sim, excluir!",
+                cancelButtonText: "Cancelar",
+                customClass: {
+                    popup: 'swal-sm'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redireciona para a URL de exclusão
+                    window.location.href = `/musica/playlist/${playlistId}/excluir/`;
+                }
+            });
+        }
+    </script>
+
+    {% if messages %}
+    {% for message in messages %}
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "center",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+
+        Toast.fire({
+            icon: "{{ message.tags|default:'info' }}",
+            title: "{{ message|escapejs }}"
+        });
+    </script>
+    {% endfor %}
+    {% endif %}
 </body>
+
 </html>

@@ -5,10 +5,11 @@ from django.utils.safestring import mark_safe
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import MusicaSalva, Playlist
-from django.contrib.auth import logout
+from comunidade.models import Community
 from django.contrib import messages
 from django.urls import reverse
 import json
+from django.db.models import Q
 from .forms import PlaylistForm
 from django.contrib import messages
 from django_project.utils import upload_vercel_image
@@ -60,9 +61,15 @@ def pesquisa_musica(request):
             return redirect(f"{reverse('listar_playlists_todos')}?q={query}")
         else:
             return redirect(reverse('listar_playlists_todos'))
+        
+    elif search_type == "usuarios" and query:
+        return redirect(f"{reverse('buscar_usuario_view')}?usuario={query}")
+    
+    elif search_type == "comunidades" and query:
+        return redirect(f"{reverse('buscar_comunidade')}?comunidade={query}")
     else:
-        if search_type != "musicas" and search_type != "playlists":
-            messages.error(request, "Por favor, selecione 'Músicas' ou 'Playlists'.")
+        if search_type != "musicas" and search_type != "playlists" and search_type != "usuarios" and search_type != "comunidades":
+            messages.error(request, "Por favor, selecione Músicas, Playlists ou Usuário.")
     return render(request, 'buscar.html', {'musicas': [], 'playlists': playlists})
 
 @login_required
@@ -124,11 +131,11 @@ def salvar_musica(request):
         # Adiciona à playlist, se ainda não estiver
         if not musica.playlists.filter(id=playlist.id).exists():
             musica.playlists.add(playlist)
-            print("Música adicionada à playlist.")
+            messages.success(request, "Música adicionada à playlist!")
         else:
-            print("Música já está nessa playlist.")
+            messages.info(request, "Essa música já está na playlist.")
 
-    return redirect('listar_playlists')
+    return redirect('buscar_musicas')
 
 @login_required
 def ver_playlist(request, playlist_id):
@@ -182,6 +189,14 @@ def ver_playlist(request, playlist_id):
 @login_required
 def criar_playlist(request):
     if request.method == 'POST':
+        nome = request.POST.get('nome')
+        descricao = request.POST.get('descricao')
+        user_id = request.user.id
+        print(user_id)
+        Playlist.objects.create(nome=nome, descricao=descricao, user_id=user_id)
+        messages.success(request, "Playlist criada com sucesso!") # Aqui não foi alterado tantas coisas, agora adiciona no banco de dados o ID do usuário logado.
+        return redirect('listar_playlists')
+
         form = PlaylistForm(request.POST, request.FILES)
         if form.is_valid():
             playlist = form.save(commit=False)
@@ -298,6 +313,7 @@ def excluir_playlist(request, playlist_id):
     if playlist.user != request.user:
         return HttpResponse("Você não tem permissão para excluir esta playlist.")
     playlist.delete()
+    messages.success(request, "Playlist excluída com sucesso!")
     return redirect('listar_playlists')
 
 @login_required
@@ -318,7 +334,24 @@ def listar_playlists_usuario(request):
 def listar_playlists_todos(request):
     query = request.GET.get("q")
     if query:
-        playlists = Playlist.objects.filter(nome__icontains=query)
+        playlists = Playlist.objects.filter(~Q(user=request.user), nome__icontains=query) # Usado o ~Q do próprio Django para filtrar, retirando as playlists que são do usuário;
     else:
         playlists = Playlist.objects.all().exclude(playlist_curtir=1)
     return render(request, 'playlistsTodos.html', {'playlists': playlists})
+
+@login_required
+def buscar_usuario_view(request):
+    query = request.GET.get("usuario")
+    print("Query recebida:", query)
+    usuarios = []
+    if query:
+        usuarios = User.objects.filter(username__icontains=query)[:10]
+    return render(request, 'busca-usuario.html', {'usuarios': usuarios })
+
+@login_required
+def buscar_comunidade(request):
+    query = request.GET.get("comunidade")
+    comunidades = []
+    if query:
+        comunidades = Community.objects.filter(nome__icontains=query)[:10]
+    return render(request, 'busca-comunidade.html', {'comunidades': comunidades})
