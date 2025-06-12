@@ -343,7 +343,7 @@ def listar_playlists_todos(request):
         playlists = Playlist.objects.filter(~Q(user=request.user), nome__icontains=query) # Usado o ~Q do próprio Django para filtrar, retirando as playlists que são do usuário;
     else:
         playlists = Playlist.objects.all().exclude(playlist_curtir=1)
-    return render(request, 'musica/playlistsTodos.html', {'playlists': playlists, 'titulo':'Buscar Playlists'})
+    return render(request, 'musica/playlists_todos.html', {'playlists': playlists, 'titulo':'Buscar Playlists'})
 
 @login_required
 def buscar_usuario_view(request):
