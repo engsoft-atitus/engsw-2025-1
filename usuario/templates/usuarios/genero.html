@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generos Musicais</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
         body {
             background: linear-gradient(
@@ -17,7 +21,7 @@
                     #7932DE,
                      #8977FF,
                       #B6B2FF);
-            font-family: Arial, sans-serif;
+            font-family: Montserrat, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -243,7 +247,12 @@
             {% endfor %}
         </form>
     </div>
-
+    <nav class="navbar">
+        <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i> Buscar</a>
+        <a href="{% url 'listar_playlists' %}"><i class="fas fa-book"></i> Biblioteca</a>
+        <a href="{% url 'my_communities' %}"><i class="fas fa-users"></i> Comunidade</a>
+        <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i> Perfil</a>
+    </nav>
     <script>
         const genreBoxes = document.querySelectorAll('.genre-box');
         const finalizarButton = document.getElementById('finalizar');
