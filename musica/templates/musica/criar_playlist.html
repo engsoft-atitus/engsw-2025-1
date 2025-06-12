@@ -1,47 +1,22 @@
+{% extends "musica/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% block css %}
+    <link red="stylesheet" href="{% static 'musica/css/criar_playlist.css'%}">
+{% endblock %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'musica/css/base.css' %}">
-    <title>Document</title>
-    <style>
-        form {
-            display: flex;
-            flex-direction: column;
-            width: 90%;
-        }
+{% block content %}
+    <section>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>{{ form.nome.label_tag }}</p>
+            <p>{{ form.nome }}</p>
 
-        .button {
-            margin-top: 20px;
-        }
+            <p>{{ form.descricao.label_tag }}</p>
+            <p>{{ form.descricao }}</p>
 
-        main {
-            margin-top: 20px;
-        }
-    </style>
-</head>
-
-<body>
-    <main>
-        <section>
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <p>{{ form.nome.label_tag }}</p>
-                <p>{{ form.nome }}</p>
-
-                <p>{{ form.descricao.label_tag }}</p>
-                <p>{{ form.descricao }}</p>
-
-                <p>{{ form.imagem.label_tag }}</p>
-                <p>{{ form.imagem }}</p>
-                <button type="submit" class="button">Criar</button>
-            </form>
-        </section>
-    </main>
-
-</body>
-
-</html>
+            <p>{{ form.imagem.label_tag }}</p>
+            <p>{{ form.imagem }}</p>
+            <button type="submit" class="button">Criar</button>
+        </form>
+    </section>
+{% endblock %}

@@ -1,0 +1,19 @@
+form {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+}
+
+textarea {
+    resize: none;
+    overflow: auto;
+    height: 120px;
+}
+
+.button {
+    margin-top: 20px;
+}
+
+main {
+    margin-top: 20px;
+}

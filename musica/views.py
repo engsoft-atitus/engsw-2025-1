@@ -189,6 +189,7 @@ def ver_playlist(request, playlist_id):
 
     if playlist.playlist_curtir == True:
         context.update({'playlist_curtir':True})
+    
     return render(request, 'musica/playlist.html',context=context)
 
 @login_required
@@ -219,7 +220,7 @@ def criar_playlist(request):
             return redirect('listar_playlists')
     else:
         form = PlaylistForm()
-    return render(request, 'musica/criar_playlist.html', {'form': form})
+    return render(request, 'musica/criar_playlist.html', {'form': form,'titulo':'Criar Playlist'})
         
 
 @login_required
@@ -310,7 +311,7 @@ def editar_playlist(request, playlist_id):
             return redirect('listar_playlists')
     else:
         form = PlaylistForm(instance=playlist)
-    return render(request, 'musica/editar_playlist.html', {'form': form, 'playlist': playlist})
+    return render(request, 'musica/editar_playlist.html', {'form': form, 'playlist': playlist,'titulo':'Editar Playlist'})
 
 @login_required
 def excluir_playlist(request, playlist_id):
@@ -333,7 +334,7 @@ def remover_musica_da_playlist(request, playlist_id, musica_id):
 
 def listar_playlists_usuario(request):
     playlists = Playlist.objects.filter(user=request.user)  # Filtra pelo usuário logado
-    return render(request, 'musica/minhasPlaylists.html', {'playlists': playlists,'titulo':'Minhas Playlists'})
+    return render(request, 'musica/minhas_playlists.html', {'playlists': playlists,'titulo':'Minhas Playlists'})
 
 @login_required
 def listar_playlists_todos(request):
@@ -342,7 +343,7 @@ def listar_playlists_todos(request):
         playlists = Playlist.objects.filter(~Q(user=request.user), nome__icontains=query) # Usado o ~Q do próprio Django para filtrar, retirando as playlists que são do usuário;
     else:
         playlists = Playlist.objects.all().exclude(playlist_curtir=1)
-    return render(request, 'musica/playlistsTodos.html', {'playlists': playlists})
+    return render(request, 'musica/playlistsTodos.html', {'playlists': playlists, 'titulo':'Buscar Playlists'})
 
 @login_required
 def buscar_usuario_view(request):
@@ -351,7 +352,7 @@ def buscar_usuario_view(request):
     usuarios = []
     if query:
         usuarios = User.objects.filter(username__icontains=query)[:10]
-    return render(request, 'musica/busca-usuario.html', {'usuarios': usuarios })
+    return render(request, 'musica/busca-usuario.html', {'usuarios': usuarios,'titulo':'Buscar Usuários'})
 
 @login_required
 def buscar_comunidade(request):
@@ -359,4 +360,4 @@ def buscar_comunidade(request):
     comunidades = []
     if query:
         comunidades = Community.objects.filter(nome__icontains=query)[:10]
-    return render(request, 'musica/busca-comunidade.html', {'comunidades': comunidades})
+    return render(request, 'musica/busca-comunidade.html', {'comunidades': comunidades,'titulo':'Buscar Comunidades'})

@@ -1,0 +1,33 @@
+{% extends "musica/base.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'musica/css/playlists_todos.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section>
+        <header>
+            <h1>Resultados da busca por playlists</h1>
+        </header>
+    </section>
+    <section>
+        <ul>
+
+            <h1 class="section-title">Playlists</h1>
+            {% for playlist in playlists %}
+            <li>
+                <div class="textfield">
+                    <h1>{{ playlist.nome }}</h1>
+                    <p>{{ playlist.descricao }}</p>
+                </div>
+                <a href="{% url 'ver_playlist' playlist.id %}"><img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30"></a>
+            </li>
+            {% empty %}
+            <div class="textfield">
+                    <h1>{{ playlist.nome }}</h1>
+                    <p>{{ playlist.descricao }}</p>
+                </div>
+            {% endfor %}
+        </ul>
+    </section>
+{% endblock %}

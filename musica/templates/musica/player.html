@@ -78,17 +78,18 @@
     <script>
         const playlist = {{playlist}}; // django + js para pegar a playlist de musicas em "musicas_encontradas" CONSIDERE Q FUNCIONA
 
-        let currentIndex = {{current_index}};
         const player = document.getElementById('player');
         const audioSource = document.getElementById('audio-source');
         const playBtn = document.getElementById("play");
         const pauseBtn = document.getElementById("pause");
+        const likeBtn = document.querySelector(".curtida");
         const progressBar = document.getElementById('progress-bar');
         const progressContainer = document.querySelector('.progress-container');
         const thumb = document.getElementById('progress-thumb');
-        
+
         let isDragging = false;
-        let btnLike = document.querySelector(".curtida");
+
+        let currentIndex = {{current_index}};
 
         function playAudio() {
             player.play();
@@ -196,7 +197,7 @@
         });
 
         function changeLike(curtida,nome,artista){
-            let btn = document.querySelector(".curtida");
+            const btn = document.querySelector(".curtida");
             if (curtida === false){
                 btn.src = "https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854";
                 btn.setAttribute("onclick", `likeMusic(this,'${nome}','${artista}')`);
@@ -206,9 +207,9 @@
             }
         }
         {% if playlist_curtir != True %}
-            btnLike.addEventListener('click', () => {
-                let classLike = btnLike.classList;
-                console.log(classLike[1]);
+            likeBtn.addEventListener('click', () => {
+                const classLike = likeBtn.classList;
+
                 if ('like-status' == classLike[1]) {
                     playlist[currentIndex].curtida = true;
                 } else if ('dislike-status' == classLike[1]) {
