@@ -1,0 +1,35 @@
+ul {
+    width: 90%;
+}
+
+li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+.button {
+    margin-bottom: 20px;
+}
+
+.textfield {
+    width: 50%;
+    max-width: 50%;
+}
+
+p {
+    color: rgb(43, 43, 43);
+    font-size: 15px;
+}
+
+.section-title {
+    margin-bottom: 20px;
+}
+
+.swal-sm {
+    width: 400px !important;
+    font-size: 14px;
+    padding: 1rem !important;
+}

@@ -1,0 +1,127 @@
+{% extends "musica/base.html" %} 
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static "musica/css/buscar.css" %}">
+{% endblock css %}
+
+{% block content %}
+<section>
+    <header>
+        <h1>Buscar</h1>
+    </header>
+    <form method="GET" action="{% url 'buscar_musicas' %}" class="pesquisa">
+        <input class="barra-pesquisa" type="text" name="q" placeholder=" O que você quer ouvir ?">
+        <input class="" type="hidden" id="tipo-pesquisa" name="type" value="musicas">
+        <button class="button" type="submit">Buscar</button>
+    </form>
+    <div class="nav-busca">
+        <button class="option-button">Playlists</button>
+        <button class="option-button">Músicas</button>
+        <button class="option-button">Usuário</button>
+        <button class="option-button">Comunidade</button>
+    </div>
+    </section>
+
+    <section>
+        {% if musicas %}
+        <h2>Resultados:</h2>
+        <ul class="musica-grid">
+            {% for musica in request.session.musicas %}
+            <li>
+                <div class="capa">
+                    <img src="{{ musica.imagem }}" alt="Capa do Álbum" width="100">
+                </div>
+                <div class="textfield">
+                    <h1>{{ musica.nome }}</h1>
+                    <h2>{{ musica.artista }}</h2>
+                </div>
+                <a href="{% url 'player' %}?nome={{ musica.nome }}&nomeartista={{ musica.artista }}&linkmusica={{ musica.link }}&imagem={{ musica.imagem }}"
+                    target="" class="play">
+                    <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30">
+                </a>
+                {% if musica.curtida == True %}
+                <button style="background-color: transparent; border: none;"><img class="curtida"
+                        src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286"
+                        onclick="dislikeMusic(this,'{{musica.nome}}','{{musica.artista}}')" alt="" width="30"
+                        style="cursor: pointer;"></button>
+                {% else %}
+                <button style="background-color: transparent; border: none;"><img class="curtida"
+                        src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
+                        onclick="likeMusic(this,'{{musica.nome}}','{{musica.artista}}')" alt="" width="30"
+                        style="cursor: pointer;"></button>
+                {% endif %}
+                <div class="mobile-menu">
+                    <span>&#8226;&#8226;&#8226;</span>
+                </div>
+                <div class="nav-list">
+                    <button class="close-menu">✕</button>
+                    <form method="POST" action="{% url 'salvar_musica' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="nome" value="{{ musica.nome }}">
+                        <input type="hidden" name="nomeartista" value="{{ musica.artista }}">
+                        <input type="hidden" name="link" value="{{ musica.link }}">
+                        <input type="hidden" name="imagem" value="{{ musica.imagem }}">
+
+                        <select name="playlist_id" required>
+                            {% for playlist in playlists %}
+                            <option value="{{ playlist.id }}">{{ playlist.nome }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <button type="submit">Salvar na Playlist</button>
+                    </form>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+
+        {% endif %}
+    </section>
+
+
+    <script src="{% static 'musica/js/mobile-nav-bar.js' %}"></script>
+    <script src="{% static 'musica/js/filtragem-pesquisa.js' %}"></script>
+    <script src="{% static 'musica/js/like-scripts.js' %}"></script>
+
+    {% if messages %}
+    {% for message in messages %}
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "center",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        })
+    </script>
+
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleBtn = document.querySelector('.seta-toggle');
+            const dropdownMenu = document.getElementById('searchDropdown');
+
+            toggleBtn.addEventListener('click', () => {
+                dropdownMenu.classList.toggle('active');
+            });
+
+            document.addEventListener('click', function (event) {
+                if (!toggleBtn.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.remove('active');
+                }
+            });
+        });
+        Toast.fire({
+            icon: "{{ message.tags|default:'info' }}",
+            title: "{{ message|escapejs }}"
+        });
+
+    </script>
+    {% endfor %}
+    {% endif %}
+{% endblock %}
