@@ -45,7 +45,7 @@ def pesquisa_musica(request):
 
             musica = {
                 'nome': musica_obj.nome,  # o nome da música
-                'link': musica_obj.link,  # link de prévia da música
+                'link': track['preview'],  # link de prévia da música
                 'artista': musica_obj.artista,  # nome do artista
                 'imagem': musica_obj.imagem,  # imagem do álbum
                 'curtida': curtida # Se foi curtida ou não
