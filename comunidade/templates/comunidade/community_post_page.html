@@ -45,7 +45,7 @@
 
         {% if post.musica != None %}
         <div class="container music-spacing music-post-size">
-            <a href="{% url 'player' %}?nome={{ post.musica.nome }}&nomeartista={{ post.musica.artista }}&linkmusica={{ post.musica.link }}&imagem={{ post.musica.imagem }}">
+            <a href="{% url 'player_comunidade' %}?nome={{ post.musica.nome }}&nomeartista={{ post.musica.artista }}&imagem={{ post.musica.imagem }}">
                 <img class="music-image-post" src="{{post.musica.imagem}}">
             </a>
             <p class="post-music-name">{{post.musica.nome}}</p>

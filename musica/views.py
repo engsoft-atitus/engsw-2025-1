@@ -91,15 +91,20 @@ def player(request):
         playlist_curtir = True
     
     musicas = request.session.get('musicas', [])
-    
+    musica_obj = MusicaSalva.objects.filter(nome=nome, artista=nomeartista).get()
+
+    if request.user in musica_obj.curtida.all():
+        curtida = True
+    else:
+        curtida = False
+
     musica = {
         'titulo': nome,
         'artista': nomeartista,
         'link': linkmusica,
-        'imagem': imagem,    
+        'imagem': imagem,
+        'curtida': curtida    
     }
-
-    musica_obj = MusicaSalva.objects.filter(nome=nome, artista=nomeartista).get()
     
     current_index = 0
     for iteration in musicas:
@@ -361,3 +366,45 @@ def buscar_comunidade(request):
     if query:
         comunidades = Community.objects.filter(nome__icontains=query)[:10]
     return render(request, 'musica/busca-comunidade.html', {'comunidades': comunidades,'titulo':'Buscar Comunidades'})
+
+@login_required
+def player_comunidade(request):
+    playlists = Playlist.objects.filter(user=request.user)
+
+    nome = request.GET.get('nome')
+    nomeartista = request.GET.get('nomeartista')
+    imagem = request.GET.get('imagem')
+
+    playlist_curtir = False
+    if request.GET.get('playlist_curtir') == 'True':
+        playlist_curtir = True
+    
+    url = f"https://api.deezer.com/search?q={nome} {nomeartista}&limit=1"
+    r = requests.get(url)
+    dados = r.json()
+    if dados.get("data"):
+        track = dados["data"][0]
+        musicas = 0
+
+        musica_obj = MusicaSalva.objects.filter(nome=nome, artista=nomeartista).get()
+
+        if request.user in musica_obj.curtida.all():
+            curtida = True
+        else:
+            curtida = False
+        
+        musica = {
+            'titulo': nome,
+            'artista': nomeartista,
+            'link': track['preview'],
+            'imagem': imagem,
+            'curtida': curtida    
+        }
+    
+    return render(request, 'musica/player.html', {
+        'musica': musica,
+        'current_index':0,
+        'playlist': mark_safe(json.dumps(musicas)),
+        'playlists': playlists,
+        'playlist_curtir': playlist_curtir,
+    })

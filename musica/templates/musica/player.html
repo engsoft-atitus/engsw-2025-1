@@ -57,15 +57,15 @@
                 </select>
             </form>
             {% if playlist_curtir != True %}
-                {% if request.user in musica_obj.curtida.all %}
+                {% if musica.curtida == True %}
                     <button type="submit" style="background-color: transparent; border: none;"><img class="curtida dislike-status"
                             src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/love.png?v=1748992652286"
-                            onclick="dislikeMusic(this,'{{musica_obj.nome}}','{{musica_obj.artista}}')" alt="" width="30"
+                            onclick="dislikeMusic(this,'{{musica.titulo}}','{{musica.artista}}')" alt="" width="30"
                             style="cursor: pointer;"></button>
                 {% else %}
                     <button type="submit" style="background-color: transparent; border: none;"><img class="curtida like-status"
                             src="https://cdn.glitch.global/569e6e49-726e-46db-afe9-b43e2f0dcadf/peace.png?v=1748992644854"
-                            onclick="likeMusic(this,'{{musica_obj.nome}}','{{musica_obj.artista}}')" alt="" width="30"
+                            onclick="likeMusic(this,'{{musica.titulo}}','{{musica.artista}}')" alt="" width="30"
                             style="cursor: pointer;"></button>
                 {% endif %}
             {% endif %}
@@ -122,8 +122,6 @@
         function returnSong() {
             currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
             const musica = playlist[currentIndex];
-            console.log(playlist);
-            console.log(currentIndex);
             {% if playlist_curtir != True %}
                 changeLike(musica.curtida,musica.nome,musica.artista);
             {% endif %}
