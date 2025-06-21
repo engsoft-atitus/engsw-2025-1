@@ -1,0 +1,65 @@
+{% extends "musica/base.html" %}
+{% load static %}
+{% block css%}
+    <link rel="stylesheet" href="{% static 'musica/css/playlist.css' %}">
+{% endblock css%}
+
+{% block content%}
+    <section class="sec">
+        <header>
+            <div class="voltar">
+            </div>
+            <h1>Playlist</h1>
+            <div class="menu">
+            </div>
+        </header>
+    {% if playlist.imagem %}
+        <img src="{{ playlist.imagem }}" alt="Imagem da playlist" width="300" style="border-radius: 5%;"/>
+        {% else %}
+        <p style="color: gray;">Sem imagem de capa</p>
+        {% endif %}
+    </section>
+    <section>
+        <div class="title">
+            <h1>{{ playlist.nome }}</h1>
+            <p>{{ playlist.descricao }}</p>
+        </div>
+    </section>
+    <section>
+        <ul>
+            {% for musica in musicas %}
+            <li>
+                <div class="capa">
+                    <img src="{{ musica.imagem }}" alt="Capa do Álbum" width="100">
+                </div>
+                <div class="textfield">
+                    <h1>{{ musica.nome }}</h1>
+                    <h2>{{ musica.artista }}</h2>
+                </div>
+                {% if playlist_curtir == None %}
+                <a href="{% url 'player' %}?nome={{ musica.nome }}&nomeartista={{ musica.artista }}&linkmusica={{ musica.link }}&imagem={{ musica.imagem }}"
+                    class="play">
+                    <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30">
+                </a>
+                {% else %}
+                <a href="{% url 'playerCurtir' %}?nome={{ musica.nome }}&nomeartista={{ musica.artista }}&linkmusica={{ musica.link }}&imagem={{ musica.imagem }}&playlist_curtir=True"
+                    class="play">
+                    <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="50">
+                </a>
+                {% endif %}
+                {% if playlist.playlist_curtir == False and user.id == playlist.usuario.id %}
+                
+                <a href="{% url 'remover_musica_da_playlist' playlist.id musica.id %}"
+                    onclick="return confirm('Remover esta música da playlist?');">
+                    <button type="button" class="button">Remover</button>
+                </a>
+                {% endif %}
+            </li>
+            {% empty %}
+            <p>Nenhuma música salva nesta playlist.</p>
+            {% endfor %}
+        </ul>
+    </section>
+<script src="{% static "musica/js/like-scripts.js" %}"></script>
+{% endblock %}
+

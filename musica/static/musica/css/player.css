@@ -1,0 +1,82 @@
+.album-img img {
+    border-radius: 10px;
+    width: 300px;
+}
+
+.title {
+    padding: 20px;
+}
+
+.title h2,
+h3 {
+    line-height: 20px;
+    text-align: center;
+}
+
+#pause {
+    display: none;
+}
+
+.player-button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+#play img,
+#pause img {
+    width: 50px;
+}
+
+#return img,
+#next img {
+    width: 30px;
+}
+
+#return img {
+    transform: rotate(180deg);
+}
+
+.progress-container {
+    width: 70%;
+    height: 8px;
+    background-color: #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, #555, #aaa);
+    border-radius: 4px;
+    transition: width 0.2s;
+}
+
+.progress-thumb {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    background-color: #444;
+    border-radius: 50%;
+    pointer-events: none;
+    /* Para não interferir no clique */
+}
+
+audio {
+    display: none;
+}
+
+.player-control {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 80px;
+    gap: 30px;
+}

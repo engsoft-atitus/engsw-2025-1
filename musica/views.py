@@ -18,10 +18,11 @@ from django_project.utils import upload_vercel_image
 
 @login_required
 def pesquisa_musica(request):
-    user = request.user
-    playlists = Playlist.objects.filter(user=request.user).filter(playlist_curtir = False)  # Filtra as playlists do usuário logado (Aqui também é responsável por mostrar as playlists do usuário na lista de playlists)
+
+    # Filtra as playlists do usuário logado (Aqui também é responsável por mostrar as playlists do usuário na lista de playlists)
+    # Além disso ela também ignora playlists de curtir
+    playlists = Playlist.objects.filter(user=request.user).filter(playlist_curtir = False)
     musicas_encontradas = []
-    musicas_obj = []
     query = request.GET.get('q') 
     search_type = request.GET.get("type", "musicas")
 
@@ -30,31 +31,32 @@ def pesquisa_musica(request):
         r = requests.get(url)
         dados = r.json()
         for track in dados.get("data", []):
-            musica_obj,_ = MusicaSalva.objects.get_or_create(
+            musica_obj,_ = MusicaSalva.objects.get_or_create( # Pega o objeto da música
                 nome=track['title'],
                 artista=track['artist']['name'],
                 imagem=track['album']['cover_medium'],
-                defaults={'link':track['preview']}
-            )
+                defaults={'link':track['preview']} # Link não pode ser usado na query por conta
+            ) # que o link pode mudar e logo iria cria uma nova música no banco
 
-            if request.user in musica_obj.curtida.all():
+            if request.user in musica_obj.curtida.all(): # Verifica se o usuario curtiu
                 curtida = True
             else:
                 curtida = False
 
             musica = {
-                'nome': track['title'],  # o nome da música
-                'linkmusica': track['preview'],  # link de prévia da música
-                'nomeartista': track['artist']['name'],  # nome do artista
-                'imagem': track['album']['cover_medium'],  # imagem do álbum
-                'curtida': curtida
+                'nome': musica_obj.nome,  # o nome da música
+                'link': track['preview'],  # link de prévia da música
+                'artista': musica_obj.artista,  # nome do artista
+                'imagem': musica_obj.imagem,  # imagem do álbum
+                'curtida': curtida # Se foi curtida ou não
             }
             
             musicas_encontradas.append(musica)
-            musicas_obj.append(musica_obj)
-            request.session['musicas'] = musicas_encontradas
-            
-        return render(request, 'buscar.html', {'musicas': musicas_encontradas, 'playlists': playlists,"musicas_obj": musicas_obj})
+
+        request.session['musicas'] = musicas_encontradas    
+        context = {'musicas': musicas_encontradas, 'playlists': playlists}
+        
+        return render(request, 'musica/buscar.html', context=context)
 
     elif search_type == "playlists":
         if query:
@@ -70,7 +72,10 @@ def pesquisa_musica(request):
     else:
         if search_type != "musicas" and search_type != "playlists" and search_type != "usuarios" and search_type != "comunidades":
             messages.error(request, "Por favor, selecione Músicas, Playlists ou Usuário.")
-    return render(request, 'buscar.html', {'musicas': [], 'playlists': playlists})
+
+    context = {'musicas': [], 'playlists': playlists,'titulo':'Buscar'}
+
+    return render(request, 'musica/buscar.html', context=context)
 
 @login_required
 def player(request):
@@ -81,32 +86,38 @@ def player(request):
     linkmusica = request.GET.get('linkmusica')
     imagem = request.GET.get('imagem')
 
-    current_index = 0
-
     playlist_curtir = False
     if request.GET.get('playlist_curtir') == 'True':
         playlist_curtir = True
     
     musicas = request.session.get('musicas', [])
+    musica_obj = MusicaSalva.objects.filter(nome=nome, artista=nomeartista).get()
+
+    if request.user in musica_obj.curtida.all():
+        curtida = True
+    else:
+        curtida = False
+
     musica = {
         'titulo': nome,
         'artista': nomeartista,
         'link': linkmusica,
         'imagem': imagem,
+        'curtida': curtida    
     }
-
-    musica_obj = MusicaSalva.objects.filter(nome=nome, artista=nomeartista).get()
+    
+    current_index = 0
     for iteration in musicas:
-        if iteration["nome"] == musica["titulo"] and iteration['nomeartista'] == musica['artista']:
+        if iteration["nome"] == musica["titulo"] and iteration['artista'] == musica['artista']:
             current_index = musicas.index(iteration)
     
-    return render(request, 'player.html', {
+    return render(request, 'musica/player.html', {
         'musica': musica,
+        'current_index':current_index,
         'playlist': mark_safe(json.dumps(musicas)),
         'playlists': playlists,
         'musica_obj':musica_obj,
         'playlist_curtir': playlist_curtir,
-        'current_index_equal': current_index
     })
     
 @login_required
@@ -166,25 +177,25 @@ def ver_playlist(request, playlist_id):
             musica_info = {
                 'id': musica.id,
                 'nome': track['title'],
-                'linkmusica': track['preview'],
-                'nomeartista': track['artist']['name'],
+                'link': track['preview'],
+                'artista': track['artist']['name'],
                 'imagem': track['album']['cover_medium'],
                 'curtida': curtida
             }
             musicas_encontradas.append(musica_info)
 
         request.session['musicas'] = musicas_encontradas
-    if playlist.playlist_curtir == False:
-        return render(request, 'playlist.html', {
-            'musicas': musicas_encontradas,
-            'playlist': playlist,
-        })
-    else:
-        return render(request, 'playlist.html', {
-            'musicas': musicas_encontradas,
-            'playlist': playlist,
-            'playlist_curtir': True
-        })
+    
+        context = {
+                   'musicas': musicas_encontradas, 
+                   'playlist': playlist, 
+                   'titulo': playlist.nome
+                   }   
+
+    if playlist.playlist_curtir == True:
+        context.update({'playlist_curtir':True})
+    
+    return render(request, 'musica/playlist.html',context=context)
 
 @login_required
 def criar_playlist(request):
@@ -214,7 +225,7 @@ def criar_playlist(request):
             return redirect('listar_playlists')
     else:
         form = PlaylistForm()
-    return render(request, 'criar_playlist.html', {'form': form})
+    return render(request, 'musica/criar_playlist.html', {'form': form,'titulo':'Criar Playlist'})
         
 
 @login_required
@@ -299,13 +310,13 @@ def editar_playlist(request, playlist_id):
                     playlist.imagem_hash = upload_result["file_hash"]
                 else:
                     messages.error(request, "Erro no upload da imagem. Tente novamente.")
-                    return render(request, 'editar_playlist.html', {'form': form, 'playlist': playlist})
+                    return render(request, 'musica/editar_playlist.html', {'form': form, 'playlist': playlist})
             playlist.save()
             messages.success(request, "Playlist atualizada com sucesso.")
             return redirect('listar_playlists')
     else:
         form = PlaylistForm(instance=playlist)
-    return render(request, 'editar_playlist.html', {'form': form, 'playlist': playlist})
+    return render(request, 'musica/editar_playlist.html', {'form': form, 'playlist': playlist,'titulo':'Editar Playlist'})
 
 @login_required
 def excluir_playlist(request, playlist_id):
@@ -328,7 +339,7 @@ def remover_musica_da_playlist(request, playlist_id, musica_id):
 
 def listar_playlists_usuario(request):
     playlists = Playlist.objects.filter(user=request.user)  # Filtra pelo usuário logado
-    return render(request, 'minhasPlaylists.html', {'playlists': playlists})
+    return render(request, 'musica/minhas_playlists.html', {'playlists': playlists,'titulo':'Minhas Playlists'})
 
 @login_required
 def listar_playlists_todos(request):
@@ -337,7 +348,7 @@ def listar_playlists_todos(request):
         playlists = Playlist.objects.filter(~Q(user=request.user), nome__icontains=query) # Usado o ~Q do próprio Django para filtrar, retirando as playlists que são do usuário;
     else:
         playlists = Playlist.objects.all().exclude(playlist_curtir=1)
-    return render(request, 'playlistsTodos.html', {'playlists': playlists})
+    return render(request, 'musica/playlists_todos.html', {'playlists': playlists, 'titulo':'Buscar Playlists'})
 
 @login_required
 def buscar_usuario_view(request):
@@ -346,7 +357,7 @@ def buscar_usuario_view(request):
     usuarios = []
     if query:
         usuarios = User.objects.filter(username__icontains=query)[:10]
-    return render(request, 'busca-usuario.html', {'usuarios': usuarios })
+    return render(request, 'musica/busca-usuario.html', {'usuarios': usuarios,'titulo':'Buscar Usuários'})
 
 @login_required
 def buscar_comunidade(request):
@@ -354,4 +365,46 @@ def buscar_comunidade(request):
     comunidades = []
     if query:
         comunidades = Community.objects.filter(nome__icontains=query)[:10]
-    return render(request, 'busca-comunidade.html', {'comunidades': comunidades})
+    return render(request, 'musica/busca-comunidade.html', {'comunidades': comunidades,'titulo':'Buscar Comunidades'})
+
+@login_required
+def player_comunidade(request):
+    playlists = Playlist.objects.filter(user=request.user)
+
+    nome = request.GET.get('nome')
+    nomeartista = request.GET.get('nomeartista')
+    imagem = request.GET.get('imagem')
+
+    playlist_curtir = False
+    if request.GET.get('playlist_curtir') == 'True':
+        playlist_curtir = True
+    
+    url = f"https://api.deezer.com/search?q={nome} {nomeartista}&limit=1"
+    r = requests.get(url)
+    dados = r.json()
+    if dados.get("data"):
+        track = dados["data"][0]
+        musicas = 0
+
+        musica_obj = MusicaSalva.objects.filter(nome=nome, artista=nomeartista).get()
+
+        if request.user in musica_obj.curtida.all():
+            curtida = True
+        else:
+            curtida = False
+        
+        musica = {
+            'titulo': nome,
+            'artista': nomeartista,
+            'link': track['preview'],
+            'imagem': imagem,
+            'curtida': curtida    
+        }
+    
+    return render(request, 'musica/player.html', {
+        'musica': musica,
+        'current_index':0,
+        'playlist': mark_safe(json.dumps(musicas)),
+        'playlists': playlists,
+        'playlist_curtir': playlist_curtir,
+    })

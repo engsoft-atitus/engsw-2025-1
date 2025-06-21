@@ -1,0 +1,26 @@
+{% extends "musica/base.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'musica/css/busca_usuario.css'%}">
+{% endblock css %}
+
+
+{% block content %}
+    <section>
+        <header>
+            <h1>Resultados da busca por usuários</h1>
+        </header>
+    </section>
+    <section>
+        {% if usuarios %}
+        <ul>
+            <h1 class="section-title">Usuários</h1>
+            {% for usuario in usuarios %}
+                <li><a href="{% url 'buscar_usuario_view' %}?usuario={{ usuario.username }}">{{ usuario.username }}</a></li>
+            {% endfor %}
+        </ul>
+        {% elif not usuarios %}
+            <p>Nenhum usuário encontrado.</p>
+        {% endif %}
+    </section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "musica/base.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'musica/css/busca_comunidade.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section>
+        <header>
+            <h1>Resultados da busca por comunidades</h1>
+        </header>
+    </section>
+    <section>
+        {% if comunidades %}
+        <ul>
+            <h1 class="section-title">Comunidades</h1>
+            {% for comunidade in comunidades %}
+                <li><a href="{% url 'community_preview' comunidade.nome_tag %}">{{ comunidade.nome }}</a></li>
+            {% endfor %}
+        </ul>
+        {% elif not comunidades %}
+            <p>Nenhuma comunidade encontrado.</p>
+        {% endif %}
+    </section>
+{% endblock %}

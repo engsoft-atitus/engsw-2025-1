@@ -1,0 +1,46 @@
+ul {
+    width: 90%;
+}
+
+li {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 20px;
+    width: 100%;
+}
+
+.capa {
+    width: 30%;
+}
+
+.textfield {
+    width: 50%;
+    max-width: 50%;
+}
+
+h1 {
+    color: black;
+}
+
+h2 {
+    font-size: 15px;
+    line-height: 20px;
+}
+
+.capa img {
+    border-radius: 10px;
+}
+
+.title {
+    width: 100%;
+    padding: 20px;
+}
+
+.title h1 {
+    font-weight: 900;
+}
+
+header h1 {
+    color: #ffffff;
+}

@@ -1,0 +1,16 @@
+{% extends "musica/base.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'musica/css/editar_playlist.css' %}">
+{% endblock css %}
+
+{% block content %}
+    <section>
+        <h2>Editar Playlist</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="button">Salvar</button>
+        </form>
+    </section>
+{% endblock %}
