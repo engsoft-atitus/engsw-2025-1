@@ -10,6 +10,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
         body {
             background: linear-gradient(
@@ -20,7 +23,7 @@
                     #7932DE,
                      #8977FF,
                       #B6B2FF);
-            font-family: Arial, sans-serif;
+            font-family: Montserrat, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -58,7 +61,7 @@
         .btn-config {
             display: block;
             margin: 1rem auto;
-            background-color: #007bff;
+            background-color: #5A005A;
             color: white;
             padding: 0.5rem 1.25rem;
             border-radius: 8px;
@@ -68,7 +71,7 @@
         }
 
         .btn-config:hover {
-            background-color: #0056b3;
+            background-color: #7932DE;
         }
 
         .button-group {
@@ -165,7 +168,7 @@
                     <p><strong>Seguindo:</strong> Não está seguindo ninguém</p>
                 {% endif %}
             </div>
-        {% elif is_private and not is_following or not is_followed_by_user %}
+        {% elif bloquear_acesso %}
             <!-- Caso o perfil seja privado e o usuário não se siga com a pessoa -->
             <div class="info-bloco">
                 <p><em>Este perfil é privado. Ambos os usuários precisam se seguir para visualizar as informações completas.</em></p>

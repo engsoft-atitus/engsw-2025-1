@@ -10,6 +10,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
         body {
             background: linear-gradient(
@@ -20,7 +23,7 @@
                     #7932DE,
                      #8977FF,
                       #B6B2FF);
-            font-family: Arial, sans-serif;
+            font-family: Montserrat, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -52,6 +55,7 @@
             margin-bottom: 1.5rem;
             font-size: 1.5rem;
             font-weight: 600;
+            color: white;
         }
     
         .info-bloco {
@@ -89,12 +93,16 @@
         }
 
         button[type="submit"] {
-            background-color: #007bff;
+            background-color: #5A005A;
             color: white;
             border: none;
             border-radius: 8px;
             padding: 0.5rem 1.25rem;
             cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #7932DE;
         }
     
         .button-secondary {
@@ -110,7 +118,7 @@
         }
     
         button[type="button"] {
-            background-color: #17a2b8;
+            background-color: #620077;
             color: white;
             border: none;
             border-radius: 8px;
@@ -119,7 +127,7 @@
         }
     
         button[type="button"]:hover {
-            background-color: #138496;
+            background-color: #8977FF;
         }
 
         .top-section {
