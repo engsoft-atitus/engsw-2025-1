@@ -32,6 +32,10 @@ DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = ['synth-badqfbbvg4bsekh9.brazilsouth-01.azurewebsites.net']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://synth-badqfbbvg4bsekh9.brazilsouth-01.azurewebsites.net'
+]
+
 
 # Application definition
 
