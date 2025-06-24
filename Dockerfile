@@ -1,6 +1,5 @@
 FROM python:3.11-slim
 
-ENV DJANGO_DEBUG=False
 # Instala dependências básicas e adiciona o repositório da Microsoft
 RUN apt-get update && apt-get install -y \
     curl \
