@@ -4,7 +4,7 @@ certifi==2025.4.26
 cffi==1.17.1
 charset-normalizer==3.4.2
 cryptography==45.0.2
-Django==5.2
+Django
 h11==0.16.0
 idna==3.10
 oracledb==3.1.1
@@ -27,3 +27,7 @@ urllib3==2.4.0
 vercel_blob==0.4.1
 websocket-client==1.8.0
 wsproto==1.2.0
+mssql-django==1.5
+pyodbc==5.2.0
+gunicorn
+whitenoise==6.9.0
