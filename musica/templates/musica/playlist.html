@@ -36,8 +36,8 @@
                 <h1>{{ musica.nome }}</h1>
                 <h2>{{ musica.artista }}</h2>
             </div>
-            {% if playlist_curtir == None %}
             <div class="acoes">
+            {% if playlist_curtir == None %}
                 <a href="{% url 'player' %}?nome={{ musica.nome }}&nomeartista={{ musica.artista }}&linkmusica={{ musica.link }}&imagem={{ musica.imagem }}"
                     class="play">
                     <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="30">
@@ -48,14 +48,13 @@
                     <img src="https://cdn-icons-png.flaticon.com/512/10181/10181264.png" alt="" width="50">
                 </a>
                 {% endif %}
-                {% if playlist.playlist_curtir == False and user.id == playlist.usuario.id %}
-
+                {% if user.id == playlist.usuario.id %}
                 <a href="{% url 'remover_musica_da_playlist' playlist.id musica.id %}"
                     onclick="return confirm('Remover esta música da playlist?');">
                     <button type="button" class="button">Remover</button>
                 </a>
-            </div>
             {% endif %}
+            </div>
         </li>
         {% empty %}
         <p>Nenhuma música salva nesta playlist.</p>
