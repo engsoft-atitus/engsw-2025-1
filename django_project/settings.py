@@ -25,12 +25,16 @@ BLOB_READ_WRITE_TOKEN = config('BLOB_READ_WRITE_TOKEN')
 SECRET_KEY = 'django-insecure-93)9mxdl+v*mlt&p=*0=b0s)a#kl93+=tqr2oq0jdj^$#+qd59'
 
 
-
+DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = ['synth-badqfbbvg4bsekh9.brazilsouth-01.azurewebsites.net']
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://synth-badqfbbvg4bsekh9.brazilsouth-01.azurewebsites.net'
+]
 
 
 # Application definition
@@ -48,6 +52,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -82,11 +87,18 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.oracle',
-        'NAME': '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCPS)(HOST=' + config("DB_HOST") + ')(PORT=' + config("DB_PORT") + '))(CONNECT_DATA=(SERVICE_NAME=' + config("DB_NAME") + ')))',
-        'USER': config("DB_USER"),
-        'PASSWORD': config("DB_PASSWORD"),
-},
+        'ENGINE': 'mssql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', default='1433'),
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'encrypt': True,  # Recomendado para conexões com Azure
+            'trust_server_certificate': False,
+        },
+}
 }
 
 # Password validation
@@ -128,7 +140,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 STATIC_URL = '/static/' #time música alteração
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

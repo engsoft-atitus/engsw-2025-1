@@ -79,9 +79,9 @@
 
 {% endfor %}
 
-    <button>
-    <a href="{% url 'community_preview' community.nome_tag %}">Voltar</a>
-  </button>
+    <a href="{% url 'community_preview' community.nome_tag %}">
+        <button>Voltar</button>
+    </a>
   
 </div>
 <script src="{% static 'comunidade/community_preview.js' %}"></script>

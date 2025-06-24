@@ -31,3 +31,7 @@ p {
 .section-title {
     margin-bottom: 20px;
 }
+
+.nome-usuario{
+    color: rgba(255, 255, 255, 0.618);
+}

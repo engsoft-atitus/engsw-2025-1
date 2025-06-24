@@ -18,12 +18,12 @@
    
       {% if community.criador.id == user_id %} {# admin #}
         <div class="botoes-admin">
-          <button>
-            <a href="{% url 'community_edit' community.nome_tag %}">Editar</a>
-          </button>
-          <button>
-            <a href="{% url 'community_delete' community.nome_tag %}">Deletar</a>
-          </button>
+           <a href="{% url 'community_edit' community.nome_tag %}">
+            <button>Editar</button>
+          </a>
+          <a href="{% url 'community_delete' community.nome_tag %}">
+            <button>Deletar</button>
+          </a>
         </div>
       </div>
       {% else %} 
@@ -47,14 +47,14 @@
 
     <div class="fluxo-community-preview">
 
-    <button>
-      <a href="{% url 'community_post_page' community.nome_tag %}">Ver posts</a>
-    </button>
+    <a href="{% url 'community_post_page' community.nome_tag %}">
+      <button>Ver posts</button>
+    </a>
     
     
-    <button>
-      <a href="{% url 'my_communities' %}">Voltar</a>
-    </button>
+  <a href="{% url 'my_communities' %}">
+    <button>Voltar</button>
+  </a>
     
     </div>
   </div>

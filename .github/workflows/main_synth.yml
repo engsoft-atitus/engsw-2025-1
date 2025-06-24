@@ -1,0 +1,47 @@
+name: Deploy Python Django app to Azure Web App - Synth
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # (Opcional) Rodar testes
+      # - name: Run tests
+      #   run: python manage.py test
+
+      # (Opcional) Coletar arquivos estáticos do Django
+      # - name: Collect static files
+      #   run: python manage.py collectstatic --noinput
+
+      # (Opcional) Migrar banco de dados
+      # - name: Migrate database
+      #   run: python manage.py migrate
+
+      # Compacta o projeto em um arquivo ZIP (NÃO use .tar.gz)
+      - name: Zip project files
+        run: zip -r release.zip . -x '*.git*'
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'Synth'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E94D78ECD2BA4B24B3FFD57D989841A2 }}
+          package: release.zip
