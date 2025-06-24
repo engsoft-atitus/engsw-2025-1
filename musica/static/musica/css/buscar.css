@@ -106,21 +106,6 @@ button {
     border: none;
 }
 
-.nav-list {
-    display: none;
-    flex-direction: column;
-    align-items: flex-end;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    margin-top: 10px;
-}
-
-.nav-list form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
 .nav-list select,
 .nav-list button {
     padding: 8px;
