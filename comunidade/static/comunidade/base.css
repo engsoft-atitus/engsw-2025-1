@@ -320,13 +320,12 @@ section {
   background-color: rgb(238, 209, 255);
   margin: 0 !important;
   background: rgba(49, 8, 8, 0.5);
-  border: 0.3px solid white;
+  border-top: 0.3px solid white;
   color: #e6e6e7;
   box-sizing: border-box;
   font-weight: 300;
   font-style: normal;
   font-family: "Montserrat", sans-serif;
-
 }
 
 .navbar a {

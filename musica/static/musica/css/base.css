@@ -89,7 +89,7 @@ h1 {
     background-color: rgb(238, 209, 255);
     margin: 0 !important;
     background: rgba(49, 8, 8, 0.5);
-    border: 0.3px solid white;
+    border-top: 0.3px solid white;
 }
 
 .navbar a {
