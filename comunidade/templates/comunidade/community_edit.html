@@ -34,9 +34,9 @@
   {% endif %}
 
   <button type="submit">Enviar</button>
-  <button>
-    <a href="{% url 'community_preview' community.nome_tag %}">Voltar</a>
-  </button>
+  <a href="{% url 'community_preview' community.nome_tag %}">
+    <button>Voltar</button>
+  </a>
 </form>
 </div>
 {% endblock %}

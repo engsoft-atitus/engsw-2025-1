@@ -54,7 +54,7 @@ def pesquisa_musica(request):
             musicas_encontradas.append(musica)
 
         request.session['musicas'] = musicas_encontradas    
-        context = {'musicas': musicas_encontradas, 'playlists': playlists}
+        context = {'musicas': musicas_encontradas, 'playlists': playlists,'titulo':'Buscar músicas'}
         
         return render(request, 'musica/buscar.html', context=context)
 
@@ -118,6 +118,7 @@ def player(request):
         'playlists': playlists,
         'musica_obj':musica_obj,
         'playlist_curtir': playlist_curtir,
+        'titulo':'Player'
     })
     
 @login_required
@@ -135,9 +136,10 @@ def salvar_musica(request):
         musica, criada = MusicaSalva.objects.get_or_create(
             nome=nome,
             artista=artista,
-            link=link,
-            imagem=imagem  
+            imagem=imagem,
+            defaults={'link':link}
         )
+        print(criada)
 
         # Adiciona à playlist, se ainda não estiver
         if not musica.playlists.filter(id=playlist.id).exists():
@@ -186,11 +188,11 @@ def ver_playlist(request, playlist_id):
 
         request.session['musicas'] = musicas_encontradas
     
-        context = {
-                   'musicas': musicas_encontradas, 
-                   'playlist': playlist, 
-                   'titulo': playlist.nome
-                   }   
+    context = {
+                'musicas': musicas_encontradas, 
+                'playlist': playlist, 
+                'titulo': playlist.nome
+                }   
 
     if playlist.playlist_curtir == True:
         context.update({'playlist_curtir':True})
