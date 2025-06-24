@@ -25,7 +25,7 @@ BLOB_READ_WRITE_TOKEN = config('BLOB_READ_WRITE_TOKEN')
 SECRET_KEY = 'django-insecure-93)9mxdl+v*mlt&p=*0=b0s)a#kl93+=tqr2oq0jdj^$#+qd59'
 
 
-DEBUG = config("DJANGO_DEBUG", default="False") == "True"
+DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
