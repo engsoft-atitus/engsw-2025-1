@@ -1,16 +1,43 @@
 {% extends "musica/base.html" %}
 {% load static %}
 {% block css %}
-    <link rel="stylesheet" href="{% static 'musica/css/editar_playlist.css' %}">
+<link rel="stylesheet" href="{% static 'musica/css/editar_playlist.css' %}">
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        width: 90%;
+        gap: 5px;
+    }
+
+    .button {
+        margin-top: 20px;
+    }
+
+    main {
+        margin-top: 20px;
+    }
+
+    form p {
+        color: white;
+    }
+
+    form p input,
+    form p textarea,
+    form p select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+</style>
 {% endblock css %}
 
 {% block content %}
-    <section>
-        <h2>Editar Playlist</h2>
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="button">Salvar</button>
-        </form>
-    </section>
+<section>
+    <h1 class="title">Editar Playlist</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button">Salvar</button>
+    </form>
+</section>
 {% endblock %}

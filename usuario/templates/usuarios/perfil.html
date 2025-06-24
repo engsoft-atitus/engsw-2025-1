@@ -120,12 +120,6 @@
     </style>
 </head>
 <body>
-    
-    <!-- Botão de voltar para a página principal -->
-    <button class="btn-back" onclick="window.location.href='{% url 'principal' %}'">
-        <i class="fa-solid fa-arrow-left"></i>
-    </button>
-    
     <div class="container">
         <div class="top-section">
             {% if perfil.imagem_perfil %}
@@ -219,6 +213,7 @@
     </div>
 
     <nav class="navbar">
+        <a href="{% url 'principal' %}"><i class="fa-solid fa-house"></i> Home</a>
         <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i> Buscar</a>
         <a href="{% url 'listar_playlists' %}"><i class="fas fa-book"></i> Biblioteca</a>
         <a href="{% url 'my_communities' %}"><i class="fas fa-users"></i> Comunidade</a>

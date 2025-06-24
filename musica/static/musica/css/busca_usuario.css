@@ -19,8 +19,12 @@ li {
     max-width: 50%;
 }
 
+h1 {
+    color: white;
+}
+
 p {
-    color: rgb(43, 43, 43);
+    color: rgba(255, 255, 255, 0.618);
     font-size: 15px;
 }
 

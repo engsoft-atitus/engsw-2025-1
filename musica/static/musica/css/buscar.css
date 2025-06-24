@@ -5,32 +5,6 @@ ul {
 li {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    width: 100%;
-}
-
-.button {
-    margin-bottom: 20px;
-}
-
-.textfield {
-    width: 50%;
-    max-width: 50%;
-}
-
-p {
-    color: rgb(43, 43, 43);
-    font-size: 15px;
-}
-
-.section-title {
-    margin-bottom: 20px;
-}
-
-li {
-    display: flex;
-    align-items: center;
     justify-content: space-around;
     gap: 20px;
     width: 100%;
@@ -46,12 +20,13 @@ li {
 }
 
 h1 {
-    color: black;
+    color: white;
 }
 
 h2 {
     font-size: 15px;
     line-height: 20px;
+    color: white;
 }
 
 .capa img {
@@ -60,20 +35,32 @@ h2 {
 
 .nav-busca {
     margin-bottom: 20px;
-    width: 90%;
+    width: 100%;
 }
 
 .pesquisa {
     width: 100%;
     text-align: center;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .barra-pesquisa {
     width: 75%;
-    background-color: rgba(0, 0, 0, 0.092);
+    background-color: rgba(255, 255, 255, 0.092);
     border: none;
     border-radius: 10px;
     padding: 3px 20px;
+    border: 1px solid white;
+}
+
+.barra-pesquisa:focus {
+    color: white;
+}
+
+.barra-pesquisa::placeholder {
+    color: white;
 }
 
 .option-button {
@@ -81,4 +68,18 @@ h2 {
     padding: 5px 15px;
     border-radius: 40px;
     border: none;
+}
+
+.musica-grid {
+    width: 100%;
+}
+
+.musica-grid li {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 0.3px solid white;
+    margin-bottom: 15px;
+    width: 100%;
+    padding: 10px 15px;
 }

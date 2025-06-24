@@ -16,7 +16,7 @@ position: fixed;
 .navbar a {
 text-decoration: none;
 color: white;
-font-size: 14px;
+font-size: 10px;
 display: flex;
 flex-direction: column;
 align-items: center;
