@@ -21,6 +21,7 @@ COPY . .
 # Instala dependências Python
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
+RUN python manage.py collectstatic --noinput
 # Expõe a porta 8000
 EXPOSE 8000
 
