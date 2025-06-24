@@ -137,7 +137,7 @@ def community_post(request,community_id):
                     nome=nome,
                     artista=artista,
                     imagem=imagem,
-                    link=link
+                    defaults={'link':link}
                 )
         else:
             musica = None

@@ -54,7 +54,7 @@ def pesquisa_musica(request):
             musicas_encontradas.append(musica)
 
         request.session['musicas'] = musicas_encontradas    
-        context = {'musicas': musicas_encontradas, 'playlists': playlists}
+        context = {'musicas': musicas_encontradas, 'playlists': playlists,'titulo':'Buscar músicas'}
         
         return render(request, 'musica/buscar.html', context=context)
 
@@ -118,6 +118,7 @@ def player(request):
         'playlists': playlists,
         'musica_obj':musica_obj,
         'playlist_curtir': playlist_curtir,
+        'titulo':'Player'
     })
     
 @login_required

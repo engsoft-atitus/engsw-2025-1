@@ -7,8 +7,8 @@ class Profile(models.Model):
     generos_musicas = models.CharField(max_length=200, null=True, blank=True)
     biografia = models.TextField(null=True, blank=True)  # CLOB no Oracle, cuidado com buscas
     privacidade = models.IntegerField(default=1, choices=[(0, 'Privado'), (1, 'Público')])  # substitui BooleanField
-    imagem_perfil = models.URLField(blank=True, null=True)
-    imagem_perfil_hash = models.CharField(max_length=64, blank=True, null=True)  # Hash da imagem para evitar duplicatas
+    imagem_perfil = models.URLField(blank=True, null=True, default="https://tfavf9hmcaamd4yg.public.blob.vercel-storage.com/95e4a5e0-d81a-44d2-882b-ef0098a9235a.png")
+    imagem_perfil_hash = models.CharField(max_length=64, blank=True, null=True,default="ccaae35952063bd7e441640ebfe236041947d7a9ef42576a5fc2e024a6e6be95")  # Hash da imagem para evitar duplicatas
 
     def __str__(self):
         return self.user.username
