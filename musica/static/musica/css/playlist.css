@@ -1,22 +1,82 @@
-ul {
-    width: 90%;
-}
-
-li {
+.musica-grid li {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: space-around;
-    gap: 20px;
-    width: 100%;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+    margin-bottom: 15px;
+    padding: 12px;
+    gap: 15px;
+    color: white;
 }
 
-.capa {
-    width: 30%;
+.capa img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
 .textfield {
-    width: 50%;
-    max-width: 50%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+}
+
+.textfield h1 {
+    font-size: 16px;
+    margin: 0;
+    color: white;
+}
+
+.textfield h2 {
+    font-size: 13px;
+    margin: 0;
+    color: #ccc;
+}
+
+.acoes {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.acoes img {
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+}
+
+button {
+    background: none;
+    border: none;
+}
+
+.nav-list {
+    display: none;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 10px;
+}
+
+.nav-list form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-list select,
+.nav-list button {
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
 }
 
 h1 {
