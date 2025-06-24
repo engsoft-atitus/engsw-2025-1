@@ -7,7 +7,7 @@ li {
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    width: 100%;
+    width: 110%;
 }
 
 .button {
@@ -19,8 +19,12 @@ li {
     max-width: 50%;
 }
 
+h1 {
+    color: white;
+}
+
 p {
-    color: rgb(43, 43, 43);
+    color: rgba(255, 255, 255, 0.618);
     font-size: 15px;
 }
 
@@ -32,4 +36,8 @@ p {
     width: 400px !important;
     font-size: 14px;
     padding: 1rem !important;
+}
+
+a {
+    text-decoration: none;
 }

@@ -15,6 +15,7 @@
         {% block content %} {% endblock %}
     </main>
     <nav class="navbar">
+        <a href="{% url 'principal' %}"><i class="fa-solid fa-house"></i> Home</a>
         <a href="{% url 'buscar_musicas' %}"><i class="fa-duotone fa-solid fa-magnifying-glass"></i>Buscar</a>
         <a href="{% url 'listar_playlists' %}"><i class="fa-solid fa-book"></i>Biblioteca</a>
         <a href="{% url 'my_communities' %}"><i class="fa-duotone fa-solid fa-users"></i>Comunidade</a>

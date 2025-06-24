@@ -2,82 +2,83 @@
 
 
 
-body{
+body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(
-    to bottom right,
-    #5a005a,
-  #620077,
-  #7117b8,
-  #7932de,
-  #8977ff,
-  #b6b2ff 
-    );
+  background: linear-gradient(to bottom right,
+      #5a005a,
+      #620077,
+      #7117b8,
+      #7932de,
+      #8977ff,
+      #b6b2ff);
   color: #e6e6e7;
- 
+
   font-family: "Comfortaa", sans-serif;
   font-optical-sizing: auto;
   font-weight: 5;
   font-style: normal;
 }
 
-.community-image{
+.community-image {
   width: 80%;
   max-width: 56%;
   object-fit: contain;
   border-radius: 16px;
 }
 
-.container{
+.container {
   width: 80%;
   max-width: 800px;
   text-align: center;
   background-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  border:0.3px solid white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: 0.3px solid white;
   color: white;
   font-weight: bold;
   padding: 20px;
   margin-bottom: 20px;
   border-radius: 8px;
-  
+
 }
 
-.main{
+.main {
   width: 90;
   display: flex;
   flex-direction: column;
-  align-items: center;  
-  justify-content: center; 
+  align-items: center;
+  justify-content: center;
   gap: 16px;
   padding: 20px;
 }
 
-.tag{
-    color: rgb(92, 89, 89);
-    word-break: break-word; 
-    margin-top: -1rem;
+.tag {
+  color: rgb(92, 89, 89);
+  word-break: break-word;
+  margin-top: -1rem;
 }
-.botoes-admin{
+
+.botoes-admin {
   display: flex;
   flex-flow: row;
   gap: 16px;
   align-items: center;
 
 }
-.posts-admin{
+
+.posts-admin {
   display: flex;
   flex-flow: column;
   gap: 16px;
   align-items: center;
 }
 
-.posts-admin textarea{
+.posts-admin textarea {
   width: 80%;
   resize: none;
 }
-.community-block{
+
+.community-block {
   display: flex;
   flex-flow: column;
   gap: 16px;
@@ -95,7 +96,7 @@ body{
 
 /* https://getcssscan.com/css-buttons-examples */
 /* CSS */
-button{
+button {
   background-color: white;
   color: #5A005A;
   border: none;
@@ -111,8 +112,8 @@ button:hover {
   color: #ffffff;
 }
 
-button:hover a{
- color: #ffffff;
+button:hover a {
+  color: #ffffff;
 }
 
 button:active {
@@ -144,6 +145,7 @@ button:not(:disabled):active {
 button:disabled {
   box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
 }
+
 .formulario {
   margin: 0 auto;
 }
@@ -152,7 +154,7 @@ button:disabled {
 .formulario textarea,
 .formulario select {
   background-color: #ffffff;
-  border-radius: 8px; 
+  border-radius: 8px;
   border: solid #333435;
 
   display: block;
@@ -163,7 +165,7 @@ button:disabled {
   box-sizing: border-box;
 }
 
-.comentario{
+.comentario {
   max-width: 80%;
   display: flex;
   flex-flow: column;
@@ -177,22 +179,22 @@ button:disabled {
 
   align-items: flex-start;
 
-  word-wrap: break-word; 
-  overflow-wrap: break-word; 
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   word-break: break-word;
 }
 
-.comentario h4{
+.comentario h4 {
   color: grey;
 }
 
-.centralizar{
+.centralizar {
   display: flex;
   flex-flow: column;
   align-items: center;
 }
 
-.post-size{
+.post-size {
   max-height: 30%;
 }
 
@@ -213,7 +215,7 @@ button:disabled {
 .card {
   position: relative;
   width: 100%;
-  aspect-ratio: 1/1; 
+  aspect-ratio: 1/1;
   overflow: hidden;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -236,7 +238,7 @@ button:disabled {
   left: 0;
   width: 100%;
   padding-bottom: 12px;
-  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
   color: white;
   text-align: center;
 }
@@ -310,54 +312,56 @@ section {
 
 .navbar {
   position: fixed;
-      width: 100%;
-      bottom: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: space-around;
-      background-color: rgb(238, 209, 255);
-      margin: 0 !important;
-  }
-  
-  .navbar a {
+  width: 100%;
+  bottom: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-around;
+  background-color: rgb(238, 209, 255);
+  margin: 0 !important;
+  background: rgba(49, 8, 8, 0.5);
+  border: 0.3px solid white;
+}
+
+.navbar a {
   text-decoration: none;
-  color: #333;
-  font-size: 14px;
+  color: white;
+  font-size: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  }
-  
-  .navbar i {
+}
+
+.navbar i {
   font-size: 20px;
   margin-bottom: 5px;
-  }
+}
 
-.usuario-post{
+.usuario-post {
   display: flex;
   flex-flow: row;
   gap: 16px;
   align-items: center;
 }
 
-.user-profile-picture{
-  width: 100px; 
-  height: 100px; 
-  object-fit: cover; 
+.user-profile-picture {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
   border-radius: 50%;
 }
 
-.low-post-section{
+.low-post-section {
   width: 100%;
   display: flex;
   flex-flow: row;
   gap: 16px;
-  align-items: center; 
+  align-items: center;
   justify-content: space-between;
-   
+
 }
 
-.like-section{
+.like-section {
   display: flex;
   flex-flow: row;
   gap: 16px;
@@ -370,7 +374,7 @@ section {
 }
 
 
-.post-modal-music{
+.post-modal-music {
   display: none;
   position: fixed;
   z-index: 1;
@@ -378,11 +382,11 @@ section {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 
 }
 
-.modal-content{
+.modal-content {
   background-color: #ffffff;
   margin: auto;
   margin-top: 1.5%;
@@ -397,22 +401,22 @@ section {
   height: 90%;
 }
 
-.post-music-name{
+.post-music-name {
   font-size: small;
 }
 
-.music-spacing{
+.music-spacing {
   max-width: 80%;
 }
 
-.musica-div{
+.musica-div {
   border-radius: 8px;
 }
 
-.modal-content-music{
+.modal-content-music {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  justify-content: space-evenly;    
+  justify-content: space-evenly;
   height: 90%;
   width: 100%;
   gap: 0.25em;
@@ -427,36 +431,36 @@ section {
   justify-content: space-around;
 }
 
-.musica-div > p {
+.musica-div>p {
   justify-self: flex-end;
   margin: 0.2em;
 }
 
-.musica-div > img {
+.musica-div>img {
   max-width: 100%;
-  box-shadow: rgba(0, 0, 0, .2) 0 3px 5px -1px,rgba(0, 0, 0, .14) 0 6px 10px 0,rgba(0, 0, 0, .12) 0 1px 18px 0;
+  box-shadow: rgba(0, 0, 0, .2) 0 3px 5px -1px, rgba(0, 0, 0, .14) 0 6px 10px 0, rgba(0, 0, 0, .12) 0 1px 18px 0;
 }
 
-.fundo-branco{
+.fundo-branco {
   background-color: white;
   gap: 16px;
   padding-top: 1rem;
   max-width: 54%;
 }
 
-.nome-my-communities{
+.nome-my-communities {
   font-size: 1.6rem;
   font-weight: 600;
   color: white;
   text-decoration: none;
 }
 
-.sobre-community-preview{
-  word-break: break-word; 
+.sobre-community-preview {
+  word-break: break-word;
   margin-top: -1rem;
 }
 
-.fluxo-community-preview{
+.fluxo-community-preview {
   display: flex;
   flex-flow: row-reverse;
   justify-content: space-between;
@@ -464,7 +468,7 @@ section {
   gap: 16px;
 }
 
-.music-post-size{
+.music-post-size {
   margin: auto;
   width: 60%;
   padding: 10px;
@@ -518,7 +522,7 @@ section {
 }
 
 .posts-admin button[type="submit"] {
-  background-color: #7117b8; 
+  background-color: #7117b8;
   color: white;
 }
 
@@ -558,7 +562,7 @@ section {
   border-radius: 4px;
 }
 
-*{
+* {
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   font-weight: 100;
@@ -570,31 +574,36 @@ section {
     padding: 15px;
     border-radius: 8px;
   }
-  
+
   .comentario h4 {
     font-size: 1rem;
   }
-  
+
   .post-body {
     font-size: 0.95rem;
   }
 
-  .modal-content{
+  .modal-content {
     height: 80%;
   }
 
-  .modal-content-music{
+  .modal-content-music {
     grid-template-columns: repeat(2, 1fr);
   }
-  .user-profile-picture{
-    width: 50px; 
-    height: 50px; 
-    object-fit: cover; 
+
+  .user-profile-picture {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
     border-radius: 50%;
   }
 
-  .music-image-post{
+  .music-image-post {
     width: 200px;
     height: 200px;
   }
+}
+
+a {
+  text-decoration: none;
 }

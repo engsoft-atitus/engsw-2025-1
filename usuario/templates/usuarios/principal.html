@@ -1,88 +1,77 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Início</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'musica/css/base.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
-        body {
-            background: linear-gradient(
-                to bottom right,
-                 #5A005A,
-                  #620077,
-                   #7117B8,
-                    #7932DE,
-                     #8977FF,
-                      #B6B2FF);
-            font-family: Montserrat, sans-serif;
-            display: flex;
-            justify-content: center;
-           
-            min-height: 100vh;
-            height: auto;
-            position: relative;
-            
-        }
-    
-        h1 {
-            color: white;
-            text-align: center;
-            font-weight: bold;
-            font-family: "Rajdhani", sans-serif;
-            font-size: 3rem;
-            
-          
-            margin-top: 10px;
-      
-        }
-        .container {
-    position: fixed;
-    top: 10%;         /* começa 20% da altura da tela */
-    bottom: 12%;      /* termina 10% antes do rodapé */
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    max-width: 600px;
-    width: 90%;
-    background: rgba(255, 255, 255, 0.3);
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    border: 0.3px solid white;
-    box-sizing: border-box;
-    overflow-y: auto; /* se tiver conteúdo demais, rola internamente */
-}
-h1 {
-            margin: 2vh 0 0 0;
-            text-align: center;
-            font-size: 2rem;
-            z-index: 1;
-            position: relative;
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            /* 2 colunas */
+            gap: 20px;
+            margin: 20px;
         }
 
+        .container {
+            margin: 0;
+            transition: 0.2s ease-in-out;
+        }
+
+        .container h2 {
+            color: white;
+        }
+
+        .container p {
+            color: rgba(255, 255, 255, 0.618);
+            font-size: 15px;
+        }
+
+        .container:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
+
 <body>
-    <div><h1>pagina inicial</h1>
-    </div>
-    
-   
-    <div class="container"></div>
-    
+    <header>
+        <h1 class="title">Página Inicial</h1>
+    </header>
+
+    <main>
+        <section>
+            <div class="grid">
+                {% for playlist in playlists_destaque %}
+                <a href="{% url 'ver_playlist' playlist.id %}">
+                    <div class="container">
+                        <h2>{{ playlist.nome }}</h2>
+                        <p>{{ playlist.descricao }}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
 
     <nav class="navbar">
+        <a href="{% url 'principal' %}"><i class="fa-solid fa-house"></i> Home</a>
         <a href="{% url 'buscar_musicas' %}"><i class="fas fa-search"></i>Buscar</a>
         <a href="{% url 'listar_playlists' %}"><i class="fas fa-book"></i>Biblioteca</a>
         <a href="{% url 'my_communities' %}"><i class="fas fa-users"></i>Comunidade</a>
         <a href="{% url 'perfil' request.user.username %}"><i class="fas fa-user"></i>Perfil</a>
     </nav>
 </body>
+
 </html>

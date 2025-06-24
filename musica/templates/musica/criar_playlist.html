@@ -1,22 +1,50 @@
 {% extends "musica/base.html" %}
 {% load static %}
 {% block css %}
-    <link red="stylesheet" href="{% static 'musica/css/criar_playlist.css'%}">
+<link red="stylesheet" href="{% static 'musica/css/criar_playlist.css'%}">
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        width: 90%;
+        gap: 5px;
+    }
+
+    .button {
+        margin-top: 20px;
+    }
+
+    main {
+        margin-top: 20px;
+    }
+
+    form p {
+        color: white;
+    }
+
+    form p input,
+    form p textarea,
+    form p select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-    <section>
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <p>{{ form.nome.label_tag }}</p>
-            <p>{{ form.nome }}</p>
+<section>
+    <h1 class="title">Criar Playlist</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>{{ form.nome.label_tag }}</p>
+        <p>{{ form.nome }}</p>
 
-            <p>{{ form.descricao.label_tag }}</p>
-            <p>{{ form.descricao }}</p>
+        <p>{{ form.descricao.label_tag }}</p>
+        <p>{{ form.descricao }}</p>
 
-            <p>{{ form.imagem.label_tag }}</p>
-            <p>{{ form.imagem }}</p>
-            <button type="submit" class="button">Criar</button>
-        </form>
-    </section>
+        <p>{{ form.imagem.label_tag }}</p>
+        <p>{{ form.imagem }}</p>
+        <button type="submit" class="button">Criar</button>
+    </form>
+</section>
 {% endblock %}

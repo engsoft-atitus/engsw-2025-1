@@ -1,15 +1,16 @@
 {% extends "musica/base.html" %}
 {% load static %}
 {% block css %}
-    <link rel="stylesheet" href="{% static "musica/css/minhas_playlists.css" %}">
+<link rel="stylesheet" href="{% static 'musica/css/minhas_playlists.css' %}">
 {% endblock %}
 {% block content %}
-    <section>
-        <header>
-            <h1>Biblioteca</h1>
-        </header>
-    </section>
-    <section>
+<section>
+    <header>
+        <h1 class="title">Biblioteca</h1>
+    </header>
+</section>
+<section>
+    <div class="container">
         <ul>
             <a href="{% url 'criar_playlist' %}">
                 <button type="button" class="button">Criar Nova Playlist</button>
@@ -44,51 +45,52 @@
             <li>Você ainda não tem nenhuma playlist.</li>
             {% endfor %}
         </ul>
-    </section>
+    </div>
+</section>
 
-    <script>
-        function confirmarExclusao(playlistId) {
-            Swal.fire({
-                title: "Tem certeza?",
-                text: "Você não poderá recuperar essa playlist!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#6545F0",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sim, excluir!",
-                cancelButtonText: "Cancelar",
-                customClass: {
-                    popup: 'swal-sm'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Redireciona para a URL de exclusão
-                    window.location.href = `/musica/playlist/${playlistId}/excluir/`;
-                }
-            });
-        }
-</script>
-
-    {% if messages %}
-    {% for message in messages %}
-    <script>
-        const Toast = Swal.mixin({
-            toast: true,
-            position: "center",
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
+<script>
+    function confirmarExclusao(playlistId) {
+        Swal.fire({
+            title: "Tem certeza?",
+            text: "Você não poderá recuperar essa playlist!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#6545F0",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sim, excluir!",
+            cancelButtonText: "Cancelar",
+            customClass: {
+                popup: 'swal-sm'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redireciona para a URL de exclusão
+                window.location.href = `/musica/playlist/${playlistId}/excluir/`;
             }
         });
+    }
+</script>
 
-        Toast.fire({
-            icon: "{{ message.tags|default:'info' }}",
-            title: "{{ message|escapejs }}"
-        });
-    </script>
-    {% endfor %}
-    {% endif %}
+{% if messages %}
+{% for message in messages %}
+<script>
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "center",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+
+    Toast.fire({
+        icon: "{{ message.tags|default:'info' }}",
+        title: "{{ message|escapejs }}"
+    });
+</script>
+{% endfor %}
+{% endif %}
 {% endblock %}

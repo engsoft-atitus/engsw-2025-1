@@ -13,6 +13,7 @@ from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.utils.timezone import now
 from django_project.utils import upload_vercel_image
+from musica.models import Playlist
 
 def cadastro_view(request):
     if request.method == 'POST':
@@ -197,7 +198,8 @@ def home(request):
 
 @login_required
 def principal_view(request):
-    return render(request, 'usuarios/principal.html')
+    playlists_destaques = playlists_destaque()
+    return render(request, 'usuarios/principal.html', {'playlists_destaque': playlists_destaques})
 
 
 
@@ -210,3 +212,6 @@ def buscar_usuario_view(request):
         usuarios = User.objects.filter(username__icontains=busca)[:10]
     return render(request, 'usuarios/buscar-usuario.html', {'usuarios': usuarios, 'busca': busca})
 
+def playlists_destaque():
+    nomes = ['Pop', 'Rock', 'Hip-Hop', 'Eletrônica', 'Blues', 'Clássica', 'Jazz', 'Reggae', 'Pagode', 'Sertanejo']
+    return Playlist.objects.filter(nome__in=nomes)

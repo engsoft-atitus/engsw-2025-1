@@ -1,20 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Martel+Sans:wght@200;300;400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Martel Sans", sans-serif;
     font-weight: 300;
     font-style: normal;
+    font-family: "Montserrat", sans-serif;
 }
 
 body {
     width: 100%;
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: column;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom right,
+            #5A005A,
+            #620077,
+            #7117B8,
+            #7932DE,
+            #8977FF,
+            #B6B2FF);
 }
 
 section {
@@ -26,6 +35,16 @@ section {
     align-items: center;
     flex-direction: column;
     gap: 10px;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.3);
+    padding: 2rem 1em;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin-bottom: 100px;
+    border: 0.3px solid white;
 }
 
 main {
@@ -52,15 +71,39 @@ h1 {
     font-size: 20px;
 }
 
-nav {
+.title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+}
+
+.navbar {
     position: fixed;
     width: 100%;
     bottom: 0;
     padding: 20px;
     display: flex;
     justify-content: space-around;
-    z-index: 2;
-    background-color: #FFFFFF;
+    background-color: rgb(238, 209, 255);
+    margin: 0 !important;
+    background: rgba(49, 8, 8, 0.5);
+    border: 0.3px solid white;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: white;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.navbar i {
+    font-size: 20px;
+    margin-bottom: 5px;
 }
 
 .mobile-menu {
@@ -108,35 +151,23 @@ nav {
 }
 
 .button {
-    padding: 3px 10px;
-    border-radius: 10px;
-    border: none;
+    margin: 1rem auto;
+    background-color: #5A005A;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    text-decoration: none;
+    text-align: center;
+    width: fit-content;
+    transition: 0.3s linear;
     cursor: pointer;
-    background-color: #6545F0;
-    color: #FFFFFF;
+    border: none;
 }
 
-.navbar {
-position: fixed;
-    width: 100%;
-    bottom: 0;
-    padding: 20px;
-    display: flex;
-    justify-content: space-around;
-    background-color: rgb(238, 209, 255);
-    margin: 0 !important;
+.button:hover {
+    background-color: #0056b3;
 }
 
-.navbar a {
-text-decoration: none;
-color: #333;
-font-size: 14px;
-display: flex;
-flex-direction: column;
-align-items: center;
-}
-
-.navbar i {
-font-size: 20px;
-margin-bottom: 5px;
+a {
+    text-decoration: none;
 }
