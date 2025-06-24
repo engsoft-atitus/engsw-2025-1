@@ -135,9 +135,10 @@ def salvar_musica(request):
         musica, criada = MusicaSalva.objects.get_or_create(
             nome=nome,
             artista=artista,
-            link=link,
-            imagem=imagem  
+            imagem=imagem,
+            defaults={'link':link}
         )
+        print(criada)
 
         # Adiciona à playlist, se ainda não estiver
         if not musica.playlists.filter(id=playlist.id).exists():
