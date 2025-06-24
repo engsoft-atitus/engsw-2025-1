@@ -16,7 +16,7 @@
         <ul>
             <h1 class="section-title">Usuários</h1>
             {% for usuario in usuarios %}
-                <li><a href="{% url 'perfil' usuario.username %}">{{ usuario.username }}</a></li>
+                <li><a href="{% url 'perfil' usuario.username %}"><p class="nome-usuario">{{ usuario.username }}</p></a></li>
             {% endfor %}
         </ul>
         {% elif not usuarios %}

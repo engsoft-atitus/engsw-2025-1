@@ -186,11 +186,11 @@ def ver_playlist(request, playlist_id):
 
         request.session['musicas'] = musicas_encontradas
     
-        context = {
-                   'musicas': musicas_encontradas, 
-                   'playlist': playlist, 
-                   'titulo': playlist.nome
-                   }   
+    context = {
+                'musicas': musicas_encontradas, 
+                'playlist': playlist, 
+                'titulo': playlist.nome
+                }   
 
     if playlist.playlist_curtir == True:
         context.update({'playlist_curtir':True})
